@@ -1,5 +1,5 @@
 from django.db import models
-
+from cloudinary.models import CloudinaryField
 # Create your models here.
 
 
@@ -29,7 +29,7 @@ class Socails(models.Model):
     like = models.CharField(blank=True)
     comment = models.CharField(blank=True)
     views = models.CharField(blank=True)
-    thumbnail = models.ImageField(upload_to='tunb/', blank=True, null=True)
+    thumbnail = CloudinaryField(folder='tunb/', blank=True, null=True)
     link = models.URLField(blank=True)
     category = models.ForeignKey(Categorysss, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -69,12 +69,12 @@ class Mess(models.Model):
 class Home(models.Model):
     title = models.CharField(blank=True)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='homie/', blank=True, null=True)
+    image = CloudinaryField(folder='homie/', blank=True, null=True)
     
 
 class About(models.Model):
     title = models.CharField(blank=True)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='about/', blank=True, null=True)
+    image =CloudinaryField(folder='about/', blank=True, null=True)
     
 

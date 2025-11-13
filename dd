@@ -1,104 +1,148 @@
-{% extends 'con/base.html' %}
-{% block content %}
+⚙️ EC2 Setup Checklist for Your Django App
+1. Connect to Your EC2 Instance
 
-<main class="flex flex-col gap-6 pt-10">
+If you created an Ubuntu instance:
 
-    <!-- Header -->
-    <div class="flex flex-wrap justify-between gap-4 p-4 items-center">
-        <div class="flex min-w-72 flex-col gap-2">
-            <p class="text-black dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">My Work</p>
-            <p class="text-black/60 dark:text-white/60 text-base font-normal leading-normal">
-                A showcase of my latest work and brand collaborations.
-            </p>
-        </div>
-    </div>
+ssh -i "your-key.pem" ubuntu@your-public-ip
 
-    <!-- Category Buttons -->
-    <div class="flex flex-col sm:flex-row gap-3 p-3 items-center justify-between border-b border-black/10 dark:border-white/10">
-        <div class="flex gap-2 flex-wrap">
-            <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary/20 dark:bg-primary/20 px-3 text-primary">
-                <a href="{% url 'portfolio' %}" class="text-sm font-medium leading-normal">All</a>
-            </button>
-            {% for homie in categories %}
-                <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/5 dark:bg-white/5 px-3 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
-                    <a href="{% url 'portfolio' %}?category={{ homie.slug }}" class="text-sm font-medium leading-normal">{{ homie }}</a>
-                </button>
-            {% endfor %}
-        </div>
-        <div class="relative">
-            <span class="material-symbols-outlined text-black/60 dark:text-white/60 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
-                expand_more
-            </span>
-        </div>
-    </div>
+2. Update and Install Essentials
+sudo apt update && sudo apt upgrade -y
+sudo apt install python3-pip python3-venv nginx redis-server postgresql postgresql-contrib -y
 
-    <!-- Portfolio Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
-        {% for homie in home %}
-            {% if homie.thumbnail %}
-            <div class="group relative overflow-hidden rounded-xl aspect-w-3 aspect-h-4 bg-black/10 dark:bg-white/10 cursor-pointer">
-                
-                <!-- Image -->
-                <img src="{{ homie.thumbnail.url }}" alt="{{ homie.name }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"/>
-                
-                <!-- Overlay Gradient -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                
-                <!-- Name and Views -->
-                <div class="absolute bottom-0 left-0 p-4 w-full text-white">
-                    <p class="text-base font-bold leading-tight line-clamp-2">{{ homie.name }}</p>
-                    <div class="flex items-center gap-2 text-white/80 text-xs mt-1">
-                        <span class="material-symbols-outlined text-sm">visibility</span>
-                        <span>{{ homie.views }} Views</span>
-                    </div>
-                </div>
-                
-                <!-- Hover Button -->
-                <div class="absolute inset-0 bg-black/60 flex flex-col justify-center items-center p-4 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                    <a href="{{ homie.link }}" target="_blank" class="bg-primary text-white text-sm font-bold h-9 px-4 rounded-lg">
-                        Watch Now
-                    </a>
-                </div>
-            </div>
-            {% endif %}
-        {% endfor %}
-    </div>
+3. Clone Your Project
+git clone https://github.com/yourusername/yourproject.git
+cd yourproject
 
-    <!-- Dynamic Pagination -->
-    {% if home.has_other_pages %}
-    <nav class="flex items-center justify-center gap-2 py-8">
-        {% if home.has_previous %}
-        <a href="?page={{ home.previous_page_number }}{% if category_slug %}&category={{ category_slug }}{% endif %}" class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
-            <span class="material-symbols-outlined">chevron_left</span>
-        </a>
-        {% else %}
-        <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed">
-            <span class="material-symbols-outlined">chevron_left</span>
-        </span>
-        {% endif %}
+4. Set Up Python Environment
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 
-        {% for page_num in home.paginator.page_range %}
-            {% if page_num >= home.number|add:'-2' and page_num <= home.number|add:'2' %}
-                {% if home.number == page_num %}
-                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">{{ page_num }}</span>
-                {% else %}
-                <a href="?page={{ page_num }}{% if category_slug %}&category={{ category_slug }}{% endif %}" class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">{{ page_num }}</a>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
+5. Configure PostgreSQL for django-tenants
+sudo -u postgres psql
+CREATE DATABASE business;
+CREATE USER postgres WITH PASSWORD 'postgres';
+ALTER ROLE postgres SET client_encoding TO 'utf8';
+ALTER ROLE postgres SET default_transaction_isolation TO 'read committed';
+ALTER ROLE postgres SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE business TO postgres;
+\q
 
-        {% if home.has_next %}
-        <a href="?page={{ home.next_page_number }}{% if category_slug %}&category={{ category_slug }}{% endif %}" class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
-            <span class="material-symbols-outlined">chevron_right</span>
-        </a>
-        {% else %}
-        <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed">
-            <span class="material-symbols-outlined">chevron_right</span>
-        </span>
-        {% endif %}
-    </nav>
-    {% endif %}
 
-</main>
+Update your settings.py:
 
-{% endblock %}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django_tenants.postgresql_backend',
+        'NAME': 'business',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    }
+}
+
+6. Set Up Redis (for django-ratelimit + caching)
+
+Make sure Redis is running:
+
+sudo systemctl enable redis-server
+sudo systemctl start redis-server
+
+7. Environment Variables
+
+Create .env in your project root:
+
+DEBUG=False
+SECRET_KEY=yourproductionsecret
+PAYSTACK_SECRET_KEY=your_key
+PAYSTACK_PUBLIC_KEY=your_key
+FLW_SECRET_KEY=your_key
+FLW_PUBLIC_KEY=your_key
+BASE_URL=https://api.flutterwave.com/v3
+
+8. Migrate and Collect Static Files
+python manage.py makemigrations
+python manage.py migrate_schemas --shared
+python manage.py collectstatic
+
+9. Run Gunicorn
+pip install gunicorn
+gunicorn --workers 3 --bind 0.0.0.0:8000 baxting.wsgi:application
+
+
+If it works, you’ll see it listening on port 8000.
+
+10. Set Up Nginx Reverse Proxy
+
+Create a config:
+
+sudo nano /etc/nginx/sites-available/baxting
+
+
+Paste this:
+
+server {
+    listen 80;
+    server_name your-ec2-public-ip-or-domain;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location /static/ {
+        alias /home/ubuntu/yourproject/staticfiles/;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+
+Enable it:
+
+sudo ln -s /etc/nginx/sites-available/baxting /etc/nginx/sites-enabled
+sudo nginx -t
+sudo systemctl restart nginx
+
+11. (Optional) Set Up HTTPS with Certbot
+sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d yourdomain.com
+
+12. Keep Gunicorn Running
+
+Install supervisor to auto-start your app:
+
+sudo apt install supervisor -y
+sudo nano /etc/supervisor/conf.d/baxting.conf
+
+
+Paste:
+
+[program:baxting]
+directory=/home/ubuntu/yourproject
+command=/home/ubuntu/yourproject/venv/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/yourproject/baxting.sock baxting.wsgi:application
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/baxting.err.log
+stdout_logfile=/var/log/baxting.out.log
+user=ubuntu
+
+
+Then run:
+
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl restart baxting
+
+
+✅ Now your Django tenants app runs on EC2 with Nginx + Gunicorn + PostgreSQL + Redis!
+
+Would you like me to show you how to:
+
+Add each tenant domain automatically to your EC2 Nginx config (so each tenant gets their subdomain live), or
+
+Integrate your dynamic Flutterwave subaccount per tenant next?

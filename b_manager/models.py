@@ -91,7 +91,7 @@ class WebsiteTemplate(models.Model):
     slug = models.SlugField(unique=True,  blank=True, null=True)
     category = models.CharField(max_length=100, choices=TEMPLATE_CATEGORIES, blank=True, null=True)
     description = models.TextField( blank=True, null=True)
-    thumbnail = models.ImageField(upload_to='template_thumbnails/', blank=True, null=True)
+    thumbnail = models.ImageField(storage=S3Boto3Storage(),upload_to='template_thumbnails/', blank=True, null=True)
     preview_url = models.URLField(blank=True, null=True, help_text="Live preview or demo link")
     min_plan = models.CharField(
         max_length=20,
