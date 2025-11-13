@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
-project = True
+project = os.getenv('PROJECT')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -250,13 +250,5 @@ else:
 
 
 
-
-
-
-# Tell Django to use the X-Forwarded-For header for REMOTE_ADDR
-USE_X_FORWARDED_HOST = True
-
-# Optional: set the key django-ratelimit should use
-RATELIMIT_IP_META_KEY = "HTTP_X_REAL_IP"
 
 
