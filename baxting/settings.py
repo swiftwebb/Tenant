@@ -246,3 +246,17 @@ if project==True:
     # AWS_LOCATION ='media'
 else:
     pass
+
+
+
+
+
+
+    
+# Tell Django to use the X-Forwarded-For header for REMOTE_ADDR
+USE_X_FORWARDED_HOST = True
+
+# Optional: set the key django-ratelimit should use
+RATELIMIT_IP_META_KEY = "HTTP_X_FORWARDED_FOR"
+
+

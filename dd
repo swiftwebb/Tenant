@@ -146,3 +146,97 @@ Would you like me to show you how to:
 Add each tenant domain automatically to your EC2 Nginx config (so each tenant gets their subdomain live), or
 
 Integrate your dynamic Flutterwave subaccount per tenant next?
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/Tenant
+EnvironmentFile=/home/ubuntu/Tenant/.env
+ExecStart=/home/ubuntu/Tenant/venv/bin/gunicorn \
+          --workers 3 \
+          --bind unix:/tmp/gunicorn.sock \
+          baxting.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+Install PostgreSQL:
+
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+
+
+Start PostgreSQL:
+
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+sudo systemctl status postgresql
+
+
+Make sure your DB, user, and password exist and match .env:
+
+sudo -u postgres psql
+CREATE DATABASE business;
+CREATE USER myuser WITH PASSWORD 'mypassword';
+GRANT ALL PRIVILEGES ON DATABASE business TO myuser;
+
+
+Then ensure your .env file matches these credentials.
+
+✅ After these fixes
+
+Activate your venv: source venv/bin/activate
+
+Run migrations:
+
+python manage.py migrate_schemas --shared
+python manage.py migrate
+
+
+Start Gunicorn (or systemctl restart if usin
+
+
+
+
+
+1️⃣ Connect to PostgreSQL
+sudo -u postgres psql
+
+2️⃣ Connect to your database
+\c business
+
+
+This switches you to the business database.
+
+3️⃣ Grant privileges to your user
+Replace myuser with the username you actually use in Django’s .env (DB_USER):
+
+GRANT ALL PRIVILEGES ON SCHEMA public TO myuser;
+
+4️⃣ Make sure your user can create databases
+ALTER USER myuser CREATEDB;
+
+5️⃣ Exit
+\q
+
+
+✅ After this, your Django migrations should work without permission errors.
+If you want, I can give you the exact commands for your .env user setup so you won’t have to guess the username. Do you want me to do that?
