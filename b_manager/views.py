@@ -36,11 +36,11 @@ from b_manager.models import Client
 from django_ratelimit.decorators import ratelimit
 
 
-# def tenant_ip_key(group, request):
-#     tenant = getattr(request, 'tenant', None)
-#     tenant_id = getattr(tenant, 'schema_name', 'public')
-#     ip = request.META.get('REMOTE_ADDR', '')
-#     return f"{tenant_id}:{ip}"
+def tenant_ip_key(group, request):
+    tenant = getattr(request, 'tenant', None)
+    tenant_id = getattr(tenant, 'schema_name', 'public')
+    ip = request.META.get('REMOTE_ADDR', '')
+    return f"{tenant_id}:{ip}"
 
 
 
@@ -97,8 +97,7 @@ def onboarding_required(view_func):
 
 PAYSTACK_INITIALIZE_URL = settings.PAYSTACK_INITIALIZE_URL
 
-# @ratelimit(key=tenant_ip_key, rate='40/m', block=True)
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 def create_trial_tenant(request, plan):
     user = request.user
     """Create or update a 7-day trial tenant for the Basic plan."""
@@ -168,7 +167,7 @@ def job_list(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def jjob(request):
 
@@ -198,7 +197,7 @@ def jjob(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def upgrade_init(request):
     if request.method != 'POST':
@@ -321,7 +320,7 @@ def upgrade_init(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 def paystack_verify(request):
     reference = request.GET.get('reference')
     if not reference:
@@ -384,7 +383,7 @@ def paystack_verify(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def web_temp(request):
     
@@ -437,7 +436,7 @@ def web_temp(request):
     })
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def web_temp_detail(request, slug):
 
@@ -446,7 +445,7 @@ def web_temp_detail(request, slug):
     return render(request, 'customers/templatepreview.html', {'webs': webs})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)    
 @login_required
 def web_welected(request):
 
@@ -478,7 +477,7 @@ def web_welected(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def fom(request):
     client = Client.objects.filter(name=request.user.username).first()
@@ -553,31 +552,31 @@ def fom(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key='ip', rate='30/m', block=True)
 def about(request):
 
     return render(request, 'customers/about.html', {})
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key='ip', rate='30/m', block=True)
 def help(request):
     return render(request, 'customers/help.html', {})
 
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key='ip', rate='30/m', block=True)
 def terms(request):
     return render(request, 'customers/tems.html', {})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key='ip', rate='30/m', block=True)
 def privacy(request):
     return render(request, 'customers/privacyr.html', {})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 def switch(request):
     client = Client.objects.filter(name=request.user.username).first()
 
@@ -590,7 +589,7 @@ def switch(request):
     return render(request, 'customers/subb.html', {'subscription':subscription})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def cancel_subscription(request):
     client = Client.objects.filter(name=request.user.username).first()
@@ -613,7 +612,7 @@ def cancel_subscription(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_p(request):
     tenant = request.user.tenant  # tenant link
@@ -645,7 +644,7 @@ def dashboard_p(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 def verify_bank_account(request):
     bank_code = request.GET.get('bank')
     account_number = request.GET.get('account_no')
@@ -678,7 +677,7 @@ def verify_bank_account(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @onboarding_required
 @login_required
 def dashboard(request):
@@ -746,7 +745,7 @@ def dashboard(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @onboarding_required
 @login_required
 def website(request):
@@ -794,7 +793,7 @@ def website(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def product_detail_d(request, pk):
     tenant = request.user.tenant
@@ -814,7 +813,7 @@ def product_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def product_edit_d(request, pk):
     tenant = request.user.tenant
@@ -859,7 +858,7 @@ def product_edit_d(request, pk):
 
 #     return render(request, 'dashboard/products.html', {'products': products})
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_create_product(request):
     tenant = request.user.tenant  # get current user's tenant
@@ -884,7 +883,7 @@ def dashboard_create_product(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_product(request, pk):
     tenant = request.user.tenant
@@ -900,7 +899,7 @@ def dashboard_delete_product(request, pk):
     return redirect('customers:delete_p', pk=product.pk)
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 def delete_p(request, pk):
     tenant = request.user.tenant
 
@@ -910,7 +909,7 @@ def delete_p(request, pk):
     return render(request, 'customers/del_p.html',{'product':product})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_orderlist(request):
     tenant = request.user.tenant
@@ -939,7 +938,7 @@ def dashboard_orderlist(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 @require_POST
 def mark_order_delivered(request, order_id):
@@ -957,7 +956,7 @@ def mark_order_delivered(request, order_id):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def order_detail_d(request, pk):
     tenant = request.user.tenant
@@ -986,7 +985,7 @@ def order_detail_d(request, pk):
     return render(request, 'customers/Orderdedt.html', {'order': order})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_order(request, pk):
     tenant = request.user.tenant
@@ -1019,7 +1018,7 @@ def dashboard_couponlist(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def coupon_detail_d(request, pk):
     tenant = request.user.tenant
@@ -1031,7 +1030,7 @@ def coupon_detail_d(request, pk):
     return render(request, 'customers/coupondet.html', {'coupon': coupon})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_create_coupon(request):
     tenant = request.user.tenant  # get current user's tenant
@@ -1048,7 +1047,7 @@ def dashboard_create_coupon(request):
         return render(request, 'customers/couponcreate.html', {'form': form})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def coupon_edit_d(request, pk):
     tenant = request.user.tenant
@@ -1072,7 +1071,7 @@ def coupon_edit_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_coupon(request, pk):
     tenant = request.user.tenant
@@ -1086,7 +1085,7 @@ def dashboard_delete_coupon(request, pk):
     
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_catlist(request):
     tenant = request.user.tenant 
@@ -1103,7 +1102,7 @@ def dashboard_catlist(request):
     })
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def category_detail_d(request, pk):
     tenant = request.user.tenant
@@ -1115,7 +1114,7 @@ def category_detail_d(request, pk):
     return render(request, 'customers/catrgoryd.html', {'category': category})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_create_cat(request):
     tenant = request.user.tenant  # get current user's tenant
@@ -1131,7 +1130,7 @@ def dashboard_create_cat(request):
 
         return render(request, 'customers/catgoryc.html', {'form': form})
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def cat_edit_d(request, pk):
     tenant = request.user.tenant
@@ -1154,7 +1153,7 @@ def cat_edit_d(request, pk):
         return render(request, 'customers/categoryu.html', {'form': form, 'category': category})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_cat(request, pk):
     tenant = request.user.tenant
@@ -1170,7 +1169,7 @@ def dashboard_delete_cat(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_del(request):
     tenant = request.user.tenant
@@ -1180,7 +1179,7 @@ def dashboard_del(request):
     
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_del_other(request):
     tenant = request.user.tenant
@@ -1196,7 +1195,7 @@ def dashboard_del_other(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def delivery_detail_d(request, pk):
     tenant = request.user.tenant
@@ -1209,7 +1208,7 @@ def delivery_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_create_del(request):
     tenant = request.user.tenant  # get current user's tenant
@@ -1231,7 +1230,7 @@ def dashboard_create_del(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def del_edit_d(request, pk):
     tenant = request.user.tenant
@@ -1255,7 +1254,7 @@ def del_edit_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_del(request, pk):
     tenant = request.user.tenant
@@ -1270,7 +1269,8 @@ def dashboard_delete_del(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_del_lag(request):
     tenant = request.user.tenant
@@ -1285,7 +1285,7 @@ def dashboard_del_lag(request):
     })
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def delivery_detail_lag(request, pk):
     tenant = request.user.tenant
@@ -1297,7 +1297,7 @@ def delivery_detail_lag(request, pk):
     return render(request, 'customers/lagd.html', {'category': category})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def lag_edit_d(request, pk):
     tenant = request.user.tenant
@@ -1319,7 +1319,7 @@ def lag_edit_d(request, pk):
 
         return render(request, 'customers/lagu.html', {'form': form, 'category': category})
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_create_lag(request):
     tenant = request.user.tenant  # get current user's tenant
@@ -1337,7 +1337,7 @@ def dashboard_create_lag(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_lag(request, pk):
     tenant = request.user.tenant
@@ -1355,7 +1355,7 @@ def dashboard_delete_lag(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_pcon(request):
     tenant = request.user.tenant  # tenant link
@@ -1382,7 +1382,7 @@ def dashboard_pcon(request):
     })
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def con_detail_d(request, pk):
     tenant = request.user.tenant
@@ -1404,7 +1404,7 @@ def con_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def con_edit_d(request, pk):
     tenant = request.user.tenant
@@ -1439,7 +1439,7 @@ def con_edit_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_create_content(request):
     tenant = request.user.tenant  # get current user's tenant
@@ -1463,7 +1463,7 @@ def dashboard_create_content(request):
         return render(request, 'customers/postcreate.html', {'form': form})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_con(request, pk):
     tenant = request.user.tenant
@@ -1476,7 +1476,7 @@ def dashboard_delete_con(request, pk):
     return redirect('customers:dashboard_pcon')  
     
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_camp(request):
     tenant = request.user.tenant  # tenant link
@@ -1501,7 +1501,7 @@ def dashboard_camp(request):
     })
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def camp_detail_d(request, pk):
     tenant = request.user.tenant
@@ -1524,7 +1524,7 @@ def camp_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def camp_edit_d(request, pk):
     tenant = request.user.tenant
@@ -1553,7 +1553,7 @@ def camp_edit_d(request, pk):
 
         return render(request, 'customers/campuc.html', {'form': form, 'product': product})
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_create_camp(request):
     tenant = request.user.tenant  # get current user's tenant
@@ -1577,7 +1577,7 @@ def dashboard_create_camp(request):
         return render(request, 'customers/campuc.html', {'form': form})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_camp(request, pk):
     tenant = request.user.tenant
@@ -1590,7 +1590,8 @@ def dashboard_delete_camp(request, pk):
     return redirect('customers:dashboard_camp')  
     
 
-@ratelimit(key='ip', rate='40/m', block=True)
+
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_Mess(request):
     tenant = request.user.tenant  # tenant link
@@ -1617,7 +1618,7 @@ def dashboard_Mess(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def mess_detail_d(request, pk):
     tenant = request.user.tenant
@@ -1641,7 +1642,7 @@ def mess_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_mess(request, pk):
     tenant = request.user.tenant
@@ -1656,7 +1657,7 @@ def dashboard_delete_mess(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_service(request):
     tenant = request.user.tenant  # tenant link
@@ -1683,7 +1684,7 @@ def dashboard_service(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def service_detail_d(request, pk):
     tenant = request.user.tenant
@@ -1703,7 +1704,7 @@ def service_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def service_edit_d(request, pk):
     tenant = request.user.tenant
@@ -1737,7 +1738,7 @@ def service_edit_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_create_services(request):
     tenant = request.user.tenant  # get current user's tenant
@@ -1762,7 +1763,7 @@ def dashboard_create_services(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_service(request, pk):
     tenant = request.user.tenant
@@ -1776,7 +1777,7 @@ def dashboard_delete_service(request, pk):
     
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_conab(request):
     tenant = request.user.tenant  # tenant link
@@ -1802,7 +1803,7 @@ def dashboard_conab(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def home_detail_d(request, pk):
     tenant = request.user.tenant
@@ -1822,7 +1823,7 @@ def home_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def home_edit_d(request, pk):
     tenant = request.user.tenant
@@ -1854,7 +1855,7 @@ def home_edit_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_conabou(request):
     tenant = request.user.tenant  # tenant link
@@ -1881,7 +1882,7 @@ def dashboard_conabou(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def about_detail_d(request, pk):
     tenant = request.user.tenant
@@ -1900,7 +1901,7 @@ def about_detail_d(request, pk):
     return render(request, 'customers/postdetailaboutv.html', {'product': product})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def about_edit_d(request, pk):
     tenant = request.user.tenant
@@ -1934,7 +1935,7 @@ def about_edit_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_photo(request):
     tenant = request.user.tenant  # tenant link
@@ -1960,7 +1961,7 @@ def dashboard_photo(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def photo_detail_d(request, pk):
     tenant = request.user.tenant
@@ -1980,7 +1981,7 @@ def photo_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def photo_edit_d(request, pk):
     tenant = request.user.tenant
@@ -2010,7 +2011,8 @@ def photo_edit_d(request, pk):
         return render(request, 'customers/photouc.html', {'form': form, 'product': product})
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def photo_create_camp(request):
     tenant = request.user.tenant  # get current user's tenant
@@ -2037,7 +2039,7 @@ def photo_create_camp(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_photo(request, pk):
     tenant = request.user.tenant
@@ -2052,7 +2054,7 @@ def dashboard_delete_photo(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_serphot(request):
     tenant = request.user.tenant  # tenant link
@@ -2099,7 +2101,7 @@ def pser_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def phserv_edit_d(request, pk):
     tenant = request.user.tenant
@@ -2131,7 +2133,7 @@ def phserv_edit_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def phser_create_camp(request):
     tenant = request.user.tenant  # get current user's tenant
@@ -2157,7 +2159,7 @@ def phser_create_camp(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_phser(request, pk):
     tenant = request.user.tenant
@@ -2174,7 +2176,7 @@ def dashboard_delete_phser(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_myself(request):
     tenant = request.user.tenant  # tenant link
@@ -2201,7 +2203,7 @@ def dashboard_myself(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def aboutp_detail_d(request, pk):
     tenant = request.user.tenant
@@ -2223,7 +2225,7 @@ def aboutp_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def phabout_edit_d(request, pk):
     tenant = request.user.tenant
@@ -2261,7 +2263,7 @@ def phabout_edit_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_Book(request):
     tenant = request.user.tenant  # tenant link
@@ -2289,7 +2291,7 @@ def dashboard_Book(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def book_detail_d(request, pk):
     tenant = request.user.tenant
@@ -2313,7 +2315,7 @@ def book_detail_d(request, pk):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key=tenant_ip_key, rate='40/m', block=True)
 @login_required
 def dashboard_delete_book(request, pk):
     tenant = request.user.tenant
