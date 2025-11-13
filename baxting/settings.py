@@ -257,6 +257,6 @@ else:
 USE_X_FORWARDED_HOST = True
 
 # Optional: set the key django-ratelimit should use
-RATELIMIT_IP_META_KEY = "HTTP_X_FORWARDED_FOR"
+RATELIMIT_IP_META_KEY = "HTTP_X_REAL_IP"
 
 
