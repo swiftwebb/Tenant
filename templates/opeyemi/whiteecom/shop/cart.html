@@ -1,0 +1,79 @@
+{% extends 'whiteecom/base.html' %}
+{% block content %}
+<main class="px-4 sm:px-6 lg:px-8 py-10 flex-1">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-wrap justify-between gap-3 p-4">
+<div class="flex min-w-72 flex-col gap-3">
+<p class="text-[#111418] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">My Cart</p>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Review and manage your items before checkout.</p>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
+<div class="lg:col-span-2">
+<div class="rounded-xl bg-white dark:bg-gray-800/50 shadow-sm">
+<div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+<h3 class="text-lg font-semibold text-gray-800 dark:text-white">Products</h3>
+<a href="{% url 'remove_all' %}"><button class="text-sm font-medium text-red-500 hover:text-red-600 flex items-center gap-1">
+<span class="material-symbols-outlined text-base">delete</span>
+                                        Remove all
+                                    </button></a>
+</div>
+<div class="divide-y divide-gray-200 dark:divide-gray-700">
+  {% for cart in cart_items %}
+<div class="flex items-center gap-4 bg-transparent px-4 py-6 justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20" data-alt="Classic White T-Shirt" style='background-image: url("{{ cart.product.image.url }}");'></div>
+<div class="flex flex-col justify-center">
+<p class="text-[#111418] dark:text-white text-base font-medium leading-normal line-clamp-1">{{ cart.product.name }}</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">Size: {{ cart.size }},</p>
+<p class="text-primary text-base font-semibold mt-1">${{ cart.price}}</p>
+</div>
+</div>
+
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-[#111418] dark:text-white">
+<a href="{% url 'remove' cart.product.slug %}?size={{ cart.size }}"><button class="text-base font-medium leading-normal flex h-8 w-8 items-center justify-center rounded-full bg-background-light dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600">-</button></a>
+<input class="text-base font-medium leading-normal w-8 p-0 text-center bg-transparent focus:outline-0 focus:ring-0 focus:border-none border-none [appearance:textfield] [&amp;::-webkit-inner-spin-button]:appearance-none [&amp;::-webkit-outer-spin-button]:appearance-none" type="number" value="{{ cart.quantity }}"/>
+<a href="{% url 'add' cart.product.slug %}?size={{ cart.size }}"><button class="text-base font-medium leading-normal flex h-8 w-8 items-center justify-center rounded-full bg-background-light dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600">+</button></a>
+</div>
+<a href="{% url 'remove_item' cart.product.slug %}?size={{ cart.size }}"><button class="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400">
+<span class="material-symbols-outlined">delete</span>
+</button></a>
+</div>
+</div>
+{% endfor %}
+</div>
+</div>
+</div>
+<div class="lg:col-span-1">
+<div class="rounded-xl bg-white dark:bg-gray-800/50 shadow-sm p-6 space-y-6">
+<h3 class="text-lg font-semibold text-gray-800 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-4">Order Summary</h3>
+<div class="space-y-3">
+
+<div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+<div class="flex justify-between items-center text-lg font-bold">
+<span class="text-gray-800 dark:text-white"> Subtotal Total</span>
+<span class="text-primary">${{total}}</span>
+</div>
+</div>
+
+<div class="pt-4 space-y-3">
+<a href="{% url 'checkout' %}"><button class="w-full flex items-center justify-center rounded-lg h-12 bg-primary hover:bg-primary/90 text-white gap-2 text-base font-bold tracking-wide transition-colors">
+{% comment %} <span class="material-symbols-outlined">lock</span> {% endcomment %}
+                                        Proceed to Checkout
+                                    </button></a>
+<a href="{% url 'product_list' %}"><button class="w-full flex items-center justify-center rounded-lg h-12 bg-background-light dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-white gap-2 text-base font-bold tracking-wide transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+                                      Continue Shopping
+                                    </button></a>
+</div>
+<div class="flex items-center justify-center pt-4 text-gray-500 dark:text-gray-400 text-sm">
+<span class="material-symbols-outlined text-lg mr-2">verified_user</span>
+<span>Secure payments by Stripe</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+   {% endblock %}

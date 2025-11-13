@@ -1,0 +1,61 @@
+{% extends 'booth/base.html' %}
+{% block content %}
+<main class="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-10 md:py-16 lg:py-20">
+<div class="layout-content-container flex flex-col max-w-7xl flex-1 gap-16 md:gap-24">
+<!-- Hero Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 items-center gap-10 md:gap-16">
+<div class="flex flex-col gap-4 text-center md:text-left">
+<h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tighter text-gray-900 dark:text-white">Behind The Lens</h1>
+<p class="text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-lg mx-auto md:mx-0">{{photo.name}}</p>
+</div>
+<div class="w-full aspect-[4/5] max-w-md mx-auto md:max-w-none">
+<div class="w-full h-full rounded-xl bg-center bg-no-repeat bg-cover" data-alt="Professional headshot of the photographer Alex Doe, smiling warmly in a natural outdoor setting." style='background-image: url("{{photo.image.url}}");'></div>
+</div>
+</section>
+<!-- Narrative / Bio Section -->
+<section class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+<div class="lg:col-span-2">
+<div class="w-full aspect-square rounded-xl bg-center bg-no-repeat bg-cover sticky top-32" data-alt="A black and white close-up shot of a vintage camera, highlighting its textures and details." style='background-image: url("{{photo.image_tool.url}}");'></div>
+</div>
+<div class="lg:col-span-3 flex flex-col gap-8 text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+<div class="flex flex-col gap-3">
+<h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">My Story</h2>
+<p>{{photo.my_story|linebreaks }}</p>
+</div>
+<div class="w-full aspect-[16/9] rounded-xl bg-center bg-no-repeat bg-cover" data-alt="A breathtaking landscape photo of a sun setting over a mountain range, casting warm golden light." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDmDJeiuQ-pdJYILcmBkq3gDq5U8qQuoqi7IqVq05ttTuiSR1lYXb-T8pjYPl9k_MdblaQshKJVgSnYquk30UxtxwnPoCg6S32bc3N-ZXK3x1rqBb2TTdx9aPfmm6enKG3t_21fXEzoaMkfEZRIHWmr0Ea1xvMaMjKDuKa3_DW6qyKRfwbD062ZtiSEZnqQwwiuuKWMdxN_yqGX0aXanLDL-UnlVjDAi3IdLJ5kKxWMNv2Uj1CwrQxVvjNT5vYU9cwtE1PDD1d0ta0");'></div>
+<div class="flex flex-col gap-3">
+<h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Expertise &amp; Vision</h2>
+<p>{{photo.expertise|linebreaks}}</p>
+</div>
+</div>
+</section>
+<!-- Call-to-Action Section -->
+<section class="text-center flex flex-col items-center gap-6 bg-gray-100 dark:bg-white/5 rounded-xl p-8 md:p-12 lg:p-16">
+<h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Ready to Tell Your Story?</h2>
+<p class="max-w-2xl text-base md:text-lg text-gray-600 dark:text-gray-300">Whether it's a milestone celebration or a simple moment you want to remember forever, I'm here to help you capture it beautifully. Let's create something timeless together.</p>
+<div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
+<a href="{% url 'hoomelist' %}" class="flex w-full sm:w-auto min-w-[160px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+<span class="truncate">View My Work</span>
+</a>
+<a href="{% url 'about' %}" class="flex w-full sm:w-auto min-w-[160px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary/10 dark:bg-primary/20 text-primary text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors">
+<span class="truncate">Get In Touch</span>
+</a>
+</div>
+</section>
+</div>
+</main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

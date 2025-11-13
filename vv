@@ -1,0 +1,259 @@
+
+# @csrf_exempt
+# def whatsapp_webhook(request):
+#     if request.method != 'POST':
+#         return JsonResponse({'error': 'Invalid request'}, status=405)
+
+#     data = request.POST or json.loads(request.body.decode('utf-8'))
+#     incoming_msg = data.get('Body')
+#     from_number = data.get('From')
+
+#     tenant = Client.objects.filter(phone_number__icontains=from_number.replace('whatsapp:', '')).first()
+#     if not tenant:
+#         return JsonResponse({'error': 'Unauthorized number'}, status=401)
+
+#     with schema_context(tenant.schema_name):
+#         response_msg = handle_ai_command(incoming_msg, tenant)
+
+#     # Send reply through Twilio
+#     account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+#     auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+
+#     payload = {
+#         'From': 'whatsapp:+14155238886',
+#         'To': from_number,
+#         'Body': response_msg
+#     }
+#     twilio_url = f'https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json'
+#     requests.post(twilio_url, data=payload, auth=(account_sid, auth_token))
+
+#     return JsonResponse({'status': 'success'})
+
+
+import os
+import json
+import requests
+from django_tenants.utils import schema_context
+from ecom.models import Product
+from b_manager.models import Client, ChatHistory, TenantAPIKey
+
+# === Internal Helper Functions ===
+
+def api_add_product_internal(data, tenant):
+    with schema_context(tenant.schema_name):
+        product = Product.objects.create(
+            name=data.get("name"),
+            price=data.get("price", 0),
+            quantity=data.get("quantity", 0),
+            description=data.get("description", ""),
+            discount_price=data.get("discount_price", 0),
+            size=data.get("size", ""),
+            color=data.get("color", "")
+        )
+        return f"✅ Product '{product.name}' added successfully!"
+
+def check_product_internal(data, tenant):
+    with schema_context(tenant.schema_name):
+        product = Product.objects.filter(name__icontains=data.get("name")).first()
+        if product:
+            return f"🛒 '{product.name}' is available at ₦{product.price}."
+        return "❌ Product not found."
+
+def create_order_internal(data, tenant):
+    return "🧾 Order created successfully."
+
+def monthly_report_internal(tenant):
+    return "📊 Total sales last month: ₦500,000."
+
+def authenticate_tenant(api_key):
+    try:
+        tenant_key = TenantAPIKey.objects.get(api_key=api_key)
+        return tenant_key.tenant
+    except TenantAPIKey.DoesNotExist:
+        return None
+
+# === AI Command Handler ===
+
+import os
+import json
+import requests
+from django_tenants.utils import schema_context
+from ecom.models import Product
+from b_manager.models import ChatHistory
+
+def handle_ai_command(message, tenant, user_number):
+    """
+    Send WhatsApp message to Groq AI using chat completions endpoint,
+    include conversation history, handle structured commands,
+    and fallback to normal chat if AI response isn't JSON.
+    """
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+    with schema_context(tenant.schema_name):
+        # 1️⃣ Fetch last 20 messages for context
+        history_qs = ChatHistory.objects.filter(
+            tenant=tenant, user_number=user_number
+        ).order_by('created_at')[:20]
+
+        messages = [{"role": "system", "content": "You are a helpful assistant."}]
+        for h in history_qs:
+            messages.append({"role": h.role, "content": h.content})
+        # Add the current user message
+        messages.append({"role": "user", "content": message})
+
+    payload = {
+        "model": "llama-3.3-70b-versatile",  # Use a currently supported model
+        "messages": messages,
+        "temperature": 0.3
+    }
+
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.post(GROQ_API_URL, headers=headers, json=payload)
+        response.raise_for_status()
+        result = response.json()
+
+        # Debug: log raw response
+        print("=== GROQ RAW RESPONSE ===")
+        print(json.dumps(result, indent=2))
+
+        # Extract AI message safely
+        ai_message = "AI did not return a valid response."
+        choices = result.get("choices", [])
+        if choices:
+            ai_message = choices[0].get("message", {}).get("content", ai_message)
+
+        # Save messages to ChatHistory
+        with schema_context(tenant.schema_name):
+            ChatHistory.objects.create(
+                tenant=tenant, user_number=user_number, role="user", content=message
+            )
+            ChatHistory.objects.create(
+                tenant=tenant, user_number=user_number, role="assistant", content=ai_message
+            )
+
+        # Attempt JSON parsing for structured commands
+        try:
+            parsed = json.loads(ai_message)
+            action = parsed.get("action")
+            details = parsed.get("details", {})
+
+            if action == "add_product":
+                return api_add_product_internal(details, tenant)
+            elif action == "check_product":
+                return check_product_internal(details, tenant)
+            elif action == "create_order":
+                return create_order_internal(details, tenant)
+            elif action == "monthly_report":
+                return monthly_report_internal(tenant)
+        except json.JSONDecodeError:
+            # Not JSON, treat as normal chat
+            return ai_message
+
+    except requests.exceptions.RequestException as e:
+        print("Groq API error:", e)
+        return "AI service unavailable. Please try again later."
+
+# === WhatsApp Webhook ===
+
+@csrf_exempt
+def whatsapp_webhook(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request'}, status=405)
+
+    try:
+        data = request.POST or json.loads(request.body.decode('utf-8'))
+        incoming_msg = data.get('Body')
+        from_number = data.get('From', '').replace('whatsapp:', '')
+
+        tenant = Client.objects.filter(phone_number__icontains=from_number).first()
+        if not tenant:
+            return JsonResponse({'error': 'Unauthorized number'}, status=401)
+
+        # Handle AI with conversation memory
+        response_msg = handle_ai_command(incoming_msg, tenant, from_number)
+
+        # Send reply via Twilio
+        account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+        auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+        twilio_url = f'https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json'
+
+        payload = {
+            'From': 'whatsapp:+14155238886',
+            'To': f'whatsapp:{from_number}',
+            'Body': response_msg
+        }
+        requests.post(twilio_url, data=payload, auth=(account_sid, auth_token))
+
+        return JsonResponse({'status': 'success'})
+
+    except Exception as e:
+        print("Webhook error:", e)
+        return JsonResponse({'error': 'Internal server error'}, status=500)
+
+    try:
+        if request.method != 'POST':
+            return JsonResponse({'error': 'Invalid request'}, status=405)
+
+        data = request.POST or json.loads(request.body.decode('utf-8'))
+        incoming_msg = data.get('Body')
+        from_number = data.get('From', '').replace('whatsapp:', '')
+
+        tenant = Client.objects.filter(phone_number__icontains=from_number).first()
+        if not tenant:
+            return JsonResponse({'error': 'Unauthorized number'}, status=401)
+
+        response_msg = handle_ai_command(incoming_msg, tenant, from_number)
+
+        # Send reply via Twilio
+        account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+        auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+        twilio_url = f'https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json'
+
+        payload = {
+            'From': 'whatsapp:+14155238886',
+            'To': f'whatsapp:{from_number}',
+            'Body': response_msg
+        }
+        requests.post(twilio_url, data=payload, auth=(account_sid, auth_token))
+
+        return JsonResponse({'status': 'success'})
+
+    except Exception as e:
+        # Print full traceback to debug
+        print("Webhook Error:", e)
+        traceback.print_exc()
+        return JsonResponse({'error': 'Internal server error'}, status=500)
+
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request'}, status=405)
+
+    data = request.POST or json.loads(request.body.decode('utf-8'))
+    incoming_msg = data.get('Body')
+    from_number = data.get('From').replace('whatsapp:', '')
+
+    tenant = Client.objects.filter(phone_number__icontains=from_number).first()
+    if not tenant:
+        return JsonResponse({'error': 'Unauthorized number'}, status=401)
+
+    # Handle AI command with conversation memory
+    response_msg = handle_ai_command(incoming_msg, tenant, from_number)
+
+    # Send reply via Twilio
+    account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+    auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+    twilio_url = f'https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json'
+
+    payload = {
+        'From': 'whatsapp:+14155238886',
+        'To': f'whatsapp:{from_number}',
+        'Body': response_msg
+    }
+    requests.post(twilio_url, data=payload, auth=(account_sid, auth_token))
+
+    return JsonResponse({'status': 'success'})

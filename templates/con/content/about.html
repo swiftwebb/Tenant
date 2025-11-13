@@ -1,0 +1,68 @@
+{% extends 'con/base.html' %}
+{% block content %}
+<main class="flex-grow">
+    <div class="container mx-auto px-4 py-12 lg:px-8 lg:py-20">
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
+    <!-- Left Column: About Me -->
+    <div class="flex flex-col gap-6">
+    <div class="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 flex-shrink-0" data-alt="Professional headshot of Alex Doe" style='background-image: url("{{homes.image.url}}");'></div>
+    <div class="flex flex-col justify-center">
+    <h2 class="text-[#0d141b] dark:text-white text-[28px] font-bold leading-tight tracking-[-0.015em]">{{homes.title}}</h2>
+    </div>
+    </div>
+    <p class="text-[#4c739a] dark:text-slate-400 text-base font-normal leading-relaxed">
+                  {{ homes.description|linebreaks }}
+                </p>
+
+    </div>
+    <!-- Right Column: Contact -->
+    <div class="flex flex-col gap-8">
+    <h2 class="text-[#0d141b] dark:text-white text-[28px] font-bold leading-tight tracking-[-0.015em]">Get In Touch</h2>
+    <form method="POST" action="{% url 'contact' %}" class="flex flex-col gap-6">
+        {% csrf_token %}
+    <label class="flex flex-col w-full">
+    <p class="text-[#0d141b] dark:text-slate-200 text-base font-medium leading-normal pb-2">Name</p>
+    <input required name="name" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0d141b] dark:text-slate-50 focus:outline-none focus:ring-2 focus:ring-primary/50 border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-slate-800 h-14 placeholder:text-[#4c739a] dark:placeholder:text-slate-500 p-[15px] text-base font-normal leading-normal" placeholder="Enter your name" type="text" value=""/>
+    </label>
+    <label class="flex flex-col w-full">
+    <p class="text-[#0d141b] dark:text-slate-200 text-base font-medium leading-normal pb-2">Email</p>
+    <input required name="email" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0d141b] dark:text-slate-50 focus:outline-none focus:ring-2 focus:ring-primary/50 border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-slate-800 h-14 placeholder:text-[#4c739a] dark:placeholder:text-slate-500 p-[15px] text-base font-normal leading-normal" placeholder="Enter your email address" type="email" value=""/>
+    </label>
+    <label class="flex flex-col w-full">
+    <p class="text-[#0d141b] dark:text-slate-200 text-base font-medium leading-normal pb-2">Message</p>
+    <textarea required name="message" class="form-textarea flex w-full min-w-0 flex-1 resize-y overflow-hidden rounded-lg text-[#0d141b] dark:text-slate-50 focus:outline-none focus:ring-2 focus:ring-primary/50 border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-slate-800 min-h-32 placeholder:text-[#4c739a] dark:placeholder:text-slate-500 p-[15px] text-base font-normal leading-normal" placeholder="How can I help you?"></textarea>
+    </label>
+    <button type="submit" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors sm:w-auto sm:self-start">
+    <span class="truncate">Send Message</span>
+    </button>
+    </form>
+    <div class="flex flex-col gap-4">
+    <p class="text-sm font-medium text-[#0d141b] dark:text-slate-200">Find me here:</p>
+    <div class="flex items-center gap-4">
+    <a class="text-[#4c739a] dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" data-alt="Instagram Profile" href="#">
+    <svg class="h-6 w-6" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.058-1.689-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441 1.441-.645 1.441-1.441-.645-1.44-1.441-1.44z"></path></svg>
+    </a>
+    <a class="text-[#4c739a] dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" data-alt="TikTok Profile" href="#">
+    <svg class="h-6 w-6" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.525.02c1.31-.02 2.61-.01 3.91.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-2.43.05-4.86-.95-6.43-2.8-1.58-1.87-2.05-4.35-1.85-6.77.21-2.46 1.3-4.75 3.17-6.26 1.88-1.52 4.06-2.34 6.36-2.42.14-1.58.25-3.17.41-4.75.14-1.3.38-2.61.42-3.91zM10 15.21c.54.49 1.05.9 1.58 1.25.01 1.42-.01 2.84 0 4.26-1.53-.2-2.93-.86-4.02-1.89-1.1-1.04-1.63-2.48-1.66-3.95.02-1.46.52-2.91 1.56-3.96.98-1.01 2.29-1.59 3.58-1.62.01.95.02 1.89 0 2.83-.5.22-1 .4-1.5.64z"></path></svg>
+    </a>
+    <a class="text-[#4c739a] dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" data-alt="YouTube Channel" href="#">
+    <svg class="h-6 w-6" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path></svg>
+    </a>
+    <a class="text-[#4c739a] dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" data-alt="LinkedIn Profile" href="#">
+    <svg class="h-6 w-6" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-4.481 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"></path></svg>
+    </a>
+    </div>
+    <p class="text-sm text-[#4c739a] dark:text-slate-400 pt-2">
+                    Or email me directly at <a class="font-medium text-primary hover:underline" href="mailto:hello@alexdoe.com">hello@alexdoe.com</a>
+    </p>
+    </div>
+    </div>
+    </div>
+    </div>
+    </main>
+
+
+
+
+    {% endblock %}

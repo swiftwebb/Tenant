@@ -1,0 +1,77 @@
+{% extends 'con/base.html' %}
+{% block content %}
+
+
+
+
+
+<main class="flex-1">
+    <!-- PageHeading -->
+    <div class="flex flex-wrap justify-between gap-3 p-4 pt-12 md:pt-16 text-center">
+    <div class="flex w-full flex-col items-center gap-3">
+    <p class="text-slate-900 dark:text-white text-4xl md:text-5xl font-black leading-tight tracking-[-0.033em]">Services &amp; Rates</p>
+    <p class="text-slate-600 dark:text-slate-400 text-base font-normal leading-normal max-w-lg">Let's collaborate to create authentic content that connects with my audience and drives results for your brand.</p>
+    </div>
+    </div>
+    <!-- PricingCards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 px-4 py-10">
+    <!-- Card 1: Sponsored Video -->
+    
+    <!-- Card 2: Product Placement -->
+    {% for homes in home %}
+    <div class="flex flex-1 flex-col gap-4 rounded-xl border border-solid border-black/10 dark:border-white/20 bg-white dark:bg-black/20 p-6 hover:shadow-lg dark:hover:border-primary/50 transition-all">
+    <div class="flex flex-col gap-2">
+    <h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Product Placement</h3>
+    <p class="flex items-baseline gap-1 text-slate-900 dark:text-white">
+    <span class="text-4xl font-black leading-tight tracking-[-0.033em]">{{ homes.amount}}</span>
+    <span class="text-base font-bold leading-tight text-slate-600 dark:text-slate-400">Quote</span>
+    </p>
+    </div>
+    {% for line in homes.description.splitlines %}
+    {% if line %}
+    <div class="flex items-start gap-2">
+        <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+        <span>{{ line }}</span>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    <a href="{% url 'about' %}" class="mt-auto flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+        <span class="truncate">Book Now</span>
+        </a>
+    </div>
+    {% endfor %}
+    <!-- Card 3: Social Media Campaign -->
+    
+    <!-- Card 4: Custom Package -->
+    
+    </div>
+    <!-- FAQ Section -->
+    <div class="py-10">
+    <!-- SectionHeader -->
+    <!-- Accordions -->
+    
+    </div>
+    <!-- Contact CTA Banner -->
+    <div class="px-4 py-10">
+    <div class="rounded-xl bg-primary/20 dark:bg-primary/20 p-8 md:p-12 text-center flex flex-col items-center gap-4">
+    <h2 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">Have a different project in mind?</h2>
+    <p class="text-slate-700 dark:text-slate-300 max-w-md">I'm always open to new and exciting collaborations. If you have an idea that doesn't fit into the packages above, let's chat about it!</p>
+    <a href="{% url 'about' %}" class="flex mt-2 min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+    <span class="truncate">Contact Me</span>
+    </a>
+    </div>
+    </div>
+    </main>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

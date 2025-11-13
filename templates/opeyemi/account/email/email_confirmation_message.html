@@ -1,0 +1,18 @@
+{% extends "opeyemi/whiteecom/base.html" %}
+{% load widget_tweaks %}
+
+{% load i18n %}
+
+
+{% block content %}
+<p>Hi {{ user.get_full_name|default:user.username }},</p>
+<p>
+  Please confirm your email address by clicking the link below:
+</p>
+<p>
+  <a href="{{ activate_url }}">{{ activate_url }}</a>
+</p>
+<p>
+  If you didn't request this, you can ignore this email.
+</p>
+{% endblock %}

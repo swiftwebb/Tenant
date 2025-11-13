@@ -1,0 +1,7 @@
+<form method="POST" action="{% url 'addcoupon' %}">
+    {% csrf_token %}
+    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2" for="promo-code">Promo Code</label>
+    <div class="flex space-x-2">
+    <input name="promo" id="promo" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary border-gray-300 dark:border-gray-600 bg-background-light dark:bg-gray-700 h-10 placeholder:text-gray-400 dark:placeholder-gray-500 px-4 text-sm"  placeholder="Enter code" type="text"/>
+    <button type="submit" class="flex items-center justify-center rounded-lg h-10 bg-primary/20 hover:bg-primary/30 text-primary gap-2 text-sm font-bold px-4 transition-colors">Apply</button>
+  </form>

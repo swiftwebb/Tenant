@@ -1,0 +1,41 @@
+{% extends 'booth/base.html' %}
+{% block content %}
+<main class="flex-grow">
+<div class="py-10 md:py-20">
+<div class="flex min-h-[60vh] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-center justify-center p-4 text-center" data-alt="A stunning, moody landscape photograph of mountains at dusk." style='background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuD0XkpQL5_CSFbS-VbpODD0coeE4-94sHvr-dz4HVfNGEn4TnaumVE0TmVbp9AdoqDurnpJlBrg-xjR10doZK0U0pvY_YFvkJ2w7BlB8QUo-Cxn8JHGK9UAoBfhZZd-2rdp3QAJaMXf0FbNUT-K31pH0c4iSQRq-nZunBwZ9PFbLmvilZX_KD4ARoUKEo9mYkFLiHbOazyVaamEdHZdsRWPEPbAWR6t6iTQRH01KrxRZ6evAxpnwIs8MRizcQcDa65KMEIpvw3w6B8");'>
+<div class="flex flex-col gap-2">
+<h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] md:text-6xl">Capturing Life's Fleeting Moments</h1>
+<h2 class="text-white/90 text-sm font-normal leading-normal md:text-lg">Timeless photography that tells your unique story.</h2>
+</div>
+<a href="{% url 'hoomelist' %}" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] transition-opacity hover:opacity-90">
+<span class="truncate">Explore My Work</span>
+</a>
+</div>
+</div>
+<!-- SectionHeader -->
+<div class="py-10">
+<h2 class="text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5 text-center md:text-left">Featured Work</h2>
+</div>
+<!-- ImageGrid -->
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+    {% for photos in photo %}
+<div class="group relative overflow-hidden rounded-xl">
+<div class="bg-cover bg-center flex flex-col gap-3 justify-end p-6 aspect-[3/4] transition-transform duration-300 group-hover:scale-105" data-alt="A candid black and white photo of a smiling couple at their wedding." style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 60%), url("{{photos.image.url}}");'>
+<p class="text-white text-lg font-bold leading-tight">{{photos.title}}</p>
+</div>
+</div>
+{% endfor %}
+
+</div>
+<!-- SingleButton -->
+<div class="flex px-4 py-16 justify-center">
+<a href="{% url 'hoomelist' %}" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] transition-opacity hover:opacity-90">
+<span class="truncate">View All Galleries</span>
+</a>
+</div>
+</main>
+
+
+
+{% endblock %}

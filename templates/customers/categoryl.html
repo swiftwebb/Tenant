@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="flex-1 px-4 sm:px-6 lg:px-8 py-10 bg-gray-50 dark:bg-gray-900 min-h-screen">
+  <div class="max-w-7xl mx-auto space-y-8">
+
+    <!-- Header -->
+
+
+
+
+
+
+
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+
+      <!-- Left side: Heading -->
+      <div class="flex flex-col gap-1">
+        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">
+          Manage Categorie
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 text-base">
+          View, edit, and organize all your Categories in one place.
+        </p>
+      </div>
+    
+      <!-- Right side: Action buttons -->
+      <div class="flex items-center gap-3">
+        <a href="{% url 'customers:dashboard_create_cat' %}">
+          <button
+            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-sm transition-all duration-200">
+            <span class="text-lg leading-none">+</span>
+            <span>Add Category</span>
+          </button>
+        </a>
+    
+        <a href="{% url 'customers:dashboard' %}">
+          <button
+            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-800 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 transition-all duration-200">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            <span>Go Back</span>
+          </button>
+        </a>
+      </div>
+    </div>
+    
+
+
+
+
+
+
+
+
+    
+    <div class="flex gap-8">
+      <!-- Sidebar Placeholder -->
+      <aside class="w-64 hidden lg:block">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <p class="text-gray-400 text-sm">Filter or manage settings here (coming soon).</p>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="flex-1">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <div class="flex flex-col md:flex-row items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">All Categories</h2>
+          </div>
+
+          <!-- Desktop Table View -->
+          <div class="overflow-x-auto hidden sm:block">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead class="bg-gray-100 dark:bg-gray-700">
+                <tr>
+                  <th class="p-4 w-12">
+                    <input type="checkbox" class="rounded text-blue-600 focus:ring-blue-500">
+                  </th>
+                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Category</th>
+                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+                {% for categories in category %}
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-750 transition">
+                  <td class="p-4">
+                    <input type="checkbox" class="rounded text-blue-600 focus:ring-blue-500">
+                  </td>
+                  <td class="p-4">
+                    <span class="font-medium text-gray-900 dark:text-white">{{ categories.name }}</span>
+                  </td>
+                  <td class="p-4 text-right">
+                    <div class="flex items-center justify-end gap-3">
+                      <a href="{% url 'customers:category_detail_d' categories.pk %}" 
+                         class="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
+                        <span class="material-symbols-outlined">visibility</span>
+                      </a>
+                      <a href="{% url 'customers:cat_edit_d' categories.pk %}" 
+                         class="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
+                        <span class="material-symbols-outlined">edit</span>
+                      </a>
+                      <a href="{% url 'customers:dashboard_delete_cat' categories.pk %}" 
+                         class="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-500">
+                        <span class="material-symbols-outlined">delete</span>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="3" class="p-6 text-center text-gray-500 dark:text-gray-400">
+                    No category available yet.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Card View -->
+          <div class="space-y-4 sm:hidden">
+            {% for categories in category %}
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm">
+              <div class="flex justify-between items-center">
+                <p class="font-medium text-gray-900 dark:text-white">{{ categories.name }}</p>
+                <div class="flex items-center gap-3">
+                  <a href="{% url 'customers:category_detail_d' categories.pk %}" class="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
+                    <span class="material-symbols-outlined">visibility</span>
+                  </a>
+                  <a href="{% url 'customers:cat_edit_d' categories.pk %}" class="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
+                    <span class="material-symbols-outlined">edit</span>
+                  </a>
+                  <a href="{% url 'customers:dashboard_delete_cat' categories.pk %}" class="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-500">
+                    <span class="material-symbols-outlined">delete</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 dark:text-gray-400 text-center">No category available yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

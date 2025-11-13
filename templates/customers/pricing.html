@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div class="text-center">
+        <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">Choose the plan that's right for you</h1>
+        <p class="mt-4 text-lg text-black/60 dark:text-white/60">All paid plans come with a 30-day free trial. No card required.</p>
+        </div>
+    <div class="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-3">
+{% for plan in plans %}
+{% if plan.name == 'Basic' %}
+<div class="relative flex flex-col rounded-lg border-2 border-primary bg-white p-8 shadow-2xl dark:bg-background-dark/50">
+<div class="absolute -top-3.5 left-1/2 -translate-x-1/2 transform rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
+                            Recommended
+                        </div>
+        <div class="flex-grow">
+    <h3 class="text-lg font-bold">{{ plan.name }} plan </h3>
+    <div class="mt-4 flex items-baseline gap-1">
+    <span class="text-5xl font-extrabold tracking-tight">₦{{ plan.price }}</span>
+    <span class="text-lg font-semibold text-black/60 dark:text-white/60">/mo</span>
+    </div>
+    <ul class="mt-6 space-y-4">
+    <li class="flex items-center gap-3">
+
+    <span>{{ plan.description }}</span>
+    </li>
+    </ul>
+    </div>
+    <form method="post" action="{% url 'customers:upgrade_init' %}">
+    {% csrf_token %}
+
+    <input type="hidden" name="plan_id" value="{{ plan.id }}">
+    <button type="submit" class="mt-8 w-full rounded bg-primary/10 px-6 py-3 text-base font-bold text-primary transition-colors hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30">
+                                Choose {{ plan.name }}
+                            </button>
+      </form>
+    </div>
+
+{% else %}
+    <div class="flex flex-col rounded-lg border border-black/10 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-background-dark/50">
+
+        <div class="flex-grow">
+    <h3 class="text-lg font-bold">{{ plan.name }} plan</h3>
+    <div class="mt-4 flex items-baseline gap-1">
+    <span class="text-5xl font-extrabold tracking-tight">₦{{ plan.price }}</span>
+    <span class="text-lg font-semibold text-black/60 dark:text-white/60">/mo</span>
+    </div>
+    <ul class="mt-6 space-y-4">
+    <li class="flex items-center gap-3">
+
+    <span>{{ plan.description }}</span>
+    </li>
+    </ul>
+    </div>
+    <form method="post" action="{% url 'customers:upgrade_init' %}">
+    {% csrf_token %}
+
+    <input type="hidden" name="plan_id" value="{{ plan.id }}">
+    <button type="submit" class="mt-8 w-full rounded bg-primary/10 px-6 py-3 text-base font-bold text-primary transition-colors hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30">
+                                Choose {{ plan.name }}
+                            </button>
+      </form>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    </div>
+    <div class="bg-background-light py-16 dark:bg-background-dark sm:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-3xl text-center">
+    <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Frequently Asked Questions</h2>
+    <p class="mt-4 text-lg text-black/60 dark:text-white/60">Find answers to common questions about our plans and services.</p>
+    </div>
+    <div class="mt-12">
+    <div class="mx-auto max-w-3xl space-y-4">
+    <div class="rounded-lg border border-black/10 bg-white shadow-sm dark:border-white/10 dark:bg-background-dark/50">
+    <button aria-controls="faq1" class="flex w-full items-center justify-between p-6 text-left font-medium" onclick="toggleAccordion('faq1')">
+    <span>Can I change my plan later?</span>
+    <svg class="accordion-icon h-6 w-6 text-black/60 dark:text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+    </svg>
+    </button>
+    <div class="accordion-content px-6 pb-6" id="faq1">
+    <p class="text-black/60 dark:text-white/60">Yes, you can upgrade or downgrade your plan at any time from your account dashboard. Prorated charges or credits will be applied automatically.</p>
+    </div>
+    </div>
+    <div class="rounded-lg border border-black/10 bg-white shadow-sm dark:border-white/10 dark:bg-background-dark/50">
+    <button aria-controls="faq2" class="flex w-full items-center justify-between p-6 text-left font-medium" onclick="toggleAccordion('faq2')">
+    <span>What payment methods do you accept?</span>
+    <svg class="accordion-icon h-6 w-6 text-black/60 dark:text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+    </svg>
+    </button>
+    <div class="accordion-content px-6 pb-6" id="faq2">
+    <p class="text-black/60 dark:text-white/60">We accept all major  cards, including Visa, Mastercard, and American Express.</p>
+    </div>
+    </div>
+    <div class="rounded-lg border border-black/10 bg-white shadow-sm dark:border-white/10 dark:bg-background-dark/50">
+    <button aria-controls="faq3" class="flex w-full items-center justify-between p-6 text-left font-medium" onclick="toggleAccordion('faq3')">
+    <span>How do I cancel my subscription?</span>
+    <svg class="accordion-icon h-6 w-6 text-black/60 dark:text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+    </svg>
+    </button>
+    <div class="accordion-content px-6 pb-6" id="faq3">
+    <p class="text-black/60 dark:text-white/60">You can cancel your subscription at any time from your account settings. Your plan will remain active until the end of the current billing cycle.</p>
+    </div>
+    </div>
+    <div class="rounded-lg border border-black/10 bg-white shadow-sm dark:border-white/10 dark:bg-background-dark/50">
+    <button aria-controls="faq4" class="flex w-full items-center justify-between p-6 text-left font-medium" onclick="toggleAccordion('faq4')">
+    <span>Are all features included in the free trial?</span>
+    <svg class="accordion-icon h-6 w-6 text-black/60 dark:text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+    </svg>
+    </button>
+    <div class="accordion-content px-6 pb-6" id="faq4">
+    <p class="text-black/60 dark:text-white/60">Yes, the 30-day free trial gives you access to all the features of the Standard plan. This allows you to fully explore our platform before committing to a paid plan.</p>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+    {% endblock %}

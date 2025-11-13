@@ -1,0 +1,32 @@
+{% extends 'con/base.html' %}
+{% block content %}
+
+<main class="flex-grow">
+<section class="py-16 sm:py-20 lg:py-24">
+    <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div class="flex flex-col gap-6 text-center lg:text-left">
+        <div class="flex flex-col gap-4">
+          <h1 class="text-4xl font-black leading-tight tracking-tighter text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
+            {{ homes.title }}
+          </h1>
+          <p class="max-w-xl text-base leading-relaxed text-gray-600 dark:text-gray-400 sm:text-lg md:mx-auto lg:mx-0">
+           {{ homes.description }}
+          </p>
+        </div>
+        <div class="flex justify-center lg:justify-start">
+          <a href="{% url 'about' %}" class="flex min-w-[120px] items-center justify-center rounded-lg h-12 px-6 bg-primary text-white font-bold shadow-lg hover:scale-105 transition-transform">
+            Contact Me
+          </a>
+        </div>
+      </div>
+      <div class="relative flex h-full min-h-[400px] w-full items-center justify-center">
+        <div class="aspect-[3/4] h-full max-h-[550px] w-full max-w-[400px] rounded-xl bg-gray-200 dark:bg-gray-800">
+          <img class="h-full w-full rounded-xl object-cover" src="{{ homes.image.url }}" alt="Creator Headshot"/>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+
+{% endblock %}

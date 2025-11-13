@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+  <div class="text-center mb-8 md:mb-12">
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Your Website Preview</h2>
+    <p class="mt-2 text-lg text-gray-600 dark:text-gray-400">
+      We will use this template to customize your website
+    </p>
+  </div>
+
+  <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-800">
+    <div class="bg-gray-100 dark:bg-gray-800 p-2 flex items-center space-x-2">
+      <div class="w-3 h-3 rounded-full bg-red-500"></div>
+      <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+      <div class="w-3 h-3 rounded-full bg-green-500"></div>
+    </div>
+
+    <div class="h-[60vh] overflow-y-auto">
+      <div class="bg-cover bg-center h-full w-full" style="background-image: url('{{ webs.thumbnail.url }}');">
+        <div class="flex items-center justify-center h-full bg-black/20">
+          <div class="text-center text-white p-8 bg-black/40 rounded-lg backdrop-blur-sm">
+            <h3 class="text-4xl font-bold">{{ webs.name }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-center gap-4 mt-6">
+        <a href="{{ webs.preview_url }}" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="rounded bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30 transition-colors inline-block">
+        live preview
+        </a>
+    <form method="post" action="{% url 'customers:webselected' %}">
+    {% csrf_token %}
+
+    <input type="hidden" name="web_id" value="{{ webs.id }}">
+      <button type="submit" class="rounded bg-primary px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90">
+        Select this template
+      </button>
+       </form>
+
+
+
+    <a href="{% url 'customers:web_sel' %}">
+      <button class="rounded bg-primary px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90">
+        Go back
+      </button>
+    </a>
+  </div>
+</main>
+{% endblock %}

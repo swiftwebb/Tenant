@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+
+<main class="flex-1 px-4 sm:px-8 md:px-10 lg:px-20 xl:px-40 py-8">
+    <div class="mx-auto flex max-w-[1200px] flex-col gap-8">
+  
+      <!-- Header -->
+      <div class="flex flex-wrap justify-between gap-3">
+        <div class="flex min-w-72 flex-col gap-2">
+          <p class="text-text-primary-light dark:text-text-primary-dark text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">
+            Welcome back, {{ client.name }}!
+          </p>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal leading-normal">
+            Here's a summary of your portfolio website activity.
+          </p>
+        </div>
+      </div>
+  
+      <!-- Stats Summary -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div
+          class="flex flex-col gap-2 rounded-xl bg-card-light dark:bg-card-dark p-6 border border-border-light dark:border-border-dark shadow-sm">
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-medium leading-normal">
+            Active clients
+          </p>
+          <p class="text-text-primary-light dark:text-text-primary-dark tracking-light text-3xl font-bold leading-tight">
+            {{ products|length }}
+          </p>
+        </div>
+  
+ 
+      </div>
+  
+      <!-- Store Management -->
+      <h2
+        class="text-text-primary-light dark:text-text-primary-dark text-[22px] font-bold leading-tight tracking-[-0.015em] pt-5">
+        Manage Your Portfolio website
+      </h2>
+  
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+
+        <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+          <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+            <div class="bg-primary/20 text-primary p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">sell</span>
+            </div>
+            <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+              My Clients
+            </p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+              Create and manage Campaign to boost your sales and reward loyal customers.
+            </p>
+            <a href="{% url 'customers:dashboard_Mess' %}">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+                Manage Clients
+              </button>
+            </a>
+          </div>
+        </div>
+  
+        <!-- My Products -->
+        <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+          <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+            <div class="bg-primary/20 text-primary p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">inventory_2</span>
+            </div>
+            <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+              My Social media post portfolio
+            </p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+              Add, edit, and manage your portfolio. Keep your catalog fresh and organized.
+            </p>
+            <a href="{% url 'customers:dashboard_pcon' %}">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+                Manage Posts
+              </button>
+            </a>
+          </div>
+        </div>
+  
+        <!-- My Coupons -->
+        <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+          <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+            <div class="bg-primary/20 text-primary p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">sell</span>
+            </div>
+            <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+              My Campagn
+            </p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+              Create and manage Campaign to boost your sales and reward loyal customers.
+            </p>
+            <a href="{% url 'customers:dashboard_camp' %}">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+                Manage Campaign
+              </button>
+            </a>
+          </div>
+        </div>
+  
+        <!-- My Category -->
+        <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+          <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+            <div class="bg-primary/20 text-primary p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">category</span>
+            </div>
+            <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+              My Services
+            </p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+              Organize your products into categories for easy browsing and better visibility.
+            </p>
+            <a href="{% url 'customers:dashboard_service' %}">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+                Create Service
+              </button>
+            </a>
+          </div>
+        </div>
+  
+        <!-- My Orders -->
+        <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+          <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+            <div class="bg-primary/20 text-primary p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">receipt_long</span>
+            </div>
+            <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+              Edit home pages
+            </p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+              EDit home page for better customization.
+            </p>
+            <a href="{% url 'customers:dashboard_conab' %}">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+                Edit home page
+              </button>
+            </a>
+          </div>
+        </div>
+  
+        <!-- Delivery -->
+        <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+          <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+            <div class="bg-primary/20 text-primary p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">local_shipping</span>
+            </div>
+            <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+              Edit About pages
+            </p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+              Manage about page.
+            </p>
+            <a href="{% url 'customers:dashboard_conabou' %}">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+                Edit ABout page
+              </button>
+            </a>
+          </div>
+        </div>
+        <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+          <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+            <div class="bg-primary/20 text-primary p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">local_shipping</span>
+            </div>
+            <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+              Edit Whatsapp
+            </p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+              Manage delivery zones, pricing, and logistics for smooth nationwide fulfillment.
+            </p>
+            <a href="https://wa.me/14155238886?text=Hello%20{{ request.tenant.name }}!%20Your%20AI%20assistant%20is%20ready%20to%20help%20you%20manage%20your%20store.">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+                Edit whatsapp
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="px-4 sm:px-6 lg:px-10 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+  <div class="max-w-7xl mx-auto space-y-8">
+
+    <!-- Breadcrumb -->
+    <nav class="flex flex-wrap gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
+      <a href="#" class="hover:underline">Orders</a>
+      <span>/</span>
+      <span class="text-gray-900 dark:text-white font-medium">Order #{{ order.ref_code }}</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="flex flex-wrap justify-between items-start gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Order #{{ order.ref_code }}</h1>
+        <p class="text-gray-500 dark:text-gray-400">{{ order.ordered_date|date:"M d, Y H:i" }}</p>
+      </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <!-- Order Items -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 sm:p-6">
+
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Items</h2>
+
+          <!-- Large screen table -->
+          <div class="hidden md:block overflow-x-auto">
+            <table class="min-w-full text-left divide-y divide-gray-200 dark:divide-gray-700">
+              <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th class="py-2 px-3 text-sm font-semibold text-gray-600 dark:text-gray-300">Product</th>
+                  <th class="py-2 px-3 text-sm font-semibold text-gray-600 dark:text-gray-300">Size</th>
+                  <th class="py-2 px-3 text-sm font-semibold text-gray-600 dark:text-gray-300">Category</th>
+                  <th class="py-2 px-3 text-sm font-semibold text-gray-600 dark:text-gray-300">Quantity</th>
+                  <th class="py-2 px-3 text-sm font-semibold text-gray-600 dark:text-gray-300">Price</th>
+                  <th class="py-2 px-3 text-sm font-semibold text-gray-600 dark:text-gray-300 text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                {% for item in order.cart.all %}
+                <tr>
+                  <td class="py-2 px-3 text-sm flex items-center gap-3">
+                    {% if item.product.image %}
+                      <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-10 h-10 rounded-md object-cover">
+                    {% else %}
+                      <div class="w-10 h-10 rounded-md bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs text-gray-500">No Img</div>
+                    {% endif %}
+                    <span class="font-medium text-gray-900 dark:text-white">{{ item.product.name }}</span>
+                  </td>
+                  <td class="py-2 px-3 text-sm text-gray-500 dark:text-gray-400">{{ item.product.size }}</td>
+                  <td class="py-2 px-3 text-sm text-gray-500 dark:text-gray-400">{{ item.product.category.name }}</td>
+                  <td class="py-2 px-3 text-sm text-gray-500 dark:text-gray-400">{{ item.quantity }}</td>
+                  <td class="py-2 px-3 text-sm text-gray-500 dark:text-gray-400">₦{{ item.product.discount_price|default:item.product.price }}</td>
+                  <td class="py-2 px-3 text-sm font-medium text-gray-900 dark:text-white text-right">₦{{ item.get_final_price }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile card view -->
+          <div class="md:hidden space-y-4">
+            {% for item in order.cart.all %}
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 flex flex-col gap-2 shadow-sm">
+              <div class="flex items-center gap-3">
+                {% if item.product.image %}
+                  <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-12 h-12 rounded-md object-cover">
+                {% else %}
+                  <div class="w-12 h-12 rounded-md bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-xs text-gray-500">No Img</div>
+                {% endif %}
+                <div>
+                  <p class="font-medium text-gray-900 dark:text-white">{{ item.product.name }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ item.product.category.name }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Size: {{ item.product.size }}</p>
+                </div>
+              </div>
+              <div class="flex justify-between text-sm text-gray-700 dark:text-gray-300">
+                <span>Qty: {{ item.quantity }}</span>
+                <span>₦{{ item.get_final_price }}</span>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Summary -->
+          <div class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 text-right space-y-2">
+            <div class="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+              <span>Subtotal</span>
+              <span>₦{{ order.get_subtotal }}</span>
+            </div>
+            {% if order.coupon %}
+            <div class="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+              <span>Discount ({{ order.coupon.code }})</span>
+              <span>- ₦{{ order.get_discount_amount }}</span>
+            </div>
+            {% endif %}
+            <div class="flex justify-between text-base font-bold text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-700 pt-2">
+              <span>Grand Total</span>
+              <span>₦{{ order.get_total }}</span>
+            </div>
+
+            <!-- Payment / Delivery Status -->
+            <div class="mt-2">
+              {% if order.status == "delivered" %}
+                <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-800/30 dark:text-green-300">Delivered</span>
+              {% elif order.Paid %}
+                <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-800/30 dark:text-blue-300">Paid</span>
+              {% else %}
+                <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-700 dark:bg-red-800/30 dark:text-red-300">Unpaid</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar (Customer, Shipping, Actions) -->
+      <div class="space-y-6">
+        <!-- Customer Info -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 sm:p-6">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Customer</h3>
+          <p class="font-medium text-primary">{{ order.address.first_name }} {{ order.address.last_name }}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">{{ order.email }}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">{{ order.address.phone_number }}</p>
+        </div>
+
+        <!-- Shipping Address -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 sm:p-6">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Shipping Address</h3>
+          <address class="not-italic text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+            {{ order.address.street_address }}<br>
+            {{ order.address.city }}, {{ order.address.state }}<br>
+            {{ order.address.country }}
+          </address>
+        </div>
+
+        <!-- Actions -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 sm:p-6 space-y-3">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Actions</h3>
+
+          <a href="{% url 'customers:dashboard_delete_order' order.pk %}">
+            <button class="w-full h-10 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-bold transition-colors">Delete</button>
+          </a>
+
+          <a href="{% url 'customers:dashboard_orderlist' %}">
+            <button class="w-full h-10 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold">Back</button>
+          </a>
+
+          {% if order.status != "delivered" %}
+          <form action="{% url 'customers:mark_delivered' order.pk %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="w-full h-10 rounded-lg bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white text-sm font-bold transition-colors">Mark as Delivered</button>
+          </form>
+          {% else %}
+          <button disabled class="w-full h-10 rounded-lg bg-gray-300 dark:bg-gray-600 text-white text-sm font-bold cursor-not-allowed">Delivered</button>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}

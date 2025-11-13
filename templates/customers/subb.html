@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Subscription</h1>
+        <p class="text-gray-500 dark:text-gray-400">Manage your current plan and billing status.</p>
+      </div>
+      <a href="{% url 'customers:plan_list' %}">
+        <button class="px-4 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90">
+          Switch Plan
+        </button>
+      </a>
+    </div>
+  
+    {% if subscription %}
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-1">
+            {{ subscription.name }}
+          </h2>
+  
+          {% if subscription.price == 0 %}
+            <!-- FREE PLAN -->
+            <p class="text-gray-500 dark:text-gray-400">
+              You’re currently on the <span class="font-medium text-gray-800 dark:text-gray-200">Free Plan</span>.
+            </p>
+          {% else %}
+            <!-- PAID PLAN -->
+            <p class="text-gray-500 dark:text-gray-400">
+              Duration: 
+              <span class="font-medium text-gray-800 dark:text-gray-200">
+                {{ subscription.duration_days }} days
+              </span>
+            </p>
+  
+            {% if subscription.start_date %}
+            <p class="text-gray-500 dark:text-gray-400">
+              Start date: 
+              <span class="font-medium text-gray-800 dark:text-gray-200">
+                {{ subscription.start_date|date:"F j, Y" }}
+              </span>
+            </p>
+            {% endif %}
+  
+            {% if subscription.end_date %}
+            <p class="text-gray-500 dark:text-gray-400">
+              End date: 
+              <span class="font-medium text-gray-800 dark:text-gray-200">
+                {{ subscription.end_date|date:"F j, Y" }}
+              </span>
+            </p>
+            {% endif %}
+          {% endif %}
+        </div>
+  
+        {% if subscription.price > 0 %}
+        <div class="text-right">
+          <p class="text-xl font-bold text-gray-900 dark:text-white">
+            ₦{{ subscription.price }}
+          </p>
+          <p class="text-gray-500 dark:text-gray-400">per {{ subscription.duration_days }} days</p>
+        </div>
+        {% endif %}
+      </div>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4">
+        <a href="{% url 'customers:plan_list' %}"  class="w-full sm:w-auto px-4 py-2 bg-white text-gray-800 dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
+            Switch Subscription
+          </a>
+      </div>
+      
+  
+      <!-- Actions -->
+      <div class="mt-8 flex flex-col sm:flex-row gap-4">
+        <form method="post" action="{% url 'customers:cancel_subscription' %}">
+          {% csrf_token %}
+          <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-white text-gray-800 dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
+            Cancel Subscription
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    </div>
+  
+    {% else %}
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
+      <p class="text-gray-600 dark:text-gray-300 mb-4">You are not subscribed to any plan.</p>
+      <a href="{% url 'customers:plan_list' %}" class="px-5 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90">
+        Choose a Plan
+      </a>
+    </div>
+    {% endif %}
+  
+  </main>
+  
+
+{% endblock %}

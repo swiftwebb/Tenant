@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Photography Portfolio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#F8F8F8",
+                        "background-dark": "#1A1A1A",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#333333] dark:text-[#E0E0E0]">
+    {% if messages %}
+    <div class="fixed top-4 right-4 z-50 space-y-3">
+      {% for message in messages %}
+        <div
+          class="p-4 rounded-lg shadow-lg text-white 
+          {% if message.tags == 'success' %}
+            bg-green-500
+          {% elif message.tags == 'error' %}
+            bg-red-500
+          {% elif message.tags == 'warning' %}
+            bg-yellow-500
+          {% else %}
+            bg-blue-500
+          {% endif %}
+          transition-all duration-500 transform opacity-100 translate-y-0"
+        >
+          <div class="flex items-center justify-between">
+            <p class="font-medium">{{ message }}</p>
+            <button
+              class="ml-3 text-white/70 hover:text-white"
+              onclick="this.parentElement.parentElement.remove()"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <!-- ✅ End Django Messages -->
+  
+    <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+  
+      <!-- Header -->
+      <header class="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200/80 dark:border-white/10 px-6 py-4 bg-white dark:bg-background-dark shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="size-6 text-primary">
+            <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <path d="M42.1739 20.1739L27.8261 5.82609..." fill="currentColor"></path>
+            </svg>
+          </div>
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white">Creator's Name</h2>
+        </div>
+  
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="{% url 'home' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Home</a>
+           <a href="{% url 'hoomelist' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Catalog</a>
+          <a href="{% url 'aboutme' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">About</a>
+          <a href="{% url 'service' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Services</a>
+         <a href="{% url 'about' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Contact</a> 
+        </nav>
+  
+        <button id="menu-btn" class="flex items-center justify-center p-2 md:hidden text-gray-900 dark:text-white">
+          <span class="material-symbols-outlined text-3xl">menu</span>
+        </button>
+      </header>
+  
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-background-dark border-b border-gray-200/80 dark:border-gray-700 px-6 py-4 space-y-3">
+        <a href="{% url 'home' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Home</a>
+        <a href="{% url 'hoomelist' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary">Catalog</a>
+         <a href="{% url 'aboutme' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary">ABout</a>
+      <a href="{% url 'service' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary">Services</a>
+         <a href="{% url 'about' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary">Contact</a> 
+      </div>
+  
+      <!-- Main Content -->
+      <main class="flex-grow">
+          {% if messages %}
+            <div class="fixed top-4 right-4 z-50 space-y-3">
+              {% for message in messages %}
+                <div
+                  class="p-4 rounded-lg shadow-lg text-white 
+                  {% if message.tags == 'success' %} bg-green-500
+                  {% elif message.tags == 'error' %} bg-red-500
+                  {% elif message.tags == 'warning' %} bg-yellow-500
+                  {% else %} bg-blue-500
+                  {% endif %}
+                  transition-all duration-500 transform opacity-100 translate-y-0"
+                >
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium">{{ message }}</p>
+                    <button class="ml-3 text-white/70 hover:text-white" onclick="this.parentElement.parentElement.remove()">✕</button>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+    
+          {% block content %}
+          {% endblock content %}
+        </main>
+    
+        {% include "booth/footer.html" %}
+  
+    </div>
+  
+    <!-- JS for mobile dropdown -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      });
+    </script>
+</body></html>

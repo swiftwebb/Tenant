@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101c22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .selection-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .selection-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        input[type="radio"]:checked + .selection-card {
+            border-color: #13a4ec;
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(19, 164, 236, 0.3);
+        }
+    </style>
+<div class="text-center mb-10 sm:mb-12">
+<h1 class="text-[#111618] dark:text-white text-4xl sm:text-5xl font-black leading-tight tracking-[-0.033em]">Tell us a bit about your business</h1>
+<p class="text-gray-500 dark:text-gray-400 text-lg sm:text-xl font-normal leading-normal mt-3 max-w-2xl mx-auto">Select your business type to get started with tailored templates and tools.</p>
+</div>
+<fieldset class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 px-4">
+<legend class="sr-only">Select your business type</legend>
+{% for job in jobs %}
+<div>
+<input class="sr-only" id="freelancer" name="business-type" type="radio"/>
+<label class="selection-card cursor-pointer bg-white dark:bg-background-dark border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 flex flex-col items-center text-center h-full" for="freelancer">
+<div class="w-16 h-16 rounded-full 
+    {% if job.name == 'Freelancer' %} bg-blue-500/20 {% elif job.name == 'Store' %} bg-green-500/20 
+    {% elif job.name == 'Restaurant' %} bg-orange-500/20 {% elif job.name == 'Food Vendor' %} bg-pink-500/20 
+    {% elif job.name == 'Company' %} bg-red-500/20 {% endif %}
+    flex items-center justify-center mb-4">
+<span class="material-symbols-outlined 
+    {% if job.name == 'Freelancer' %} text-blue-500 {% elif job.name == 'Store Owner' %} text-green-500 
+    {% elif job.name == 'Restaurant Owner' %} text-orange-500 {% elif job.name == 'Food Vendor' %} text-purple-500 
+    {% elif job.name == 'Company Owner' %} text-red-500 {% endif %}
+    text-4xl">{{ job.svg_url }}</span>
+</div>
+<h3 class="text-lg font-bold text-[#111618] dark:text-white mb-2">{{ job.name}}</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm">{{ job.det }}</p>
+    <form method="post" action="{% url 'customers:joob' %}">
+    {% csrf_token %}
+
+    <input type="hidden" name="job_id" value="{{ job.id }}">
+    <button type="submit" class="mt-8 w-full rounded bg-primary/10 px-6 py-3 text-base font-bold text-primary transition-colors hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30">
+                                click here to pick {{ job.name }}
+                            </button>
+      </form>
+
+
+</label>
+</div>
+{% endfor %}
+
+</fieldset>
+
+   {% endblock %}

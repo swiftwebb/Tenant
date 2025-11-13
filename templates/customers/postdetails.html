@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Social Post Details</h1>
+      <p class="text-gray-500 dark:text-gray-400">View insights and engagement details of this post.</p>
+    </div>
+    <a href="{% url 'customers:dashboard_pcon' %}">
+      <button class="px-5 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all">← Back</button>
+    </a>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Left Section -->
+    <div class="lg:col-span-2 flex flex-col gap-8">
+
+      <!-- Thumbnail -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Post Thumbnail</h2>
+        {% if product.thumbnail %}
+          <img src="{{ product.thumbnail.url }}" alt="{{ product.name }}" class="rounded-lg w-full aspect-video object-cover shadow-md">
+        {% else %}
+          <div class="w-full aspect-video bg-gray-200 dark:bg-gray-800 flex items-center justify-center rounded-lg text-gray-500">
+            No thumbnail uploaded
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Post Info -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Post Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm text-gray-600 dark:text-gray-300">Name</label>
+            <p class="mt-1 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">{{ product.name }}</p>
+          </div>
+
+          <div>
+            <label class="text-sm text-gray-600 dark:text-gray-300">Link</label>
+            {% if product.link %}
+              <a href="{{ product.link }}" target="_blank" class="block mt-1 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-primary hover:underline truncate">{{ product.link }}</a>
+            {% else %}
+              <p class="mt-1 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">No link</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Engagement Stats -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Engagement Metrics</h2>
+        <div class="grid grid-cols-3 text-center">
+          <div class="flex flex-col items-center">
+            <span class="material-symbols-outlined text-primary text-3xl">favorite</span>
+            <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ product.like|default:"0" }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Likes</p>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <span class="material-symbols-outlined text-primary text-3xl">chat_bubble</span>
+            <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ product.comment|default:"0" }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Comments</p>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <span class="material-symbols-outlined text-primary text-3xl">visibility</span>
+            <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ product.views|default:"0" }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Views</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="flex flex-col gap-8">
+      
+      <!-- Categories -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Categories</h2>
+            {% if product.category %}
+          <ul class="space-y-2">
+
+              <li class="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300">{{ product.category.name }}</li>
+
+          </ul>
+          {% else%}
+          <p class="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-500">Uncategorized</p>
+          {% endif %}
+      </div>
+
+      <!-- Created Date -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Created At</h2>
+        <p class="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300">{{ product.created_at|date:"F j, Y, g:i a" }}</p>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="flex-1 px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+
+      <!-- Left side: Heading -->
+      <div class="flex flex-col gap-1">
+        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">
+          Manage Campaign
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 text-base">
+          View, edit, and organize all your Campaign in one place.
+        </p>
+      </div>
+    
+      <!-- Right side: Action buttons -->
+      <div class="flex items-center gap-3">
+        <a href="{% url 'customers:dashboard_create_camp' %}">
+          <button
+            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-sm transition-all duration-200">
+            <span class="text-lg leading-none">+</span>
+            <span>Add Campaign</span>
+          </button>
+        </a>
+    
+        <a href="{% url 'customers:dashboard' %}">
+          <button
+            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-800 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 transition-all duration-200">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            <span>Go Back</span>
+          </button>
+        </a>
+      </div>
+    </div>
+    
+
+    <!-- Layout -->
+    <div class="flex gap-8">
+      <!-- Sidebar -->
+      <aside class="w-64 hidden lg:block">
+        <div class="bg-white dark:bg-background-dark rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+          <p class="text-sm text-[#617c89] dark:text-gray-400">
+            Filter and organize your Campaign here (coming soon).
+          </p>
+        </div>
+      </aside>
+
+      <!-- Main Table/Card Area -->
+      <div class="flex-1">
+        <div class="bg-white dark:bg-background-dark rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
+
+          <!-- Desktop Table -->
+          <div class="overflow-x-auto hidden sm:block">
+            <table class="min-w-full text-left border-collapse divide-y divide-gray-200 dark:divide-gray-700">
+              <thead class="bg-background-light dark:bg-gray-800">
+                <tr>
+                  <th class="p-4 w-12">
+                    <input type="checkbox" class="form-checkbox rounded text-primary focus:ring-primary" />
+                  </th>
+                  <th class="p-4 text-sm font-medium text-[#111618] dark:text-gray-300 min-w-[250px]">Post</th>
+                  <th class="p-4 text-sm font-medium text-[#111618] dark:text-gray-300 text-right">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for product in products %}
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                  <td class="p-4">
+                    <input type="checkbox" class="form-checkbox rounded text-primary focus:ring-primary" />
+                  </td>
+                  <td class="p-4">
+                    <div class="flex items-center gap-4">
+                      {% if product.social.thumbnail %}
+                        <div class="bg-center bg-no-repeat bg-cover rounded-lg w-12 h-12 border border-gray-200 dark:border-gray-700"
+                             style="background-image: url('{{ product.social.thumbnail.url }}');"></div>
+                      {% else %}
+                        <div class="flex items-center justify-center rounded-lg w-12 h-12 bg-gray-100 dark:bg-gray-800 text-gray-400 text-xs">
+                          No Image
+                        </div>
+                      {% endif %}
+                      <span class="font-medium text-[#111618] dark:text-white">{{ product.Title }}</span>
+                    </div>
+                  </td>
+
+
+                  <td class="p-4 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <a href="{% url 'customers:camp_detail_d' product.pk %}" title="View"
+                         class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary">
+                        <span class="material-symbols-outlined">visibility</span>
+                      </a>
+                      <a href="{% url 'customers:camp_edit_d' product.pk %}" title="Edit"
+                         class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary">
+                        <span class="material-symbols-outlined">edit</span>
+                      </a>
+                      <a href="{% url 'customers:dashboard_delete_camp' product.pk %}" title="Delete"
+                         class="text-gray-500 dark:text-gray-400 hover:text-red-500">
+                        <span class="material-symbols-outlined">delete</span>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" class="p-6 text-center text-[#617c89] dark:text-gray-400 text-sm">
+                    No Campaign found. Click “+ Add Socials to create one.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Card Layout -->
+          <div class="space-y-4 sm:hidden">
+            {% for product in products %}
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  {% if product.social.thumbnail %}
+                    <img src="{{ product.social.thumbnail.url }}" alt="{{ product.Title }}"
+                         class="w-12 h-12 rounded-lg object-cover border border-gray-200 dark:border-gray-700">
+                  {% else %}
+                    <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-400 text-xs">
+                      No Image
+                    </div>
+                  {% endif %}
+                  <div>
+
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <a href="{% url 'customers:camp_detail_d' product.pk %}" class="text-gray-500 dark:text-gray-400 hover:text-primary">
+                    <span class="material-symbols-outlined">visibility</span>
+                  </a>
+                  <a href="{% url 'customers:camp_edit_d' product.pk %}" class="text-gray-500 dark:text-gray-400 hover:text-primary">
+                    <span class="material-symbols-outlined">edit</span>
+                  </a>
+                  <a href="{% url 'customers:dashboard_delete_camp' product.pk %}" class="text-gray-500 dark:text-gray-400 hover:text-red-500">
+                    <span class="material-symbols-outlined">delete</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 dark:text-gray-400 text-center text-sm">
+              No Campaign found. Click “+ Add Socials to create one.
+            </p>
+            {% endfor %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

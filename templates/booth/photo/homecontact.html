@@ -1,0 +1,104 @@
+{% extends 'booth/base.html' %}
+{% block content %}
+<main class="flex-1">
+<section class="relative">
+<div class="absolute inset-0 z-0">
+<img class="h-full w-full object-cover" data-alt="A breathtaking mountain range at dusk, with a starry sky visible above the peaks. The image has a cool, atmospheric tone and is slightly blurred." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ng9F0g_duNwelDKCD9PqLiB8pmjRY72UmTE8CxL6rt7WnA_BiA-PD4LNmdA5Oo3jNtYKbj0Clw2mflwZye99td03tUUv9jjkvMlA_f7lEyyXm_J2WRaWJnsJoFpwc9T2Y7YP4ATGO9oTnQe9Dpsn2V67Do5E-KO6PRhij-ke1U0IRetqijUJoW8Xdt8WRu6EOyIOmA9cqbOy6Iv2pfCmJLGdQFFCM6N7HqfxGOpBJLY0jmM-FIKPioTjsN30eP-vEAAAGeZXDBg"/>
+<div class="absolute inset-0 bg-background-light/20 dark:bg-background-dark/60"></div>
+</div>
+<div class="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+<div class="text-center">
+<h1 class="text-4xl font-black leading-tight tracking-tighter text-slate-900 dark:text-white sm:text-5xl lg:text-6xl">Let's Create Together</h1>
+<p class="mx-auto mt-4 max-w-2xl text-base font-normal leading-normal text-slate-700 dark:text-slate-300 sm:text-lg">I'd love to hear about your project. For bookings and inquiries, please use the form below.</p>
+</div>
+<div class="mx-auto mt-16 grid max-w-lg gap-16 lg:max-w-none lg:grid-cols-5">
+<div class="rounded-xl border border-white/10 bg-background-light/70 p-6 shadow-2xl backdrop-blur-lg dark:bg-background-dark/70 sm:p-8 lg:col-span-3">
+<form method="POST" action="{% url 'contact' %}"  class="space-y-6" >
+    {% csrf_token %}
+<div>
+<label class="block text-sm font-medium leading-6 text-slate-800 dark:text-slate-200" for="full-name">Full Name</label>
+<div class="mt-2">
+<input autocomplete="name" class="form-input block w-full rounded-lg border-0 bg-white/50 p-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:bg-white/5 dark:text-white dark:ring-slate-700 dark:placeholder:text-slate-500 dark:focus:ring-primary" id="full-name" name="name" placeholder="Enter your full name" type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium leading-6 text-slate-800 dark:text-slate-200" for="email">Email Address</label>
+<div class="mt-2">
+<input autocomplete="email" class="form-input block w-full rounded-lg border-0 bg-white/50 p-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:bg-white/5 dark:text-white dark:ring-slate-700 dark:placeholder:text-slate-500 dark:focus:ring-primary" id="email" name="email" placeholder="you@example.com" type="email"/>
+</div>
+</div>
+<div>
+
+</div>
+<div>
+<label class="block text-sm font-medium leading-6 text-slate-800 dark:text-slate-200" for="message">Message</label>
+<div class="mt-2">
+<textarea class="form-textarea block w-full rounded-lg border-0 bg-white/50 p-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:bg-white/5 dark:text-white dark:ring-slate-700 dark:placeholder:text-slate-500 dark:focus:ring-primary" id="message" name="message" placeholder="Tell me more about your project..." rows="4"></textarea>
+</div>
+</div>
+<div>
+<button class="flex w-full justify-center rounded-lg bg-primary px-3 py-3 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" type="submit">Send Message</button>
+</div>
+</form>
+</div>
+<div class="lg:col-span-2">
+<div class="flex h-full flex-col justify-between rounded-xl p-6 sm:p-8">
+<div class="space-y-8">
+<div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Other Ways to Connect</h3>
+<p class="mt-1 text-slate-700 dark:text-slate-400">Prefer not to use a form? No problem.</p>
+</div>
+<div class="space-y-6">
+<a class="group flex items-start gap-4" href="mailto:hello@annalee.photo">
+<div class="flex-shrink-0">
+<span class="material-symbols-outlined text-primary">mail</span>
+</div>
+<div>
+<p class="font-semibold text-slate-800 dark:text-slate-200">Email</p>
+<p class="text-slate-600 group-hover:text-primary dark:text-slate-400 dark:group-hover:text-primary">hello@annalee.photo</p>
+</div>
+</a>
+<a class="group flex items-start gap-4" href="tel:+1234567890">
+<div class="flex-shrink-0">
+<span class="material-symbols-outlined text-primary">call</span>
+</div>
+<div>
+<p class="font-semibold text-slate-800 dark:text-slate-200">Phone</p>
+<p class="text-slate-600 group-hover:text-primary dark:text-slate-400 dark:group-hover:text-primary">(234) 70-423-789</p>
+</div>
+</a>
+<div class="flex items-start gap-4">
+
+
+</div>
+</div>
+</div>
+<div class="mt-12">
+<p class="font-semibold text-slate-800 dark:text-slate-200">Follow Me</p>
+<div class="mt-4 flex space-x-5">
+<a class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">
+<svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewbox="0 0 24 24">
+<path clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill-rule="evenodd"></path>
+</svg>
+</a>
+<a class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">
+<svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewbox="0 0 24 24">
+<path clip-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zM12 7a5 5 0 100 10 5 5 0 000-10zm0 8a3 3 0 110-6 3 3 0 010 6zm6.406-11.845a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" fill-rule="evenodd"></path>
+</svg>
+</a>
+<a class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary" href="#">
+<svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2C6.477 2 2 6.477 2 12c0 4.237 2.636 7.855 6.356 9.312-.063-.335-.084-.716-.084-1.112 0-1.76.713-3.32 1.96-4.49-.12-.04-.24-.06-.37-.06-1.47 0-2.84.78-2.84 2.92 0 .97.35 1.75.92 2.33-.28.78-.32 1.63.02 2.33 0 0 .56-.18 1.83-.68 1.05-.28 2.18-.28 3.23 0 1.27.5 1.83.68 1.83.68.34-.7.3-1.55.02-2.33.57-.58.92-1.36.92-2.33 0-2.14-1.37-2.92-2.84-2.92-.13 0-.25.02-.37.06 1.247 1.17 1.96 2.73 1.96 4.49 0 .396-.02 1.06-.08 1.48C19.365 19.855 22 16.237 22 12 22 6.477 17.523 2 12 2z"></path>
+</svg>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+
+{% endblock %}

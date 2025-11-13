@@ -1,0 +1,171 @@
+{% extends 'whiteecom/base.html' %}
+{% block content %}
+<main class="flex-1 px-4 sm:px-6 lg:px-8 py-5">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-wrap gap-2 py-4">
+<a class="text-gray-500 dark:text-gray-400 text-sm font-medium leading-normal hover:text-primary" href="#">Home</a>
+<span class="text-gray-500 dark:text-gray-400 text-sm font-medium leading-normal">/</span>
+<a class="text-gray-500 dark:text-gray-400 text-sm font-medium leading-normal hover:text-primary" href="#">Men's Fashion</a>
+<span class="text-gray-500 dark:text-gray-400 text-sm font-medium leading-normal">/</span>
+<span class="text-gray-800 dark:text-white text-sm font-medium leading-normal">{{products.name}}</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-6">
+<!-- Product Image Gallery -->
+<div class="flex flex-col gap-4">
+<div class="w-full bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm">
+<div class="w-full bg-center bg-no-repeat bg-cover aspect-[4/4] cursor-zoom-in" data-alt="White t-shirt on a hanger" style='background-image: url("{{ products.image.url }}");'></div>
+</div>
+<div class="grid grid-cols-4 gap-4">
+
+</div>
+</div>
+<!-- Product Information -->
+<div class="flex flex-col gap-4">
+<h1 class="text-gray-800 dark:text-white tracking-tight text-3xl font-bold text-left">{{ product.name }}</h1>
+<div class="flex items-center gap-2">
+<div class="flex text-amber-400">
+
+</div>
+</div>
+<p class="text-3xl font-bold text-gray-800 dark:text-white">#<span id="product-price">{{ product_price }}</span></p>
+<div class="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+<div>
+<div class="flex gap-2 mt-2">
+</div>
+</div>
+<div>
+
+
+    <form action="{% url 'add_to' products.slug %}" method="POST" class="w-full">
+  {% csrf_token %}
+  <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="size">Size</label>
+  <select name="size" id="size" required
+  class="mt-2 block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-primary focus:border-primary">
+{% for variant in productss %}
+<option value="{{ variant.size.id }}" data-price="{{ variant.price }}">
+  {{ variant.size.name }} - ({{ variant.quantity }} in stock)
+</option>
+{% endfor %}
+</select>
+
+
+</div>
+</div>
+<div class="flex items-center gap-4 pt-4">
+<div class="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg">
+
+</div>
+ <button type="submit"
+    class="flex-1 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90">
+    Add to Cart
+  </button>
+
+</form>
+
+
+<form id="removeForm" action="{% url 'remove_from' products.slug %}" method="GET">
+  <input type="hidden" name="size" id="remove-size">
+  <button type="submit" class="flex-1 flex min-w-[84px] max-w-[480px] items-center justify-center h-12 px-6 bg-red-600 text-white rounded-lg hover:bg-red-700">
+    Remove from Cart
+  </button>
+</form>
+
+
+
+
+
+
+</div>
+<div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+<h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Description</h3>
+<p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+{{ products.description}}                           </p>
+</div>
+</div>
+</div>
+<!-- Details & Reviews Section -->
+<div class="mt-16" id="reviews">
+<div class="border-b border-gray-200 dark:border-gray-700">
+<nav aria-label="Tabs" class="-mb-px flex space-x-8">
+</nav>
+</div>
+<div class="py-10">
+<!-- Product Details Content -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-gray-600 dark:text-gray-400">
+<ul class="space-y-2 list-disc list-inside">
+
+</ul>
+<ul class="space-y-2 list-disc list-inside">
+
+</ul>
+</div>
+<!-- Customer Reviews Content (Initially Hidden or shown based on tab selection) -->
+<div class="mt-12">
+<div class="flex flex-wrap gap-x-12 gap-y-6 p-4 mt-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+<div class="flex flex-col gap-2">
+<div class="flex gap-0.5 text-amber-400">
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<!-- You Might Also Like Section -->
+<div class="mt-16">
+<h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">You Might Also Like</h2>
+<div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+        {% for duds in dud %}
+        <div class="group relative">
+<div class="w-full min-h-80 bg-gray-200 dark:bg-gray-800 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none">
+<img class="w-full h-full object-center object-cover"  src="{{ duds.image.url }}"/>
+</div>
+<div class="mt-4 flex justify-between">
+<div>
+<h3 class="text-sm text-gray-700 dark:text-gray-300">
+<a href="{{ duds.get_absolute_url }}"><span aria-hidden="true" class="absolute inset-0"></span>{{ duds.name }}t</a>
+</h3>
+</div>
+</div>
+</div>
+{% endfor %} 
+
+</div>
+</div>
+</div>
+</main>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const removeForm = document.getElementById('removeForm');
+      const sizeSelect = document.getElementById('size');
+      const removeSizeInput = document.getElementById('remove-size');
+      const priceDisplay = document.getElementById('product-price');
+  
+      // Remove from cart form size input
+      if (removeForm && sizeSelect && removeSizeInput) {
+          removeForm.addEventListener('submit', function() {
+              removeSizeInput.value = sizeSelect.value; // pass the selected size
+          });
+      }
+  
+      // Update price when size changes
+      if (sizeSelect && priceDisplay) {
+          sizeSelect.addEventListener('change', function() {
+              const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+              const newPrice = selectedOption.getAttribute('data-price');
+              priceDisplay.textContent = newPrice;
+          });
+      }
+  });
+  </script>
+
+
+   {% endblock %}
+
+
+
+
+
+
+
+

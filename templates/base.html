@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Baxting</title>
+
+  <!-- Tailwind & Fonts -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13a4ec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101c22",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-[#18181B] dark:text-white">
+  <div class="relative flex flex-col min-h-screen overflow-x-hidden">
+    <header class="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-6 md:px-10 py-3 bg-white dark:bg-background-dark shadow-sm">
+      <!-- Left: Logo -->
+      <div class="flex items-center gap-3">
+        <div class="size-6 text-primary">
+          <svg fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0L24 12L12 24L0 12L12 0Z M6 10H18L12 4L6 10Z"></path>
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Baxting</h2>
+      </div>
+
+      <!-- ✅ Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="https://www.baxting.com" class="text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Home</a>
+        <a href="{% url 'customers:plan_list' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Pricing</a>
+        <a href="{% url 'customers:about' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">About</a>
+        <a href="{% url 'customers:help' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Help</a>
+
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'customers:dashboard' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Dashboard</a>
+          <a href="{% url 'customers:myweb' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">My Site</a>
+          <a href="{% url 'customers:switch' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">subscription</a>
+        {% endif %}
+      </nav>
+
+      <!-- Right Side -->
+      <div class="flex items-center gap-3">
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'account_logout' %}" class="hidden md:flex items-center justify-center h-10 px-3 rounded-lg bg-background-light dark:bg-gray-800 text-sm font-semibold text-gray-900 dark:text-white hover:text-primary transition-colors">
+            Logout
+          </a>
+        {% else %}
+          <a href="{% url 'account_signup' %}" class="hidden md:flex items-center justify-center h-10 px-3 rounded-lg bg-background-light dark:bg-gray-800 text-sm font-semibold text-gray-900 dark:text-white hover:text-primary transition-colors">
+            Sign Up
+          </a>
+          <a href="{% url 'account_login' %}" class="hidden md:flex items-center justify-center h-10 px-3 rounded-lg bg-background-light dark:bg-gray-800 text-sm font-semibold text-gray-900 dark:text-white hover:text-primary transition-colors">
+            Login
+          </a>
+        {% endif %}
+
+        <!-- Mobile Menu Button -->
+        <button id="menu-btn" class="md:hidden text-gray-900 dark:text-white focus:outline-none">
+          <span class="material-symbols-outlined text-3xl">menu</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ✅ Mobile Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-background-dark border-b border-gray-200 dark:border-gray-800 px-6 py-4 space-y-3">
+      <a href="https://www.baxting.com" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Home</a>
+      <a href="{% url 'customers:plan_list' %}" class="block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Pricing</a>
+      <a href="{% url 'customers:about' %}" class="block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">About</a>
+      <a href="{% url 'customers:help' %}" class="block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Help</a>
+
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'customers:dashboard' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Dashboard</a>
+        <a href="{% url 'customers:myweb' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">My Site</a>
+        <a href="{% url 'customers:switch' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">subscription</a>
+        <a href="{% url 'account_logout' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Logout</a>
+      {% else %}
+        <a href="{% url 'account_login' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Login</a>
+        <a href="{% url 'account_signup' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Sign Up</a>
+      {% endif %}
+    </div>
+
+    <main class="flex-grow">
+      {% if messages %}
+        <div class="fixed top-4 right-4 z-50 space-y-3">
+          {% for message in messages %}
+            <div
+              class="p-4 rounded-lg shadow-lg text-white 
+              {% if message.tags == 'success' %} bg-green-500
+              {% elif message.tags == 'error' %} bg-red-500
+              {% elif message.tags == 'warning' %} bg-yellow-500
+              {% else %} bg-blue-500
+              {% endif %}
+              transition-all duration-500 transform opacity-100 translate-y-0"
+            >
+              <div class="flex items-center justify-between">
+                <p class="font-medium">{{ message }}</p>
+                <button class="ml-3 text-white/70 hover:text-white" onclick="this.parentElement.parentElement.remove()">✕</button>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block content %}
+      {% endblock content %}
+    </main>
+
+    {% include "footer.html" %}
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const menuBtn = document.getElementById("menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<body class="bg-gray-50 dark:bg-gray-900 font-display text-gray-900 dark:text-gray-100">
+  <div class="flex flex-col items-center justify-center min-h-screen py-10 px-6">
+    <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+
+      <!-- Header -->
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-extrabold mb-2">Tell Us About Your Business</h1>
+        <p class="text-gray-500 dark:text-gray-400">
+          Fill out your business details below to continue.
+        </p>
+      </div>
+
+      <!-- ✅ Django messages -->
+      {% if messages %}
+        <div class="space-y-2 mb-6">
+          {% for message in messages %}
+            <div class="p-4 rounded-lg 
+              {% if message.tags == 'error' %}
+                bg-red-50 border border-red-300 text-red-700
+              {% elif message.tags == 'success' %}
+                bg-green-50 border border-green-300 text-green-700
+              {% else %}
+                bg-gray-50 border border-gray-300 text-gray-700
+              {% endif %}
+            ">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Form -->
+      <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- Business Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="id_business_name" class="block text-sm font-semibold mb-2">Business Name</label>
+            {{ form.business_name }}
+            {% if form.business_name.errors %}
+              <p class="mt-2 text-sm text-red-600">{{ form.business_name.errors.0 }}</p>
+            {% endif %}
+          </div>
+          <div>
+            <label for="id_Tagline" class="block text-sm font-semibold mb-2">Tagline(optional)</label>
+            {{ form.Tagline }}
+            {% if form.Tagline.errors %}
+              <p class="mt-2 text-sm text-red-600">{{ form.Tagline.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div>
+          <label for="id_business_description" class="block text-sm font-semibold mb-2">Business Description</label>
+          {{ form.business_description }}
+          {% if form.business_description.errors %}
+            <p class="mt-2 text-sm text-red-600">{{ form.business_description.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Address -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="id_street_address" class="block text-sm font-semibold mb-2">Street Address</label>
+            {{ form.street_address }}
+          </div>
+          <div>
+            <label for="id_apartment_address" class="block text-sm font-semibold mb-2">Apartment Address</label>
+            {{ form.apartment_address }}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label for="id_city" class="block text-sm font-semibold mb-2">City</label>
+            {{ form.city }}
+          </div>
+          <div>
+            <label for="id_state" class="block text-sm font-semibold mb-2">State</label>
+            {{ form.state }}
+          </div>
+          <div>
+            <label for="id_zip" class="block text-sm font-semibold mb-2">ZIP Code</label>
+            {{ form.zip }}
+          </div>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <label for="id_phone_number" class="block text-sm font-semibold mb-2">Phone Number</label>
+          {{ form.phone_number }}
+          {% if form.phone_number.errors %}
+            <p class="mt-2 text-sm text-red-600">{{ form.phone_number.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Bank Info -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label for="id_bank" class="block text-sm font-semibold mb-2">Bank</label>
+            {{ form.bank }}
+          </div>
+          <div>
+            <label for="id_account_no" class="block text-sm font-semibold mb-2">Account Number</label>
+            {{ form.account_no }}
+          </div>
+          <div>
+            <label for="id_account_name" class="block text-sm font-semibold mb-2">Account Name</label>
+            {{ form.account_name }}
+            {% if form.account_name.errors %}
+              <p class="mt-2 text-sm text-red-600">{{ form.account_name.errors.0 }}</p>
+            {% endif %}
+
+            <!-- ✅ Verified Account Name Box -->
+            <div id="account-name-box"
+              class="hidden mt-3 p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600 transition-all duration-300 ease-in-out">
+              <span class="font-semibold">Verified Account Name:</span>
+              <span id="resolved-account-name" class="ml-2"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logo Upload -->
+        <div>
+          <label for="id_logo" class="block text-sm font-semibold mb-2">Upload Logo (we will create a logo for you if you dont have one)</label>
+          <label for="dropzone-file"
+            class="flex items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <div class="text-center">
+              <span class="material-symbols-outlined text-4xl text-gray-400">cloud_upload</span>
+              <p class="text-gray-500 dark:text-gray-400">Click to upload logo</p>
+            </div>
+          </label>
+          {{ form.logo }}
+        </div>
+        {% if form.business_picture %}
+        <div>
+          <label for="id_logo" class="block text-sm font-semibold mb-2">Upload a picture of yourself as a freelancer, or picture of your business(optional)</label>
+          <label for="dropzone-file"
+            class="flex items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <div class="text-center">
+              <span class="material-symbols-outlined text-4xl text-gray-400">cloud_upload</span>
+              <p class="text-gray-500 dark:text-gray-400">Click to upload logo</p>
+            </div>
+          </label>
+          {{ form.business_picture }}
+        </div>
+        {% else %}
+        {% endif %}
+
+        <!-- Submit -->
+        <div class="text-center pt-6">
+          <button type="submit"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-10 rounded-lg shadow-md transition-all">
+            Save & Continue
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ✅ Bank Verification Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const bankSelect = document.getElementById('id_bank');
+      const acctInput = document.getElementById('id_account_no');
+      const box = document.getElementById('account-name-box');
+      const nameSpan = document.getElementById('resolved-account-name');
+      const hiddenInput = document.getElementById('id_account_name');
+
+      async function verifyAccount() {
+        const bank = bankSelect.value;
+        const acct = acctInput.value.trim();
+
+        box.classList.add('hidden');
+        nameSpan.textContent = "";
+
+        if (!bank || acct.length !== 10) return;
+
+        box.classList.remove('hidden');
+        nameSpan.textContent = "Verifying...";
+
+        try {
+          const response = await fetch(`/verify-bank-account/?bank=${bank}&account_no=${acct}`);
+          const data = await response.json();
+
+          if (data.status === "success") {
+            nameSpan.textContent = data.account_name;
+            box.classList.remove('bg-red-50', 'border-red-500');
+            box.classList.add('bg-green-50', 'border-green-500');
+            hiddenInput.value = data.account_name;
+          } else {
+            nameSpan.textContent = "Invalid account details — please check your bank and account number.";
+            box.classList.remove('bg-green-50', 'border-green-500');
+            box.classList.add('bg-red-50', 'border-red-500');
+            hiddenInput.value = "";
+
+            acctInput.classList.add('ring-2', 'ring-red-500', 'border-red-500');
+            setTimeout(() => {
+              acctInput.classList.remove('ring-2', 'ring-red-500', 'border-red-500');
+            }, 2500);
+          }
+        } catch (e) {
+          nameSpan.textContent = "Error verifying account — please try again.";
+          box.classList.add('bg-red-50', 'border-red-500');
+        }
+      }
+
+      acctInput.addEventListener('input', verifyAccount);
+      bankSelect.addEventListener('change', verifyAccount);
+    });
+  </script>
+</body>
+
+{% endblock %}

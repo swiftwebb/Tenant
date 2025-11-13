@@ -1,0 +1,115 @@
+from django.urls import path
+from .views import *
+from . import webhooks
+
+from django.contrib import admin
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+app_name = 'customers'
+
+
+urlpatterns = [
+path('', plan_list, name='plan_list'),
+path('jobs/', job_list, name='job_list'),
+path('about/', about, name='about'),
+path('help/', help, name='help'),
+path('terms/', terms, name='terms'),
+path('privacy/', privacy, name='privacy'),
+path('jubb/', jjob, name='joob'),
+path('upgrade/init/', upgrade_init, name='upgrade_init'),
+path('upgrade/verify/', paystack_verify, name='paystack_verify'),
+path('webhooks/paystack/', webhooks.paystack_webhook, name='paystack_webhook'),
+path('websiteselection/', web_temp, name='web_sel'),
+    path('websiteselection/<slug:slug>/', web_temp_detail, name='websitedet'),
+    path('websiteform/', web_welected, name='webselected'),
+    path('fomaddd/', fom, name='formad'),
+    path('dashboard/', dashboard, name='dashboard'),
+    path('dashboard_p/', dashboard_p, name='dashboard_p'),
+    path('dashboard_myself/', dashboard_myself, name='dashboard_myself'),
+    path('phser_create_camp/', phser_create_camp, name='phser_create_camp'),
+    path('dashboard_catlist/', dashboard_catlist, name='dashboard_catlist'),
+    path('dashboard_orderlist/', dashboard_orderlist, name='dashboard_orderlist'),
+    path('dashboard_couponlist/', dashboard_couponlist, name='dashboard_couponlist'),
+    path('dashboard_delete_phser/<int:pk>/', dashboard_delete_phser, name='dashboard_delete_phser'),
+    path('category_detail_d/<int:pk>/', category_detail_d, name='category_detail_d'),
+    path('delivery_detail_d/<int:pk>/', delivery_detail_d, name='delivery_detail_d'),
+    path('delivery_detail_lag/<int:pk>/', delivery_detail_lag, name='delivery_detail_lag'),
+    path('coupon_detail_d/<int:pk>/', coupon_detail_d, name='coupon_detail_d'),
+    path('product_detail_d/<int:pk>/', product_detail_d, name='product_detail_d'),
+    path('order_detail_d/<int:pk>/', order_detail_d, name='order_detail_d'),
+    path('phserv_edit_d/<int:pk>/', phserv_edit_d, name='phserv_edit_d'),
+    path('con_detail_d/<int:pk>/', con_detail_d, name='con_detail_d'),
+    path('cat_edit_d/<int:pk>/', cat_edit_d, name='cat_edit_d'),
+    path('del_edit_d/<int:pk>/', del_edit_d, name='del_edit_d'),
+    path('lag_edit_d/<int:pk>/', lag_edit_d, name='lag_edit_d'),
+    path('con_edit_d/<int:pk>/', con_edit_d, name='con_edit_d'),
+    path('dashboard_delete_book/<int:pk>/', dashboard_delete_book, name='dashboard_delete_book'),
+    path('book_detail_d/<int:pk>/', book_detail_d, name='book_detail_d'),
+    path('dashboard_Book/', dashboard_Book, name='dashboard_Book'),
+    path('dashboard_camp/', dashboard_camp, name='dashboard_camp'),
+    path('dashboard_create_content/', dashboard_create_content, name='dashboard_create_content'),
+    path('dashboard_Mess/', dashboard_Mess, name='dashboard_Mess'),
+    path('dashboard_service/', dashboard_service, name='dashboard_service'),
+    path('dashboard_create_services/', dashboard_create_services, name='dashboard_create_services'),
+    path('dashboard_create_camp/', dashboard_create_camp, name='dashboard_create_camp'),
+    path('service_edit_d/<int:pk>/', service_edit_d, name='service_edit_d'),
+    path('service_edit_d/<int:pk>/', service_edit_d, name='service_edit_d'),
+    path('service_detail_d/<int:pk>/', service_detail_d, name='service_detail_d'),
+    path('mess_detail_d/<int:pk>/', mess_detail_d, name='mess_detail_d'),
+    path('dashboard_delete_camp/<int:pk>/', dashboard_delete_camp, name='dashboard_delete_camp'),
+    path('dashboard_delete_mess/<int:pk>/', dashboard_delete_mess, name='dashboard_delete_mess'),
+    path('camp_edit_d/<int:pk>/', camp_edit_d, name='camp_edit_d'),
+    path('camp_detail_d/<int:pk>/', camp_detail_d, name='camp_detail_d'),
+    path('product_edit_d/<int:pk>/', product_edit_d, name='product_edit_d'),
+    path('dashboard_delete_con/<int:pk>/', dashboard_delete_con, name='dashboard_delete_con'),
+    path('dashboard_delete_product/<int:pk>/', dashboard_delete_product, name='dashboard_delete_product'),
+    path('dashboard_delete_coupon/<int:pk>/', dashboard_delete_coupon, name='dashboard_delete_coupon'),
+    path('delete_p/<int:pk>/', delete_p, name='delete_p'),
+    path('dashboard_delete_cat/<int:pk>/', dashboard_delete_cat, name='dashboard_delete_cat'),
+    path('dashboard_delete_del/<int:pk>/', dashboard_delete_del, name='dashboard_delete_del'),
+    path('photo_detail_d/<int:pk>/', photo_detail_d, name='photo_detail_d'),
+    path('photo_edit_d/<int:pk>/', photo_edit_d, name='photo_edit_d'),
+    path('dashboard_delete_lag/<int:pk>/', dashboard_delete_lag, name='dashboard_delete_lag'),
+    path('dashboard_delete_order/<int:pk>/', dashboard_delete_order, name='dashboard_delete_order'),
+    path('phabout_edit_d/<int:pk>/', phabout_edit_d, name='phabout_edit_d'),
+    path('aboutp_detail_d/<int:pk>/', aboutp_detail_d, name='aboutp_detail_d'),
+    path('pser_detail_d/<int:pk>/', pser_detail_d, name='pser_detail_d'),
+    path('about_edit_d/<int:pk>/', about_edit_d, name='about_edit_d'),
+    path('dashboard_delete_photo/<int:pk>/', dashboard_delete_photo, name='dashboard_delete_photo'),
+    path('about_detail_d/<int:pk>/', about_detail_d, name='about_detail_d'),
+    path('dashboard_serphot', dashboard_serphot, name='dashboard_serphot'),
+    path('photo_create_camp', photo_create_camp, name='photo_create_camp'),
+    path('dashboard_delete_service/<int:pk>/', dashboard_delete_service, name='dashboard_delete_service'),
+
+    path('dashboard_create_cat/', dashboard_create_cat, name='dashboard_create_cat'),
+    path('dashboard_conabou/', dashboard_conabou, name='dashboard_conabou'),
+    path('dashboard_pcon/', dashboard_pcon, name='dashboard_pcon'),
+    path('dashboard_del_lag/', dashboard_del_lag, name='dashboard_del_lag'),
+    path('dashboard_create_lag/', dashboard_create_lag, name='dashboard_create_lag'),
+    path('dashboard_create_del/', dashboard_create_del, name='dashboard_create_del'),
+    path('dashboard_create_product/', dashboard_create_product, name='dashboard_create_product'),
+    path('dashboard_create_coupon/', dashboard_create_coupon, name='dashboard_create_coupon'),
+    path('home_edit_d/<int:pk>/', home_edit_d, name='home_edit_d'),
+    path('home_detail_d/<int:pk>/', home_detail_d, name='home_detail_d'),
+    path('coupon_edit_d/<int:pk>/', coupon_edit_d, name='coupon_edit_d'),
+    path("verify-bank-account/", verify_bank_account, name="verify_bank_account"),
+    path("vwebsite/", website, name="myweb"),
+    path("switch/", switch, name="switch"),
+    path("cancel_subscription/", cancel_subscription, name="cancel_subscription"),
+    path("dashboard_photo/", dashboard_photo, name="dashboard_photo"),
+    path("dashboard_del/", dashboard_del, name="dashboard_del"),
+    path("api_add_product/", api_add_product, name="api_add_product"),
+    path("dashboard_conab/", dashboard_conab, name="dashboard_conab"),
+    path("whatsapp_webhook/", whatsapp_webhook, name="whatsapp_webhook"),
+    path("dashboard_del_other/", dashboard_del_other, name="dashboard_del_other"),
+    path('order/<int:order_id>/deliver/', mark_order_delivered, name='mark_delivered'),
+
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+

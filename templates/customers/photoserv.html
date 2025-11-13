@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Service Details</h1>
+      <p class="text-gray-500 dark:text-gray-400">View details about this service and what it includes.</p>
+    </div>
+    <a href="{% url 'customers:dashboard_serphot' %}">
+      <button class="px-5 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all">← Back</button>
+    </a>
+  </div>
+
+  <!-- Service Card -->
+  <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+
+    <!-- Service Name -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Service Name</label>
+      <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-lg font-semibold text-gray-900 dark:text-white">
+        {{ product.name|default:"Unnamed Service" }}
+      </p>
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Description / Deliverables</label>
+      {% if product.description %}
+        <div class="mt-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-800 dark:text-gray-200">
+          {% for line in product.description.splitlines %}
+
+
+            {% if line %}
+            <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                <span>{{ line }}</span>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="mt-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-500">No description provided.</p>
+      {% endif %}
+    </div>
+
+    <!-- Price -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Price</label>
+      {% if product.amount %}
+        <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white text-lg font-semibold">
+          ₦{{ product.amount|floatformat:2 }}
+        </p>
+      {% else %}
+        <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-500">Amount not set</p>
+      {% endif %}
+    </div>
+
+    <!-- Created Date (Optional) -->
+    {% if product.created_at %}
+      <div>
+        <label class="text-sm text-gray-600 dark:text-gray-300">Created At</label>
+        <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300">
+          {{ product.created_at|date:"F j, Y, g:i a" }}
+        </p>
+      </div>
+    {% endif %}
+  </div>
+
+</main>
+
+{% endblock %}

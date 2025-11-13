@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="mx-auto max-w-md py-16 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl p-8 text-center border border-black/10 dark:border-white/10">
+        <h2 class="text-2xl font-extrabold text-black dark:text-white mb-6">
+            Are you sure you want to delete "<span class="text-red-600">{{ product.name }}</span>"?
+        </h2>
+
+        <form method="POST" action="{% url 'customers:dashboard_delete_product' product.pk %}" class="space-y-4">
+            {% csrf_token %}
+            <button type="submit" class="w-full rounded bg-red-600 px-6 py-3 text-white font-bold text-base transition-colors hover:bg-red-700">
+                Yes, delete
+            </button>
+            <a href="{% url 'customers:dashboard_p' %}" class="inline-block w-full rounded border border-black/10 dark:border-white/10 px-6 py-3 text-center font-bold text-black dark:text-white transition-colors hover:bg-black/5 dark:hover:bg-white/10">
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

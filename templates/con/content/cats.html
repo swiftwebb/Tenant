@@ -1,0 +1,68 @@
+{% extends 'con/base.html' %}
+{% block content %}
+
+<main class="flex flex-col gap-6 pt-10">
+    <!-- Header -->
+    <div class="flex flex-wrap justify-between gap-4 p-4 items-center">
+        <div class="flex min-w-72 flex-col gap-2">
+            <p class="text-black dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">My Work</p>
+            <p class="text-black/60 dark:text-white/60 text-base font-normal leading-normal">
+                A showcase of my latest work and brand collaborations.
+            </p>
+        </div>
+    </div>
+
+
+<!-- Category Buttons -->
+<div class="flex flex-col sm:flex-row gap-3 p-3 items-center justify-between border-b border-black/10 dark:border-white/10">
+    <div class="flex gap-2 flex-wrap">
+        <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary/20 dark:bg-primary/20 px-3 text-primary">
+            <a href="{% url 'portfolio' %}" class="text-sm font-medium leading-normal">All</a>
+        </button>
+
+    </div>
+    <div class="relative">
+        <span class="material-symbols-outlined text-black/60 dark:text-white/60 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+            expand_more
+        </span>
+    </div>
+</div>
+
+<!-- Portfolio Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+    {% for homie in homes %}
+        {% if homie.thumbnail %}
+        <div class="group relative overflow-hidden rounded-xl aspect-w-3 aspect-h-4 bg-black/10 dark:bg-white/10 cursor-pointer">
+            
+            <!-- Image -->
+            <img src="{{ homie.thumbnail.url }}" alt="{{ homie.name }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"/>
+            
+            <!-- Overlay Gradient -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+            
+            <!-- Name and Views -->
+            <div class="absolute bottom-0 left-0 p-4 w-full text-white">
+                <p class="text-base font-bold leading-tight line-clamp-2">{{ homie.name }}</p>
+                <div class="flex items-center gap-2 text-white/80 text-xs mt-1">
+                    <span class="material-symbols-outlined text-sm">visibility</span>
+                    <span>{{ homie.views }} Views</span>
+                </div>
+            </div>
+            
+            <!-- Hover Button -->
+            <div class="absolute inset-0 bg-black/60 flex flex-col justify-center items-center p-4 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                <a href="{{ homie.link }}" target="_blank" class="bg-primary text-white text-sm font-bold h-9 px-4 rounded-lg">
+                    Watch Now
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<!-- Pagination (example static) -->
+
+
+</main>
+
+{% endblock %}

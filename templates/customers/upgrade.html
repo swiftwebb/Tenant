@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Upgrade</title></head>
+<body>
+<h1>Upgrade / Payment</h1>
+{% if error %}
+<p style="color:red">{{ error }}</p>
+{% endif %}
+{% if message %}
+<p style="color:green">{{ message }}</p>
+{% endif %}
+<p><a href="{% url 'customers:plan_list' %}">Back to plans</a></p>
+</body>
+</html>

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if error %}
+<div class="container mx-auto flex h-full flex-col items-center justify-center px-4 py-16 text-center md:px-6">
+<div class="flex max-w-lg flex-col items-center">
+<div class="mb-6 rounded-full bg-primary/10 p-4 text-primary dark:bg-primary/20">
+<span class="material-symbols-outlined !text-4xl"> check_circle </span>
+</div>
+<h1 class="text-3xl font-bold tracking-tighter text-[#18181B] dark:text-white sm:text-4xl md:text-5xl">Subscription Not Confirmed!</h1>
+<p class="mt-4 text-gray-500 dark:text-gray-400 md:text-lg">
+              You're not set! Your subscription is not active, and you dont have  access. Reason for not bein active: <p style="color:red">{{ error }}</p>.
+            </p>
+<div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+<a class="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-base font-semibold text-white shadow-md transition-transform hover:scale-105 active:scale-100" href="#">
+                Start Building
+                <span class="material-symbols-outlined ml-2"> arrow_forward </span>
+</a>
+{% comment %} <a class="inline-flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent px-6 py-3 text-base font-semibold text-[#18181B] dark:text-white shadow-sm transition-colors hover:bg-primary/10 dark:hover:bg-primary/20" href="#">
+                Manage Subscription
+              </a> {% endcomment %}
+</div>
+<a class="mt-8 text-sm text-gray-500 underline hover:text-primary dark:text-gray-400 dark:hover:text-primary" href="#">Need help? Visit our Help Center</a>
+</div>
+</div>
+{% else %}
+
+<div class="container mx-auto flex h-full flex-col items-center justify-center px-4 py-16 text-center md:px-6">
+<div class="flex max-w-lg flex-col items-center">
+<div class="mb-6 rounded-full bg-primary/10 p-4 text-primary dark:bg-primary/20">
+<span class="material-symbols-outlined !text-4xl"> check_circle </span>
+</div>
+<h1 class="text-3xl font-bold tracking-tighter text-[#18181B] dark:text-white sm:text-4xl md:text-5xl">Subscription Confirmed!: <p style="color:green">{{ message }}</p></h1>
+<p class="mt-4 text-gray-500 dark:text-gray-400 md:text-lg">
+              You're all set! Your subscription is active, and you now have  access. Start exploring your new tools and take your website to the next level.
+            </p>
+<div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+<a  class="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-base font-semibold text-white shadow-md transition-transform hover:scale-105 active:scale-100" href="{% url 'customers:job_list' %}">
+                Start Building
+                <span class="material-symbols-outlined ml-2"> arrow_forward </span>
+</a>
+{% comment %} <a class="inline-flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent px-6 py-3 text-base font-semibold text-[#18181B] dark:text-white shadow-sm transition-colors hover:bg-primary/10 dark:hover:bg-primary/20" href="#">
+                Manage Subscription
+              </a> {% endcomment %}
+</div>
+<a class="mt-8 text-sm text-gray-500 underline hover:text-primary dark:text-gray-400 dark:hover:text-primary" href="#">Need help? Visit our Help Center</a>
+</div>
+</div>
+
+{% endif %}
+    {% endblock %}
+
+
+

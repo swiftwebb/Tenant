@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 px-4">
+  <!-- Illustration -->
+  <div class="relative">
+    <img src="https://cdn.dribbble.com/users/17707/screenshots/2413754/under-construction.gif" 
+         alt="Under Construction" 
+         class="w-72 md:w-96 rounded-lg shadow-lg" />
+  </div>
+
+  <!-- Text Content -->
+  <div class="text-center mt-10">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+      🚧 Under Construction 🚧
+    </h1>
+    <p class="mt-4 text-lg text-black/60 dark:text-white/60">
+      We're working hard to bring you something amazing.<br>
+      Please check back soon!
+    </p>
+
+    <!-- Progress bar -->
+    <div class="w-64 md:w-80 bg-gray-200 dark:bg-gray-700 rounded-full h-3 mt-8">
+      <div class="bg-primary h-3 rounded-full animate-pulse" style="width: 70%;"></div>
+    </div>
+
+    <!-- Optional back/home button -->
+
+  </div>
+</div>
+
+{% endblock %}

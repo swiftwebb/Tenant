@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Campaign Details</h1>
+      <p class="text-gray-500 dark:text-gray-400">View the campaign’s performance and summary.</p>
+    </div>
+    <a href="{% url 'customers:dashboard_camp' %}">
+      <button class="px-5 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all">← Back</button>
+    </a>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Left Section -->
+    <div class="lg:col-span-2 flex flex-col gap-8">
+
+      <!-- Campaign Overview -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{{ product.Title }}</h2>
+        <p class="text-gray-600 dark:text-gray-400">{{ product.overview|default:"No overview available" }}</p>
+      </div>
+
+      <!-- Thumbnail (from related Social) -->
+      {% if product.social %}
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Campaign Post Thumbnail</h2>
+        {% if product.social.thumbnail %}
+          <img src="{{ product.social.thumbnail.url }}" alt="{{ product.Title }}" class="rounded-lg w-full aspect-video object-cover shadow-md">
+        {% else %}
+          <div class="w-full aspect-video bg-gray-200 dark:bg-gray-800 flex items-center justify-center rounded-lg text-gray-500">
+            No thumbnail available
+          </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <!-- Problem / Solution / Result -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-8">
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Problem</h3>
+          <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ product.problem|default:"No problem description provided." }}</p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Solution</h3>
+          <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ product.solution|default:"No solution described." }}</p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Result</h3>
+          <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ product.result|default:"No results shared yet." }}</p>
+        </div>
+      </div>
+
+      <!-- Engagement Metrics (from related Social) -->
+      {% if product.social %}
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Engagement Metrics</h2>
+        <div class="grid grid-cols-3 text-center">
+          <div class="flex flex-col items-center">
+            <span class="material-symbols-outlined text-primary text-3xl">favorite</span>
+            <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ product.social.like|default:"0" }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Likes</p>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <span class="material-symbols-outlined text-primary text-3xl">chat_bubble</span>
+            <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ product.social.comment|default:"0" }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Comments</p>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <span class="material-symbols-outlined text-primary text-3xl">visibility</span>
+            <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ product.social.views|default:"0" }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Views</p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="flex flex-col gap-8">
+
+      {% if product.social %}
+      <!-- Category Info -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Category</h2>
+        {% if product.social.category %}
+          <p class="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300">{{ product.social.category.name }}</p>
+        {% else %}
+          <p class="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-500">Uncategorized</p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <!-- Created At -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Created At</h2>
+        <p class="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300">
+          {{ product.created_at|date:"F j, Y, g:i a" }}
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

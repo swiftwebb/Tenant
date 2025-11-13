@@ -1,0 +1,30 @@
+{% extends 'booth/base.html' %}
+{% block content %}
+<div class="flex h-full min-h-screen grow flex-col">
+<div class="flex flex-1 flex-col lg:flex-row items-center justify-center p-4 md:p-8 lg:p-12 gap-8">
+<!-- Image Viewer with Navigation -->
+<div class="relative flex-1 flex items-center justify-center w-full max-w-7xl lg:max-w-none lg:h-full group">
+<!-- Previous Button -->
+
+<!-- Image -->
+<div class="w-full h-auto max-h-[85vh] aspect-video flex items-center justify-center">
+<div class="w-full h-full bg-center bg-no-repeat bg-contain rounded-lg" data-alt="A futuristic cityscape at night with neon lights reflecting on wet streets" style='background-image: url("{{photo.image.url}}");'></div>
+</div>
+<!-- Next Button -->
+
+</div>
+<!-- Information Panel -->
+<div class="w-full lg:w-[360px] lg:max-w-[360px] flex-shrink-0 bg-background-dark/50 lg:bg-background-dark rounded-xl lg:h-fit lg:max-h-[85vh] lg:overflow-y-auto">
+<div class="flex flex-col p-6">
+<!-- Headline and Body Text -->
+<h1 class="text-white tracking-light text-2xl font-bold leading-tight pb-2 pt-0">{{photo.title}}</h1>
+<p class="text-gray-300 text-base font-normal leading-normal pb-6">
+                           {{ photo.description}} </p>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}

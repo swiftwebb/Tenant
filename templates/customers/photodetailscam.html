@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white"> Details</h1>
+      <p class="text-gray-500 dark:text-gray-400">View the Gallery performance and summary.</p>
+    </div>
+    <a href="{% url 'customers:dashboard_photo' %}">
+      <button class="px-5 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all">← Back</button>
+    </a>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Left Section -->
+    <div class="lg:col-span-2 flex flex-col gap-8">
+
+      <!-- Campaign Overview -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <p class="text-gray-600 dark:text-gray-400">{{ product.title }}</p>
+      </div>
+
+      <!-- Thumbnail (from related Social) -->
+
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Gallery Post Thumbnail</h2>
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.title }}" class="rounded-lg w-full aspect-video object-cover shadow-md">
+        {% else %}
+          <div class="w-full aspect-video bg-gray-200 dark:bg-gray-800 flex items-center justify-center rounded-lg text-gray-500">
+            No thumbnail available
+          </div>
+        {% endif %}
+      </div>
+
+
+      <!-- Problem / Solution / Result -->
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-8">
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">descrition</h3>
+          <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ product.description|default:"No  description provided." }}</p>
+        </div>
+
+
+
+
+      </div>
+
+      <!-- Engagement Metrics (from related Social) -->
+
+
+    <!-- Right Sidebar -->
+
+  </div>
+</main>
+
+{% endblock %}
