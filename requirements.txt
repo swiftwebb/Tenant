@@ -82,6 +82,7 @@ twilio==9.8.5
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 urllib3==2.5.0
+whitenoise==6.11.0
 yarl==1.22.0
 z3c.flashmessage==4.0
 z3c.pt==5.1
