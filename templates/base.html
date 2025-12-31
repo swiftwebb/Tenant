@@ -1,4 +1,5 @@
 {% load static %}
+  <!-- ALways check below to pu the tenant website link -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +13,7 @@
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
   <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon.svg' %}">
 
   <script id="tailwind-config">
     tailwind.config = {
@@ -48,39 +50,75 @@
   </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-[#18181B] dark:text-white">
+<body class="pt-20 bg-background-light dark:bg-background-dark font-display text-[#18181B] dark:text-white">
   <div class="relative flex flex-col min-h-screen overflow-x-hidden">
-    <header class="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-6 md:px-10 py-3 bg-white dark:bg-background-dark shadow-sm">
+    <header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-6 md:px-10 py-3 bg-white dark:bg-background-dark shadow-sm">
       <!-- Left: Logo -->
       <div class="flex items-center gap-3">
-        <div class="size-6 text-primary">
-          <svg fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 0L24 12L12 24L0 12L12 0Z M6 10H18L12 4L6 10Z"></path>
-          </svg>
+        <div class="text-primary">
+          <img src="{% static 'logo_dark.svg' %}" alt="" class="h-12 w-auto">
         </div>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Baxting</h2>
       </div>
-
+    
       <!-- ✅ Desktop Nav -->
       <nav class="hidden md:flex items-center gap-8">
-        <a href="https://www.baxting.com" class="text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Home</a>
+        <a href="/" class="text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Home</a>
         <a href="{% url 'customers:plan_list' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Pricing</a>
         <a href="{% url 'customers:about' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">About</a>
         <a href="{% url 'customers:help' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Help</a>
-
-        {% if request.user.is_authenticated %}
-          <a href="{% url 'customers:dashboard' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Dashboard</a>
-          <a href="{% url 'customers:myweb' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">My Site</a>
-          <a href="{% url 'customers:switch' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">subscription</a>
-        {% endif %}
+        <a href="{% url 'customers:tut' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Tutorial</a>
       </nav>
-
+    
       <!-- Right Side -->
       <div class="flex items-center gap-3">
         {% if request.user.is_authenticated %}
-          <a href="{% url 'account_logout' %}" class="hidden md:flex items-center justify-center h-10 px-3 rounded-lg bg-background-light dark:bg-gray-800 text-sm font-semibold text-gray-900 dark:text-white hover:text-primary transition-colors">
-            Logout
-          </a>
+          <!-- Desktop Avatar Menu -->
+          <div class="hidden md:block relative">
+            <button id="avatar-btn" class="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-sm">
+                {{ request.user.email.0|upper }}
+              </div>
+              <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">expand_more</span>
+            </button>
+    
+            <!-- Desktop Dropdown Menu -->
+            <div id="avatar-menu" class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+              <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ request.user.email }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Signed in</p>
+              </div>
+              <a href="{% url 'customers:dashboard' %}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-lg">dashboard</span>
+                Dashboard
+              </a>
+              <a href="{% url 'customers:myweb' %}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-lg">language</span>
+                My Site
+              </a>
+              <a href="{% url 'customers:switch' %}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-lg">subscriptions</span>
+                Subscription
+              </a>
+              <a href="{% url 'customers:Domain' %}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-lg">dns</span>
+                Domain
+              </a>
+              <a href="{% url 'customers:setts' %}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-lg">settings</span>
+                settings
+              </a>
+              <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+              <a href="{% url 'account_logout' %}" class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-lg">logout</span>
+                Logout
+              </a>
+            </div>
+          </div>
+    
+          <!-- Mobile Avatar Button (NEW!) -->
+          <button id="mobile-avatar-btn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white font-semibold text-sm focus:outline-none">
+            {{ request.user.email.0|upper }}
+          </button>
         {% else %}
           <a href="{% url 'account_signup' %}" class="hidden md:flex items-center justify-center h-10 px-3 rounded-lg bg-background-light dark:bg-gray-800 text-sm font-semibold text-gray-900 dark:text-white hover:text-primary transition-colors">
             Sign Up
@@ -88,32 +126,62 @@
           <a href="{% url 'account_login' %}" class="hidden md:flex items-center justify-center h-10 px-3 rounded-lg bg-background-light dark:bg-gray-800 text-sm font-semibold text-gray-900 dark:text-white hover:text-primary transition-colors">
             Login
           </a>
+    
+          <!-- Mobile Menu Button (only show when NOT logged in) -->
+          <button id="menu-btn" class="md:hidden text-gray-900 dark:text-white focus:outline-none">
+            <span class="material-symbols-outlined text-3xl">menu</span>
+          </button>
         {% endif %}
-
-        <!-- Mobile Menu Button -->
-        <button id="menu-btn" class="md:hidden text-gray-900 dark:text-white focus:outline-none">
-          <span class="material-symbols-outlined text-3xl">menu</span>
-        </button>
       </div>
     </header>
-
-    <!-- ✅ Mobile Dropdown -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-background-dark border-b border-gray-200 dark:border-gray-800 px-6 py-4 space-y-3">
-      <a href="https://www.baxting.com" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Home</a>
-      <a href="{% url 'customers:plan_list' %}" class="block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Pricing</a>
-      <a href="{% url 'customers:about' %}" class="block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">About</a>
-      <a href="{% url 'customers:help' %}" class="block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Help</a>
-
+  <!-- Mobile Menu Dropdown -->
+  <div id="mobile-menu" class="hidden md:hidden fixed top-[73px] left-0 right-0 bg-white dark:bg-background-dark border-b border-gray-200 dark:border-gray-800 shadow-lg z-40">
+    <div class="px-6 py-4 space-y-3">
+      <a href="/" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors py-2">Home</a>
+      <a href="{% url 'customers:plan_list' %}" class="block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors py-2">Pricing</a>
+      <a href="{% url 'customers:about' %}" class="block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors py-2">About</a>
+      <a href="{% url 'customers:help' %}" class="block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors py-2">Help</a>
+      <a href="{% url 'customers:tut' %}" class="block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors py-2">Tutorial</a>
+    
       {% if request.user.is_authenticated %}
-        <a href="{% url 'customers:dashboard' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Dashboard</a>
-        <a href="{% url 'customers:myweb' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">My Site</a>
-        <a href="{% url 'customers:switch' %}" class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">subscription</a>
-        <a href="{% url 'account_logout' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Logout</a>
+        <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+        <div class="px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+          <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ request.user.email }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Signed in</p>
+        </div>
+        <a href="{% url 'customers:dashboard' %}" class="flex items-center gap-3 text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors py-2">
+          <span class="material-symbols-outlined text-lg">dashboard</span>
+          Dashboard
+        </a>
+        <a href="{% url 'customers:myweb' %}" class="flex items-center gap-3 text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors py-2">
+          <span class="material-symbols-outlined text-lg">language</span>
+          My Site
+        </a>
+        <a href="{% url 'customers:switch' %}" class="flex items-center gap-3 text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors py-2">
+          <span class="material-symbols-outlined text-lg">subscriptions</span>
+          Subscription
+        </a>
+        <a href="{% url 'customers:Domain' %}" class="flex items-center gap-3 text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors py-2">
+          <span class="material-symbols-outlined text-lg">dns</span>
+          Domain
+        </a>
+        <a href="{% url 'customers:setts' %}" class="flex items-center gap-3 text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors py-2">
+          <span class="material-symbols-outlined text-lg">settings</span>
+          settings
+        </a>
+        <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+        <a href="{% url 'account_logout' %}" class="flex items-center gap-3 text-sm font-medium text-red-600 dark:text-red-400 hover:text-primary transition-colors py-2">
+          <span class="material-symbols-outlined text-lg">logout</span>
+          Logout
+        </a>
       {% else %}
-        <a href="{% url 'account_login' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Login</a>
-        <a href="{% url 'account_signup' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors">Sign Up</a>
+        <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+        <a href="{% url 'account_login' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors py-2">Login</a>
+        <a href="{% url 'account_signup' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary transition-colors py-2">Sign Up</a>
       {% endif %}
     </div>
+  </div>
+
 
     <main class="flex-grow">
       {% if messages %}
@@ -143,15 +211,94 @@
 
     {% include "footer.html" %}
   </div>
+  <a href="https://wa.me/2347041840867" class="whatsapp_float" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp_icon">
 
+  
+  <div class="support_bubble">
+    Click here to contact our support  teams
+  </div>
+</a>
+  
+  <style>
+  .whatsapp_float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25d366;
+    color: #FFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+    z-index: 100;
+    cursor: pointer;
+  }
+  
+  .whatsapp_icon {
+    width: 60%;
+  }
+  
+  /* Small bubble text */
+  .support_bubble {
+    position: fixed;
+    bottom: 95px;
+    right: 20px;
+    background: white;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #333;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    max-width: 200px;
+    z-index: 99;
+    border-left: 4px solid #25d366;
+  }
+  
+  /* Hide text bubble on small screens */
+  @media (max-width: 600px) {
+    .support_bubble {
+      display: none;
+    }
+  }
+  </style>
+  
+  
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      // Mobile menu toggle (for logged out users)
       const menuBtn = document.getElementById("menu-btn");
       const mobileMenu = document.getElementById("mobile-menu");
-      menuBtn.addEventListener("click", () => {
+      menuBtn?.addEventListener("click", () => {
         mobileMenu.classList.toggle("hidden");
+      });
+  
+      // Mobile avatar toggle (for logged in users)
+      const mobileAvatarBtn = document.getElementById("mobile-avatar-btn");
+      mobileAvatarBtn?.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+  
+      // Desktop avatar dropdown toggle
+      const avatarBtn = document.getElementById("avatar-btn");
+      const avatarMenu = document.getElementById("avatar-menu");
+      
+      avatarBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        avatarMenu.classList.toggle("hidden");
+      });
+  
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (avatarMenu && !avatarMenu.contains(e.target) && !avatarBtn?.contains(e.target)) {
+          avatarMenu.classList.add("hidden");
+        }
       });
     });
   </script>
+
 </body>
 </html>

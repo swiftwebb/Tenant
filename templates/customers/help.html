@@ -2,19 +2,19 @@
 {% block content %}
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
 <div class="max-w-3xl mx-auto">
-<div class="text-center mb-12">
-<h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">How can we help?</h1>
-<p class="mt-4 text-lg text-slate-600 dark:text-slate-400">Find answers, articles, and resources to help you build your best website.</p>
+<div class="text-center mb-12 fade-slide">
+<h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight fade-slide">How can we help?</h1>
+<p class="mt-4 text-lg text-slate-600 dark:text-slate-400 fade-slide">Find answers, articles, and resources to help you build your best website.</p>
 </div>
-<div class="relative mb-12">
+<div class="relative mb-12 fade-slide">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"> search </span>
 <input class="w-full h-14 pl-12 pr-4 rounded-lg bg-background-light dark:bg-background-dark border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-shadow" placeholder="Search for articles" type="search"/>
 </div>
 <div class="space-y-8">
-<div>
-<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">Frequently Asked Questions</h2>
+<div class="fade-slide">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 fade-slide">Frequently Asked Questions</h2>
 <div class="space-y-4">
-<details class="group rounded-lg bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200 dark:border-slate-800">
+<details class="group rounded-lg bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200 dark:border-slate-800 fade-slide">
 <summary class="flex items-center justify-between cursor-pointer list-none">
 <span class="font-medium">How do I create a website?</span>
 <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180"> expand_more </span>
@@ -25,7 +25,7 @@
                       </p>
 </div>
 </details>
-<details class="group rounded-lg bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200 dark:border-slate-800">
+<details class="group rounded-lg bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200 dark:border-slate-800 fade-slide">
 <summary class="flex items-center justify-between cursor-pointer list-none">
 <span class="font-medium">How do I add a blog?</span>
 <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180"> expand_more </span>
@@ -36,7 +36,7 @@
                       </p>
 </div>
 </details>
-<details class="group rounded-lg bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200 dark:border-slate-800">
+<details class="group rounded-lg bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200 dark:border-slate-800 fade-slide">
 <summary class="flex items-center justify-between cursor-pointer list-none">
 <span class="font-medium">How do I connect a domain?</span>
 <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180"> expand_more </span>
@@ -47,34 +47,66 @@
 </details>
 </div>
 </div>
-<div>
-<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">Contact Us</h2>
-<div class="grid sm:grid-cols-2 gap-4">
-<a class="flex flex-col items-center justify-center text-center p-6 rounded-lg bg-primary/10 dark:bg-primary/20 hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors" target="_blank" href="https://wa.me/+2347041840867">
+<div class="fade-slide">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 fade-slide">Contact Us</h2>
+<div class="grid sm:grid-cols-2 gap-4 fade-slide">
+<a class="flex flex-col items-center justify-center text-center p-6 rounded-lg bg-primary/10 dark:bg-primary/20 hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors fade-slide" target="_blank" href="https://wa.me/+2347041840867">
 <span class="material-symbols-outlined text-4xl text-primary mb-2"> chat_bubble </span>
 <span class="font-bold text-slate-900 dark:text-white">Live Chat</span>
 <span class="text-sm text-slate-600 dark:text-slate-400">Chat with our team</span>
 </a>
-<a class="flex flex-col items-center justify-center text-center p-6 rounded-lg bg-primary/10 dark:bg-primary/20 hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors" target="_blank" href="mailto:info@baxting.com?subject=Hello&body=I%20want%20to%20ask%20about%20your%20services">
+<a class="flex flex-col items-center justify-center text-center p-6 rounded-lg bg-primary/10 dark:bg-primary/20 hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors fade-slide" target="_blank" href="mailto:info@baxting.com?subject=Hello&body=I%20want%20to%20ask%20about%20your%20services">
 <span class="material-symbols-outlined text-4xl text-primary mb-2"> mail </span>
 <span class="font-bold text-slate-900 dark:text-white">Email Support</span>
 <span class="text-sm text-slate-600 dark:text-slate-400">Get a response in 24h</span>
 </a>
 </div>
-<div class="mt-6 text-center p-6 rounded-lg bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+
+<a href="tel:+2347041840867">
+<div class="mt-6 text-center p-6 rounded-lg bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 fade-slide">
 <div class="flex items-center justify-center text-primary mb-2">
 <span class="material-symbols-outlined text-4xl"> call </span>
 </div>
+
 <p class="font-bold text-slate-900 dark:text-white">Phone Support</p>
 <p class="text-sm text-slate-600 dark:text-slate-400">
                     Available Mon-Fri, 9 AM to 5 PM EST.
                   </p>
 <p class="text-lg font-semibold text-slate-800 dark:text-slate-200 mt-1">(+234)7041840867</p>
+
 </div>
+</a>
 </div>
 </div>
 </div>
 </div>
 
+<style>
+/* ================= FADE SLIDE ANIMATIONS ================= */
+.fade-slide {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s ease-out, transform 0.8s ease-out;
+}
 
-   {% endblock %}
+.fade-slide.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+
+<script>
+const faders = document.querySelectorAll('.fade-slide');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('show');
+    }
+  });
+}, { threshold: 0.2 });
+
+faders.forEach(fader => observer.observe(fader));
+</script>
+
+{% endblock %}

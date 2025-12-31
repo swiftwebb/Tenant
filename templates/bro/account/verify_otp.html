@@ -1,0 +1,40 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-gray-50 dark:bg-background-dark">
+  <div class="w-full max-w-md bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md space-y-6">
+    <div class="text-center">
+      <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Verify OTP</h2>
+      <p class="mt-2 text-sm text-black/60 dark:text-white/60">
+        Enter the One-Time Password sent to your email or phone.
+      </p>
+    </div>
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <input
+          type="text"
+          name="otp"
+          placeholder="Enter OTP"
+          class="w-full rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-background-dark px-3 py-3 placeholder-black/50 dark:placeholder-white/50 focus:z-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
+          required
+        >
+      </div>
+
+      {% if error %}
+      <p class="text-red-500 text-sm text-center">{{ error }}</p>
+      {% endif %}
+
+      <button
+        type="submit"
+        class="group relative flex w-full justify-center rounded-lg border border-transparent bg-primary py-3 px-4 text-sm font-bold text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark"
+      >
+        Verify OTP
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

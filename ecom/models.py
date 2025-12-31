@@ -2,7 +2,8 @@
 
 from cloudinary.models import CloudinaryField
 
-
+import random
+import string
 from django.db import models
 from django.urls import reverse
 from django.core.validators import MinValueValidator 
@@ -13,6 +14,10 @@ from colorfield.fields import ColorField
 
 from django.conf import settings
 from django.utils.text import slugify
+
+
+def create_ref_code():
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=20))
 
 
 class Coupon(models.Model):
@@ -48,27 +53,22 @@ class Category(models.Model):
 
 
 
-
-
-
-
-
-
 class Product(models.Model):
-    name = models.CharField(max_length=100,null=True, blank=True)
+    name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True,null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE,null=True, blank=True)
     description = models.TextField(blank=True, null=True)
-    price = models.FloatField(blank=True, null=True)
-    discount_price = models.FloatField(blank=True, null=True)
+    price = models.FloatField(validators=[MinValueValidator(100)])
+    discount_price = models.FloatField(default=0,blank=True, null=True,validators=[MinValueValidator(0)])
     size = models.CharField(max_length=50,null=True, blank=True)
     color = models.CharField(max_length=50,null=True, blank=True)
     quantity = models.IntegerField(blank=True, null=True)
 
-    # image = models.ImageField( upload_to='ecom/',null=True, blank=True)
+    # image = models.ImageField( upload_to='ecom/',)
     image = CloudinaryField(folder='ecom', null=True, blank=True)
     best_sellers = models.BooleanField(default=False,)
     created_at = models.DateTimeField(auto_now_add=True)
+    cost = models.FloatField(validators=[MinValueValidator(0)], default = 500)
 
 
 
@@ -131,10 +131,15 @@ class Address(models.Model):
     city = models.CharField(max_length=100,blank=True, null=True)
     state = models.CharField(max_length=100,blank=True, null=True)
 
-    country = models.CharField(max_length=100,blank=True, null=True)
+    country = models.CharField(max_length=100,blank=True, null=True, default="Nigeria")
     phone_number = models.CharField(max_length=100,blank=True, null=True)
     default = models.BooleanField(default=False)
 
+
+
+class DeliveryBase(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    price = models.FloatField(blank=True, null=True,)
 
 
 
@@ -200,10 +205,19 @@ class Order(models.Model):
     amount = models.FloatField(null=True, blank=True)
     Paid = models.BooleanField(default=False)
     ordered_date = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(default='pick it up at the store')
+    status = models.CharField(default='pay on delivery')
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
+    deliv = models.BooleanField(default=False)
 
     delivery_fee = models.FloatField(default=0.0)
+
+
+    def save(self, *args, **kwargs):
+        if not self.ref_code:
+            self.ref_code = create_ref_code()
+            while Order.objects.filter(ref_code=self.ref_code).exists():
+                self.ref_code = create_ref_code()
+        super().save(*args, **kwargs)
 
 
     def __str__(self):
@@ -231,3 +245,50 @@ class Order(models.Model):
         return reverse("orderdet", kwargs={"id": self.id})
 
 
+class Sale(models.Model):
+    reference = models.CharField(max_length=100, unique=True, blank=True)  
+    product = models.ManyToManyField(Product, blank=True)
+    quantity_sold = models.IntegerField(blank=True, null=True,validators=[MinValueValidator(0)])
+    cost = models.FloatField(help_text="The total amount you paid to get the product", validators=[MinValueValidator(0)])
+    amount = models.FloatField(help_text="The amount you sold the product", validators=[MinValueValidator(0)])
+    total = models.FloatField(help_text="The profit you made")
+    created_at = models.DateTimeField(auto_now_add=True)
+       
+    def save(self, *args, **kwargs):
+        if not self.reference:
+            self.reference = create_ref_code()
+            while Sale.objects.filter(reference=self.reference).exists():
+                self.reference = create_ref_code()
+        super().save(*args, **kwargs)
+
+    def net_sales(self):
+            cost = self.cost
+            amount = self.amount
+            self.total = amount - cost
+            return self.total 
+
+
+
+
+
+class Trans(models.Model):
+    order =  models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
+    amount =  models.FloatField(default=0,blank=True, null=True,validators=[MinValueValidator(0)])
+
+
+
+ 
+
+
+
+
+class WebsiteVisitgrtghbr(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete= models.CASCADE,null=True, blank=True)
+    path = models.CharField(max_length=255)  # Optional: track which page
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.CharField(max_length=255, blank=True)
+    referrer = models.CharField(max_length=255, blank=True, null=True) 
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.ip_address} visited {self.path} at {self.timestamp}"

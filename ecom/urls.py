@@ -13,6 +13,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
     path('products/',product_list, name='product_list'),
+    path("track_visit/", track_visit, name="track_visit"),
     path('products/<slug:slug>/',product_detail, name='productdet'),
     path('remove_from/<slug:slug>/',remove_from, name='remove_from'),
     path('ordersum/',cart_view, name='cart_view'),
@@ -28,8 +29,13 @@ urlpatterns = [
     path("removecoupon/",removecoupon, name="removecoupon"),
     path("ordderlist/",ordderlist, name="ordderlist"),
     path("orderdet/<int:id>/",orderdet, name="orderdet"),
-    path("pickupform/",pickupform, name="pickupform"),
+    # path("pickupform/",pickupform, name="pickupform"),
+    path("paysuc/",paysuc, name="paysuc"),
     path("paym/",paym, name="paym"),
+    path("paydelivery/",paydelivery, name="paydelivery"),
+    # path("create_test_subaccount/",create_test_subaccount, name="create_test_subaccount"),
+
+
 
 
 

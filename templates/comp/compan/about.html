@@ -1,0 +1,87 @@
+{% extends 'comp/base.html' %}
+{% block content %}
+
+
+
+
+
+
+
+
+<main class="flex flex-1 justify-center">
+    <div class="layout-content-container flex flex-col w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+    <!-- Hero Section -->
+    <section class="text-center py-20 md:py-32">
+    <h1 class="text-4xl md:text-6xl font-black leading-tight tracking-tighter text-text-light dark:text-text-dark mb-4">
+                                Empowering innovation for a brighter future.
+                            </h1>
+    <h2 class="text-lg md:text-xl font-normal leading-normal text-text-light/70 dark:text-text-dark/70 max-w-3xl mx-auto">
+                                We are a collective of passionate creators, strategic thinkers, and dedicated builders, committed to solving complex challenges with elegant, impactful solutions.
+                            </h2>
+    </section>
+    <!-- Story Section -->
+    <section class="py-16 md:py-24">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl" data-alt="Abstract gradient of blue and purple hues." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDgyugUzLv0QvpEpx9Xk5BRbX1WiUpdisYvuKFPzj-R-1MxUtM7TvnK6L84Ia-Mo16aekTrY3twN9GpPiVm6_7adnuR0qumNRtc3a9r3PZ2gnnR2wLT9j9fgJ91OM3hwqZtfDBBAu6TKQ_UQvR07FFtgYK9p4m_B2XlUi9DP321SasfaiAOcswZTDtfnHZCiSfgwD81vsqJENOUz8sBESRhCz3QiwbnQ_PrkCHvcdBJu3oBIWv72YpKYEjgwd1UZ3O8yYBKiFzjJSHx");'></div>
+
+    <div class="flex flex-col gap-6">
+        <h2 class="text-text-light dark:text-text-dark text-3xl font-bold leading-tight tracking-[-0.015em]">Our Story</h2>
+
+   
+
+    {% for line in about.description.splitlines %}
+    {% if line %}
+        <p class="text-text-light/80 dark:text-text-dark/80 text-base font-normal leading-relaxed">
+            <span>{{ line }}</span>
+        </p>
+    {% endif %}
+    {% endfor %}
+</div>
+
+
+    </div>
+    </section>
+    <!-- Team Section -->
+    {% if lead %}
+    <section class="py-16 md:py-24 text-center">
+      <h2 class="text-text-light dark:text-text-dark text-3xl font-bold leading-tight tracking-[-0.015em] mb-4">Meet Our Leadership</h2>
+      <p class="text-text-light/70 dark:text-text-dark/70 text-lg mb-12 max-w-2xl mx-auto">The brilliant minds guiding our mission forward.</p>
+      
+      <!-- Centered grid wrapper -->
+      <div class="flex justify-center">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-5xl">
+          {% for leader in lead %}
+          <div class="flex flex-col items-center gap-4">
+            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-24 md:size-32" data-alt="Professional headshot of {{leader.name}}." style='background-image: url("{{leader.image.url}}");'></div>
+            <div class="text-center">
+              <h3 class="text-text-light dark:text-text-dark font-bold">{{leader.name}}</h3>
+              <p class="text-sm text-text-light/60 dark:text-text-dark/60">{{leader.title}}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    {% endif %}
+    <!-- Values Section -->
+    
+    <!-- Journey/Timeline Section -->
+    
+    <!-- CTA Section -->
+    
+    </div>
+    </main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

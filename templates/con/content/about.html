@@ -6,7 +6,12 @@
     <!-- Left Column: About Me -->
     <div class="flex flex-col gap-6">
     <div class="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+        {% if home.image %}
     <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 flex-shrink-0" data-alt="Professional headshot of Alex Doe" style='background-image: url("{{homes.image.url}}");'></div>
+    {% else %}
+
+    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 flex-shrink-0" data-alt="Professional headshot of Alex Doe"></div>
+    {% endif %}
     <div class="flex flex-col justify-center">
     <h2 class="text-[#0d141b] dark:text-white text-[28px] font-bold leading-tight tracking-[-0.015em]">{{homes.title}}</h2>
     </div>

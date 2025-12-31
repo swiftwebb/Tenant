@@ -1,0 +1,55 @@
+{% extends "blog/base.html" %}
+{% load widget_tweaks %}
+{% load i18n %}
+
+{% block title %}{% trans "Log In" %}{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-gray-50 dark:bg-background-dark">
+  <div class="w-full max-w-md space-y-8 bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md">
+    <div class="text-center">
+      <h2 class="text-3xl font-bold tracking-tight">{% trans "Log in to your account" %}</h2>
+      <p class="mt-2 text-sm text-black/60 dark:text-white/60">
+        {% trans "Welcome back to our Blog." %}
+      </p>
+    </div>
+
+    <form method="post" action="{% url 'account_login' %}" class="mt-8 space-y-6">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div>
+        {{ form.login.label_tag }}
+        {{ form.login|add_class:"relative block w-full appearance-none rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-background-dark px-3 py-3 placeholder-black/50 dark:placeholder-white/50 focus:z-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm" }}
+        {{ form.login.errors }}
+      </div>
+
+      <div>
+        {{ form.password.label_tag }}
+        {{ form.password|add_class:"relative block w-full appearance-none rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-background-dark px-3 py-3 placeholder-black/50 dark:placeholder-white/50 focus:z-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm" }}
+        {{ form.password.errors }}
+      </div>
+
+      <div class="flex items-center justify-between">
+        <a href="{% url 'account_reset_password' %}" class="text-sm font-medium text-primary hover:underline">
+          {% trans "Forgot your password?" %}
+        </a>
+      </div>
+
+      <button type="submit" class="group relative flex w-full justify-center rounded-lg border border-transparent bg-primary py-3 px-4 text-sm font-bold text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark">
+        {% trans "Log In" %}
+      </button>
+
+      <a href="{% url 'hoom' %}" class="group relative flex w-full justify-center rounded-lg border border-transparent bg-gray-400 py-3 px-4 text-sm font-bold text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark">
+        {% trans "Cancel" %}
+      </a>
+      <p class="text-center text-sm text-black/60 dark:text-white/60 mt-4">
+        {% trans "Don't have an account?" %}
+        <a href="{% url 'account_signup' %}" class="text-primary font-semibold hover:underline">
+          {% trans "Sign Up" %}
+        </a>
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}

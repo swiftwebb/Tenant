@@ -1,0 +1,77 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+    
+
+
+
+<main class="px-4 sm:px-10 md:px-20 lg:px-40 flex flex-1 justify-center py-5">
+    <div class="layout-content-container flex flex-col w-full max-w-[768px] flex-1 gap-8 md:gap-12">
+    <!-- ProfileHeader -->
+    <div class="flex p-4 @container">
+    <div class="flex w-full flex-col gap-6 items-center">
+    <div class="flex gap-6 flex-col items-center">
+    <div class="flex flex-col items-center justify-center gap-2">
+    <p class="text-slate-900 dark:text-slate-100 text-3xl md:text-4xl font-bold leading-tight tracking-[-0.015em] text-center">About Me</p>
+    <p class="text-slate-600 dark:text-slate-400 text-base md:text-lg font-normal leading-normal text-center max-w-xl">
+                        Welcome to my corner of the internet. Here's a little bit about my story and the purpose behind this blog.
+                      </p>
+    </div>
+    </div>
+    </div>
+    </div>
+    <!-- My Story Section -->
+    <section class="flex flex-col gap-4 px-4">
+    <h3 class="text-slate-900 dark:text-slate-100 text-xl md:text-2xl font-bold leading-tight tracking-[-0.015em]">My Story</h3>
+    <p class="text-slate-700 dark:text-slate-300 text-base font-normal leading-relaxed">
+        {% for line in blog.my_story.splitlines %}
+        {% if line %}
+
+            <p>{{ line }}</p>
+
+        {% endif %}
+        {% endfor %}                </p>
+
+    </section>
+    <!-- Our Mission Section -->
+    <section class="flex flex-col gap-4 px-4">
+    <h3 class="text-slate-900 dark:text-slate-100 text-xl md:text-2xl font-bold leading-tight tracking-[-0.015em]">Our Mission</h3>
+    <p class="text-slate-700 dark:text-slate-300 text-base font-normal leading-relaxed">
+        {% for line in blog.our_mission.splitlines %}
+        {% if line %}
+
+            <p>{{ line }}</p>
+
+        {% endif %}
+        {% endfor %}                </p>
+    </section>
+    <!-- Why This Blog Section -->
+    <section class="flex flex-col gap-4 px-4">
+    <h3 class="text-slate-900 dark:text-slate-100 text-xl md:text-2xl font-bold leading-tight tracking-[-0.015em]">Why This Blog?</h3>
+    <p class="text-slate-700 dark:text-slate-300 text-base font-normal leading-relaxed">
+        {% for line in blog.why.splitlines %}
+        {% if line %}
+
+            <p>{{ line }}</p>
+
+        {% endif %}
+        {% endfor %}                </p>
+    </section>
+    <!-- Call to Action Section -->
+    <section class="flex flex-col items-center gap-6 p-4 text-center mt-8">
+    <p class="text-slate-600 dark:text-slate-400 text-base md:text-lg font-normal leading-normal max-w-lg">
+                  Thank you for taking the time to learn a bit about me and this blog. The best way to get to know this space is to explore the content.
+                </p>
+
+    </section>
+    </div>
+    </main>
+
+
+
+
+
+
+
+ 
+
+{% endblock %}

@@ -1,0 +1,181 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProCorp - Innovative Business Solutions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2b6cee",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+          },
+        },
+      };
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        font-feature-settings: 'liga';
+      }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#0d121b] dark:text-gray-200">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- TopNavBar -->
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200/80 dark:border-gray-800/80 px-6 py-4 bg-white dark:bg-slate-900 shadow-sm">
+  <div class="flex items-center gap-3">
+    <div class="h-10 w-10 text-primary">
+      <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <path d="M42.1739 20.1739L27.8261 5.82609..." fill="currentColor"></path>
+      </svg>
+    </div>
+    <h2 class="text-lg font-bold text-gray-900 dark:text-white">Company Site</h2>
+  </div>
+
+  <!-- Desktop nav -->
+  <nav class="hidden md:flex items-center gap-6">
+    <a href="{% url 'home' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Home</a>
+    <a href="{% url 'service' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Service</a>
+    <a href="{% url 'about' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">About</a>
+    <a href="{% url 'contact' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Contact</a>
+  </nav>
+
+  <!-- Mobile menu button -->
+  <button id="menu-btn" class="md:hidden flex items-center justify-center p-2 text-gray-900 dark:text-white">
+    <span class="material-symbols-outlined text-3xl">menu</span>
+  </button>
+</header>
+
+<div id="menu-backdrop" class="hidden fixed inset-0 bg-black/50 z-30 md:hidden"></div>
+
+<div id="mobile-menu" class="hidden md:hidden fixed top-[73px] right-0 w-1/2 bg-white dark:bg-slate-900 border-l border-b border-gray-200/80 dark:border-gray-700 px-6 py-4 space-y-3 shadow-lg z-40">
+  <a href="{% url 'home' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary">Home</a>
+  <a href="{% url 'service' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary">Service</a>
+  <a href="{% url 'about' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary">About</a>
+  <a href="{% url 'contact' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary">Contact</a>
+</div>
+
+
+
+{% if messages %}
+<div class="fixed top-4 right-4 z-50 space-y-3">
+  {% for message in messages %}
+    <div
+      class="p-4 rounded-lg shadow-lg text-white 
+      {% if message.tags == 'success' %} bg-green-500
+      {% elif message.tags == 'error' %} bg-red-500
+      {% elif message.tags == 'warning' %} bg-yellow-500
+      {% else %} bg-blue-500
+      {% endif %}
+      transition-all duration-500 transform opacity-100 translate-y-0"
+    >
+      <div class="flex items-center justify-between">
+        <p class="font-medium">{{ message }}</p>
+        <button class="ml-3 text-white/70 hover:text-white" onclick="this.parentElement.parentElement.remove()">✕</button>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}
+{% endblock content %}
+
+<!-- FOOTER -->
+
+{% include "comp/footer.html" %}
+
+</div>
+
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const backdrop = document.getElementById('menu-backdrop');
+  
+    // Toggle menu and backdrop
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      backdrop.classList.toggle('hidden');
+    });
+  
+    // Close menu when clicking backdrop
+    backdrop.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      backdrop.classList.add('hidden');
+    });
+  
+    // Close menu when clicking links
+    const menuLinks = mobileMenu.querySelectorAll('a');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        backdrop.classList.add('hidden');
+      });
+    });
+  });
+  </script>
+
+
+
+  {{ request.tenant.id|json_script:"tenant_id" }}
+  <script>
+    const tenantId = JSON.parse(document.getElementById('tenant_id').textContent);
+  
+    fetch("/track_visit/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tenant_id: tenantId,
+        path: window.location.pathname,
+        referrer: document.referrer,
+        user_agent: navigator.userAgent
+      })
+    });
+  </script>
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

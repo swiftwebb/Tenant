@@ -1,165 +1,726 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Baxting - Have Your Website</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
-<link rel="icon" type="image/png" sizes="16x16" href="favicon.svg">
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#13a4ec",
-            "background-light": "#f6f7f8",
-            "background-dark": "#101c22",
-          },
-          fontFamily: {
-            "display": ["Inter"]
-          },
-          borderRadius: {
-            "DEFAULT": "0.25rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          },
-        },
-      },
-    }
-  </script>
+{% extends 'base.html' %}
+{% block content %}
+
 <style>
-    .group\/design-root {
-      font-family: 'Inter', sans-serif;
+/* ================= ANIMATIONS ================= */
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bbb {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeSlide 2s ease forwards;
+  animation-delay: 1s;
+}
+
+.fade-slide {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s ease-out, transform 0.8s ease-out;
+}
+
+.fade-slide.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ================= INFINITE MARQUEE ================= */
+.marquee-wrapper {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  gap: 1.5rem;
+}
+
+.marquee-content {
+  display: flex;
+  gap: 1.5rem;
+  animation: scroll 40s linear infinite;
+  flex-shrink: 0;
+}
+
+.marquee-wrapper:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - 1.5rem));
+  }
+}
+
+/* ================= REVIEW CARDS ================= */
+.review-card {
+  width: 320px;
+  min-height: 200px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+}
+
+.dark .review-card {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .review-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 12px 24px rgba(59, 130, 246, 0.2);
+}
+
+.review-text {
+  font-style: italic;
+  color: #475569;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.dark .review-text {
+  color: #cbd5e1;
+}
+
+.review-author {
+  font-weight: 600;
+  color: #1e293b;
+  margin-top: auto;
+}
+
+.dark .review-author {
+  color: #f1f5f9;
+}
+
+/* ================= REVIEW MODAL ================= */
+.review-modal-content {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.review-form-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.review-form-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.review-form {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.dark .review-form {
+  background: #1e293b;
+}
+
+.star {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.star:hover,
+.star.selected {
+  color: #fbbf24 !important;
+  transform: scale(1.2) rotate(15deg);
+}
+
+.star:active {
+  transform: scale(0.95);
+}
+
+/* ================= BUTTON STYLES ================= */
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+/* ================= IMAGE ANIMATION ================= */
+.image-container {
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.image-container:hover {
+  transform: scale(1.02);
+}
+
+.bg-image {
+  transition: transform 0.5s ease;
+}
+
+.image-container:hover .bg-image {
+  transform: scale(1.05);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .review-card {
+    width: 280px;
+    padding: 1.5rem;
+  }
+  
+  .marquee-content {
+    animation-duration: 50s;
+  }
+}
+</style>
+
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+
+<!-- HeroSection -->
+<div class="@container bbb">
+<div class="@[480px]:p-4 p-4 fade-slide">
+<div class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 rounded-xl items-start justify-end px-4 pb-10 @[480px]:px-10 fade-slide" data-alt="Abstract blue and purple gradient waves" style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCnQvdCQYlEntZ2juV5CIDvQG120ySFkJHOJNCUQf-ICyUvvXLxKE7_NT4EuDoeYPUhJnIPmkU8SK37j0mRTVHXZp8pVXsITC7J3iZ1gkvl6GT8wry67UFpu3_TFn4WwAL7UYi5bLoTgKc7EM_C_LRdKZEEINpe6zgsKBm1pFi9H_FRTL0IKOytxGcJTP15XZwdqGBRvSIq4beP-zywng2CcVU3Zp0RSnQLhyPNWY5ssbjUh4Eb4OOMXMADeyQhd3p4E7oQmjq7h9s");'>
+<div class="flex flex-col gap-2 text-left">
+<h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">See Your Website Come to Life. Before We Build It.</h1>
+<h2 class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">Experience a demo live, interactive demo of your future website will look like. No guesswork, just a perfect preview of what we'll build for you.</h2>
+</div>
+</div>
+</div>
+</div>
+
+<!-- FeatureSection -->
+<div class="flex flex-col gap-10 px-4 py-10 @container fade-slide">
+<div class="flex flex-col gap-6 fade-slide">
+<div class="flex flex-col gap-4 fade-slide">
+<h2 class="text-[#111318] dark:text-white tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] max-w-[720px] fade-slide">How It Works</h2>
+<p class="text-[#111318]/80 dark:text-white/80 text-base font-normal leading-normal max-w-[720px]">Our process is designed to be simple, transparent, and deliver results you'll love.</p>
+</div>
+</div>
+<div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-0 fade-slide">
+<div class="flex flex-1 gap-3 rounded-lg border border-[#dbdfe6]/50 dark:border-white/20 bg-white dark:bg-background-dark p-4 flex-col fade-slide">
+<div class="text-primary"><span class="material-symbols-outlined">visibility</span></div>
+<div class="flex flex-col gap-1">
+<h3 class="text-[#111318] dark:text-white text-base font-bold leading-tight fade-slide">Live Previews</h3>
+<p class="text-[#616f89] dark:text-white/70 text-sm font-normal leading-normal fade-slide">See a real-time demo of your website before committing.</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-lg border border-[#dbdfe6]/50 dark:border-white/20 bg-white dark:bg-background-dark p-4 flex-col fade-slide">
+<div class="text-primary"><span class="material-symbols-outlined">construction</span></div>
+<div class="flex flex-col gap-1">
+<h3 class="text-[#111318] dark:text-white text-base font-bold leading-tight fade-slide">Expert Builders</h3>
+<p class="text-[#616f89] dark:text-white/70 text-sm font-normal leading-normal fade-slide">Our team of professional developers brings your vision to life.</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-lg border border-[#dbdfe6]/50 dark:border-white/20 bg-white dark:bg-background-dark p-4 flex-col fade-slide">
+<div class="text-primary"><span class="material-symbols-outlined fade-slide">palette</span></div>
+<div class="flex flex-col gap-1">
+<h3 class="text-[#111318] dark:text-white text-base font-bold leading-tight fade-slide">Custom Designs</h3>
+<p class="text-[#616f89] dark:text-white/70 text-sm font-normal leading-normal fade-slide">Get a website tailored to your brand's identity.</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-lg border border-[#dbdfe6]/50 dark:border-white/20 bg-white dark:bg-background-dark p-4 flex-col fade-slide">
+<div class="text-primary"><span class="material-symbols-outlined fade-slide">rocket_launch</span></div>
+<div class="flex flex-col gap-1">
+<h3 class="text-[#111318] dark:text-white text-base font-bold leading-tight fade-slide">Fast Turnaround</h3>
+<p class="text-[#616f89] dark:text-white/70 text-sm font-normal leading-normal fade-slide">Launch your new website quickly and efficiently.</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- About Us Section -->
+<div class="section-wrapper px-4 py-16 md:py-20 lg:py-24">
+  <div class="max-w-6xl mx-auto flex flex-col gap-8">
+      <div class="fade-slide">
+          <div class="inline-block">
+              <h2 class="text-[#111318] dark:text-white text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight mb-2">
+                  About Us
+              </h2>
+              <div class="h-1 w-20 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+          </div>
+      </div>
+
+      <div class="fade-slide">
+          <div class="w-full overflow-hidden rounded-2xl shadow-2xl image-container">
+              {% comment %} <div 
+                  class="w-full bg-center bg-no-repeat bg-cover aspect-[3/2] bg-image" 
+                  role="img"
+                  aria-label="A modern office space with designers collaborating"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBMFQ61l1BtRAVOBzuKwi8GZ5nadbrTKU5lfdV4rQmZEl2lPlQdetKIbbUSbZFbhJp3Z-WhtsgdLkKm1N4HY4nF0aG9-mMXH9iLl90ppGAkKeVrL2Wt_0hw_fDRw1efpPKrDQLqRLf_G5jW9TCAzgI8WlCNATKoIyTRSVVvwQF49wNg8QUpj-V-expvObb-28l0FICfmgO-ZftiK9ZvC-U-o9PNn6r8lgsmZTq5FGjGLbP5kVxodg6DrD1xKiRxXMq_IrUD3zrWczk");'>
+              </div> {% endcomment %}
+              <div class="w-full aspect-video rounded-xl overflow-hidden bg-gray-200 dark:bg-white/10">
+                <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" class="w-full h-full" frameborder="0" src="{{about.video}}" title="YouTube video player"></iframe>
+                </div>
+          </div>
+      </div>
+
+      <div class="fade-slide">
+          <div class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 md:p-10 border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+              <p class="text-[#111318] dark:text-white text-lg md:text-xl leading-relaxed">
+                  Our mission is simple: <span class="font-semibold text-indigo-600 dark:text-indigo-400">to eliminate the guesswork in website creation</span>. Founded by a team of developers and designers who saw the frustration clients faced with traditional web development, Baxting was born. We believe you should see, feel, and interact with your website before it's built, ensuring the final product is exactly what you envisioned. 
+                  <span class="block mt-4 text-xl md:text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
+                      We show you your final product upfront, so you can commit with confidence.
+                  </span>
+              </p>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Services Section -->
+<div class="px-4 py-10 flex flex-col gap-8">
+  <div class="flex flex-col gap-2">
+    <h2 class="text-[#111318] dark:text-white text-[32px] font-bold leading-tight tracking-[-0.015em] fade-slide">
+      Our Services
+    </h2>
+    <p class="text-[#616f89] dark:text-white/70 text-base font-normal leading-normal fade-slide">
+      More services are coming soon
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-slide">
+    
+    <div class="group flex flex-col gap-4 rounded-xl bg-white dark:bg-background-dark p-6 border border-[#dbdfe6]/50 dark:border-white/20 hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 fade-slide">
+      <div class="flex items-center gap-3">
+        <div class="p-3 rounded-lg bg-primary/10 text-primary">
+          <span class="material-symbols-outlined text-2xl">business</span>
+        </div>
+        <h3 class="text-[#111318] dark:text-white text-lg font-bold leading-tight">Business Website</h3>
+      </div>
+      <p class="text-[#616f89] dark:text-white/70 text-sm font-normal leading-relaxed">
+        A complete, multi-page website to establish your brand's online presence. Includes pages like Home, About, Services, and Contact.
+      </p>
+    </div>
+
+    <div class="group flex flex-col gap-4 rounded-xl bg-white dark:bg-background-dark p-6 border border-[#dbdfe6]/50 dark:border-white/20 hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 fade-slide">
+      <div class="flex items-center gap-3">
+        <div class="p-3 rounded-lg bg-primary/10 text-primary">
+          <span class="material-symbols-outlined text-2xl">person</span>
+        </div>
+        <h3 class="text-[#111318] dark:text-white text-lg font-bold leading-tight">Freelance Website</h3>
+      </div>
+      <p class="text-[#616f89] dark:text-white/70 text-sm font-normal leading-relaxed">
+        Showcase your skills and portfolio with a professional website. Perfect for content creator, video editor, photographers, etc.
+      </p>
+    </div>
+
+    <div class="group flex flex-col gap-4 rounded-xl bg-white dark:bg-background-dark p-6 border border-[#dbdfe6]/50 dark:border-white/20 hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 fade-slide">
+      <div class="flex items-center gap-3">
+        <div class="p-3 rounded-lg bg-primary/10 text-primary">
+          <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+        </div>
+        <h3 class="text-[#111318] dark:text-white text-lg font-bold leading-tight">E-commerce Pro</h3>
+      </div>
+      <p class="text-[#616f89] dark:text-white/70 text-sm font-normal leading-relaxed">
+        A robust online store with full e-commerce functionality. Sell products, manage inventory, and accept payments seamlessly.
+      </p>
+    </div>
+
+    <div class="group flex flex-col gap-4 rounded-xl bg-white dark:bg-background-dark p-6 border border-[#dbdfe6]/50 dark:border-white/20 hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 fade-slide">
+      <div class="flex items-center gap-3">
+        <div class="p-3 rounded-lg bg-primary/10 text-primary">
+          <span class="material-symbols-outlined text-2xl">article</span>
+        </div>
+        <h3 class="text-[#111318] dark:text-white text-lg font-bold leading-tight">Blog Platform</h3>
+      </div>
+      <p class="text-[#616f89] dark:text-white/70 text-sm font-normal leading-relaxed">
+        Share your thoughts and expertise with a beautiful blogging platform. SEO-optimized and easy to manage.
+      </p>
+    </div>
+
+    <div class="group flex flex-col gap-4 rounded-xl bg-white dark:bg-background-dark p-6 border border-[#dbdfe6]/50 dark:border-white/20 hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 fade-slide">
+      <div class="flex items-center gap-3">
+        <div class="p-3 rounded-lg bg-primary/10 text-primary">
+          <span class="material-symbols-outlined text-2xl">web</span>
+        </div>
+        <h3 class="text-[#111318] dark:text-white text-lg font-bold leading-tight">Landing Page</h3>
+      </div>
+      <p class="text-[#616f89] dark:text-white/70 text-sm font-normal leading-relaxed">
+        A powerful, single-page site designed for high conversion. Perfect for marketing campaigns and product launches.
+      </p>
+      <div class="mt-auto pt-4 flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+        <span>Coming Soon</span>
+        <span class="material-symbols-outlined text-lg">schedule</span>
+      </div>
+    </div>
+
+    <div class="group flex flex-col gap-4 rounded-xl bg-white dark:bg-background-dark p-6 border border-[#dbdfe6]/50 dark:border-white/20 hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 fade-slide">
+      <div class="flex items-center gap-3">
+        <div class="p-3 rounded-lg bg-primary/10 text-primary">
+          <span class="material-symbols-outlined text-2xl">settings</span>
+        </div>
+        <h3 class="text-[#111318] dark:text-white text-lg font-bold leading-tight">Custom Solutions</h3>
+      </div>
+      <p class="text-[#616f89] dark:text-white/70 text-sm font-normal leading-relaxed">
+        Have something unique in mind? We build custom web solutions tailored to your specific needs and requirements.
+      </p>
+      <a href="{% url 'customers:help' %}">
+      <div class="mt-auto pt-4 flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+        <span>Contact Us</span>
+        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+      </div>
+    </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Testimonials Section -->
+<div class="px-4 py-10 fade-slide">
+    <div class="flex justify-between items-center pb-8">
+        <h2 class="text-[#111318] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] flex-1">
+            What Our Clients Say
+        </h2>
+        {% if request.user.is_authenticated %}
+            <button id="open-review-modal" class="btn-primary flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all hover:scale-105">
+                <span class="material-symbols-outlined">rate_review</span>
+                <span>Write Review</span>
+            </button>
+        {% endif %}
+    </div>
+  
+    <!-- Infinite Marquee -->
+    <div class="relative overflow-hidden py-8">
+        <div class="marquee-wrapper">
+            <div class="marquee-content">
+                {% for reviews in review %}
+                <div class="review-card">
+                    <div class="flex gap-1 text-yellow-400">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= reviews.rating %}
+                                <span class="text-xl">★</span>
+                            {% else %}
+                                <span class="text-xl text-gray-300 dark:text-gray-600">★</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p class="review-text">"{{ reviews.comment }}"</p>
+                    <p class="review-author">— {{ reviews.name.name }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="marquee-content" aria-hidden="true">
+                {% for reviews in review %}
+                <div class="review-card">
+                    <div class="flex gap-1 text-yellow-400">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= reviews.rating %}
+                                <span class="text-xl">★</span>
+                            {% else %}
+                                <span class="text-xl text-gray-300 dark:text-gray-600">★</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p class="review-text">"{{ reviews.comment }}"</p>
+                    <p class="review-author">
+                      {% with reviews.name.domains.first as domain %}
+                        {% if domain %}
+                          <span class="text-sm text-gray-500">
+                            
+                            <a
+                            href="https://{{ domain.domain }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-indigo-600 hover:underline"
+                          >
+                            {{ domain.domain }}
+                          </a>
+                          </span>
+                        {% endif %}
+                      {% endwith %}
+                    </p>
+                    <p class="review-author">— {{ reviews.name.name }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Login Prompt for Non-Authenticated Users -->
+    {% if not request.user.is_authenticated %}
+    <div class="text-center mt-8">
+        <button onclick="window.location.href='{% url 'account_login' %}'" class="btn-primary inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all hover:scale-105">
+            <span class="material-symbols-outlined">login</span>
+            <span>Login to Write a Review</span>
+        </button>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Review Modal -->
+{% if request.user.is_authenticated %}
+<div id="review-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="review-modal-content max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="review-form-container">
+            <div class="review-form">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 id="rrrr" class="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                        {% if user_review %}Edit Your Review{% else %}Write a Review{% endif %}
+                    </h3>
+                    <button id="close-review-modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                        <span class="material-symbols-outlined text-3xl">close</span>
+                    </button>
+                </div>
+                
+                <textarea id="review-comment" rows="4" maxlength="120"
+                    class="w-full p-4 rounded-xl border-2 border-gray-300 dark:border-gray-700 dark:bg-slate-800 dark:text-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all resize-none"
+                    placeholder="Share your experience with us...">{% if user_review %}{{ user_review.comment }}{% endif %}</textarea>
+                
+                <p id="char-count" class="text-sm text-gray-500 mt-2 text-right">0 / 120</p>
+                
+                <div class="flex gap-2 my-6 justify-center">
+                    {% for star in "12345" %}
+                    <span class="star text-4xl cursor-pointer text-gray-300"
+                        data-value="{{ star }}">★</span>
+                    {% endfor %}
+                </div>
+                
+                <input type="hidden" id="client-id" value="{{ request.user.id }}">
+                
+                <button id="submit-review-btn"
+                    class="btn-primary w-full text-white font-semibold py-4 rounded-xl transition-all">
+                    {% if user_review %}Update Review{% else %}Submit Review{% endif %}
+                </button>
+                
+                {% if user_review %}
+                <button id="delete-review-btn"
+                    class="mt-4 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 rounded-xl transition-all">
+                    Delete Review
+                </button>
+                {% endif %}
+                
+                <p id="review-success" class="text-green-600 font-semibold mt-4 hidden text-center">✓ Saved Successfully!</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+</div>
+</body>
+
+<script>
+// Character Counter
+const textarea = document.getElementById("review-comment");
+const charCount = document.getElementById("char-count");
+const maxChars = 120;
+
+if (textarea) {
+    textarea.addEventListener("input", () => {
+        charCount.textContent = `${textarea.value.length} / ${maxChars}`;
+    });
+    charCount.textContent = `${textarea.value.length} / ${maxChars}`;
+}
+
+// Modal Controls
+const openModalBtn = document.getElementById("open-review-modal");
+const closeModalBtn = document.getElementById("close-review-modal");
+const reviewModal = document.getElementById("review-modal");
+
+openModalBtn?.addEventListener("click", () => {
+    reviewModal?.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+});
+
+closeModalBtn?.addEventListener("click", () => {
+    reviewModal?.classList.add("hidden");
+    document.body.style.overflow = "auto";
+});
+
+// Close modal when clicking outside
+reviewModal?.addEventListener("click", (e) => {
+    if (e.target === reviewModal) {
+        reviewModal.classList.add("hidden");
+        document.body.style.overflow = "auto";
     }
-  </style>
-</head>
-<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
-<div class="group/design-root">
-<div class="layout-container flex h-full grow flex-col">
-<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-<div class="container mx-auto flex items-center justify-between whitespace-nowrap px-4 sm:px-6 lg:px-8 py-4">
-<div class="flex items-center gap-3">
-<!-- <img src="favicon.svg" alt=""> -->
-<h2 class="text-xl font-bold text-gray-900 dark:text-white">Baxting</h2>
-</div>
-<nav class="hidden md:flex items-center gap-8">
-<a class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" href=".">Home</a>
-<a class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" href="/pricing.html">Pricing</a>
-<a class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" href="/about.html">About</a>
-<a class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" href="/help.html">Help Desk</a>
-</nav>
-<div class="flex items-center gap-2">
-<a class="px-4 py-2 text-sm font-bold rounded-lg text-gray-800 dark:text-white bg-gray-200/50 dark:bg-gray-800/50 hover:bg-gray-200/80 dark:hover:bg-gray-800/80 transition-colors" href="#">Log In</a>
-<a class="px-4 py-2 text-sm font-bold rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors" href="#">Get Started</a>
-</div>
-</div>
-</header>
-<main class="flex-1">
-<section class="relative">
-<div class="absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBL9_M-wqj2O-OEGx6akUANalKD9_8nje3OBg7a7EaFmnZ1KkgdfDENov5K1Prs-vWfH3HEN5JHOf1d3BdInmJEAj6EqrsuOltgRzuoT3cWM_8pkH_TQU6RMqowh0AtHQZSa93wbXYHjWQJvIxKkCQaYpv3WYWV7Ttv_RY0aoXo-WJx3u5dqb7yyWyaA1SllH4p00nc6_iMna936PrfJaWcz4dRudFPscvfp6KJ_mRD85957iktTZcQjrZWn0FB8GD4Kk4JLad3cCB5");'></div>
-<div class="absolute inset-0 bg-black/50"></div>
-<div class="relative container mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 lg:py-40 text-center text-white">
-<h1 class="text-4xl md:text-6xl font-black tracking-tighter leading-tight">Build a professional website within 24 hours</h1>
-<p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl font-normal text-white/90">Create a stunning website for your business with our easy-to-use software. No coding required.</p>
-<a class="mt-8 inline-block px-8 py-4 text-base font-bold rounded-lg bg-primary text-white hover:bg-primary/90 transition-transform transform hover:scale-105" href="/login">Get Started Free</a>
-</div>
-</section>
-<section class="py-16 sm:py-24 bg-background-light dark:bg-background-dark">
-<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-<div class="max-w-3xl mx-auto text-center">
-<h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">Why choose Baxting?</h2>
-<p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Our website software is designed to help small businesses succeed online. Here's what sets us apart:</p>
-</div>
-<div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-<div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark/50 p-6 shadow-sm hover:shadow-lg transition-shadow">
-<div class="flex items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary">
-<svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<path d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<h3 class="text-lg font-bold text-gray-900 dark:text-white">Easy to Use</h3>
-<p class="text-sm text-gray-600 dark:text-gray-400">Our intuitive drag-and-drop interface makes website building simple and enjoyable for everyone.</p>
-</div>
-<div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark/50 p-6 shadow-sm hover:shadow-lg transition-shadow">
-<div class="flex items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary">
-<svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<path d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<h3 class="text-lg font-bold text-gray-900 dark:text-white">Customizable Templates</h3>
-<p class="text-sm text-gray-600 dark:text-gray-400">Choose from a variety of professionally designed templates to match your brand's unique style.</p>
-</div>
-<div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark/50 p-6 shadow-sm hover:shadow-lg transition-shadow">
-<div class="flex items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary">
-<svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<h3 class="text-lg font-bold text-gray-900 dark:text-white">SEO Optimized</h3>
-<p class="text-sm text-gray-600 dark:text-gray-400">Improve your website's visibility with built-in SEO tools and best practices.</p>
-</div>
-</div>
-</div>
-</section>
-<section class="py-16 sm:py-24 bg-white dark:bg-background-dark/30">
-<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-<div class="max-w-3xl mx-auto text-center">
-<h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">Loved by businesses worldwide</h2>
-<p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Our users have  amazing websites. Here's what they have to say.</p>
-</div>
-<div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-<div class="flex flex-col gap-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark p-6 shadow-sm">
-<p class="text-gray-600 dark:text-gray-400">"Baxting is incredibly easy to use. I had my business website up and running in a single afternoon, and it looks fantastic!"</p>
-<div class="flex items-center gap-4">
-<img class="w-12 h-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrl6YHu-fijYQIvn1EakjjU-HDpJskAf336QxkXGz8ZBujEh4Fyry92pt4YXCsTwg1qkQ2gVb70ZMWPnONeGYhP_yIa7Y51Tp_ZySJHvu_S5wZsw2X-Nnljmgx7E-Z-Ibl0e_k-P1Ihi1DwnK5l7F02waK-L9rkQCYo2P4NRp_NZFQpuLkjOE7m5ce-QJCviNbCdnQg9K_g1RgW4Qnex4rSsMHM15MZlEnWQAkwLa8YY5Dz-CSzO-Yw-yvtxczkd8RabC9yKfscVed"/>
-<div>
-<h4 class="font-bold text-gray-900 dark:text-white">John Doe</h4>
-<p class="text-sm text-gray-500 dark:text-gray-400">Founder, The Coffee Shop</p>
-</div>
-</div>
-</div>
-<div class="flex flex-col gap-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark p-6 shadow-sm">
-<p class="text-gray-600 dark:text-gray-400">"The templates are beautiful and modern. I was able to customize one to perfectly fit my brand. Highly recommended for any small business owner."</p>
-<div class="flex items-center gap-4">
-<img class="w-12 h-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrl6YHu-fijYQIvn1EakjjU-HDpJskAf336QxkXGz8ZBujEh4Fyry92pt4YXCsTwg1qkQ2gVb70ZMWPnONeGYhP_yIa7Y51Tp_ZySJHvu_S5wZsw2X-Nnljmgx7E-Z-Ibl0e_k-P1Ihi1DwnK5l7F02waK-L9rkQCYo2P4NRp_NZFQpuLkjOE7m5ce-QJCviNbCdnQg9K_g1RgW4Qnex4rSsMHM15MZlEnWQAkwLa8YY5Dz-CSzO-Yw-yvtxczkd8RabC9yKfscVed"/>
-<div>
-<h4 class="font-bold text-gray-900 dark:text-white">Jane Smith</h4>
-<p class="text-sm text-gray-500 dark:text-gray-400">Owner, Blossom Boutique</p>
-</div>
-</div>
-</div>
-<div class="flex flex-col gap-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark p-6 shadow-sm">
-<p class="text-gray-600 dark:text-gray-400">"I'm not a tech-savvy person, but SiteCraft made it so simple. The SEO tools have also helped my business get noticed online."</p>
-<div class="flex items-center gap-4">
-<img class="w-12 h-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrl6YHu-fijYQIvn1EakjjU-HDpJskAf336QxkXGz8ZBujEh4Fyry92pt4YXCsTwg1qkQ2gVb70ZMWPnONeGYhP_yIa7Y51Tp_ZySJHvu_S5wZsw2X-Nnljmgx7E-Z-Ibl0e_k-P1Ihi1DwnK5l7F02waK-L9rkQCYo2P4NRp_NZFQpuLkjOE7m5ce-QJCviNbCdnQg9K_g1RgW4Qnex4rSsMHM15MZlEnWQAkwLa8YY5Dz-CSzO-Yw-yvtxczkd8RabC9yKfscVed"/>
-<div>
-<h4 class="font-bold text-gray-900 dark:text-white">Mike Johnson</h4>
-<p class="text-sm text-gray-500 dark:text-gray-400">Photographer, MJ Studios</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
+});
 
-</main>
-<footer class="bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-gray-800">
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-<div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left space-y-4 md:space-y-0">
-<p class="text-sm text-gray-500 dark:text-gray-400">© 2024 SiteCraft. All rights reserved.</p>
-<div class="flex items-center justify-center space-x-6">
-<a class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">Terms</a>
-<a class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">Privacy</a>
-<a class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">Contact</a>
-</div>
-</div>
-</div>
-</footer>
-</div>
-</div>
+// Close modal on Escape key
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && reviewModal && !reviewModal.classList.contains("hidden")) {
+        reviewModal.classList.add("hidden");
+        document.body.style.overflow = "auto";
+    }
+});
 
-</body></html>
+// Star Rating
+let selectedRating = {{ user_review.rating|default:0 }};
+
+function paintStars(r) {
+    document.querySelectorAll(".star").forEach(star => {
+        let val = parseInt(star.dataset.value);
+        star.style.color = val <= r ? "#fbbf24" : "#d1d5db";
+        if (val <= r) {
+            star.classList.add('selected');
+        } else {
+            star.classList.remove('selected');
+        }
+    });
+}
+
+paintStars(selectedRating);
+
+document.querySelectorAll(".star").forEach(star => {
+    star.addEventListener("click", () => {
+        selectedRating = parseInt(star.dataset.value);
+        paintStars(selectedRating);
+    });
+});
+
+// Submit Review
+document.getElementById("submit-review-btn")?.addEventListener("click", () => {
+    let comment = document.getElementById("review-comment").value.trim();
+    
+    if (!comment) {
+        alert("Please write a review before submitting.");
+        return;
+    }
+    
+    if (selectedRating === 0) {
+        alert("Please select a star rating.");
+        return;
+    }
+
+    fetch("/submit-review/", {
+        method: "POST",
+        headers: {"X-CSRFToken": "{{ csrf_token }}"},
+        body: new URLSearchParams({
+            comment: comment,
+            rating: selectedRating,
+            client_id: document.getElementById("client-id").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById("review-success").classList.remove("hidden");
+            setTimeout(() => location.reload(), 1500);
+        }
+    });
+});
+
+// Delete Review
+document.getElementById("delete-review-btn")?.addEventListener("click", () => {
+    if (!confirm("Are you sure you want to delete your review?")) return;
+    
+    fetch("/delete-review/", {
+        method: "POST",
+        headers: {"X-CSRFToken": "{{ csrf_token }}"}
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const textarea = document.getElementById("review-comment");
+            textarea.value = '';
+            document.getElementById("char-count").textContent = '0 / 120';
+            
+            const submitBtn = document.getElementById("submit-review-btn");
+            if (submitBtn) submitBtn.textContent = 'Submit Review';
+            
+            const heading = document.getElementById('rrrr');
+            if (heading) heading.textContent = 'Write a Review';
+            
+            document.getElementById("delete-review-btn")?.remove();
+            
+            selectedRating = 0;
+            paintStars(selectedRating);
+            
+            // Close modal and reload
+            reviewModal?.classList.add("hidden");
+            document.body.style.overflow = "auto";
+            setTimeout(() => location.reload(), 500);
+        }
+    });
+});
+
+// Intersection Observer for Animations
+const faders = document.querySelectorAll('.fade-slide');
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+        }
+    });
+}, { threshold: 0.1 });
+
+faders.forEach(fader => observer.observe(fader));
+</script>
+
+{% endblock %}

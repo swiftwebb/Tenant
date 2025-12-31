@@ -1,0 +1,32 @@
+{% extends 'ress/base.html' %}
+{% block content %}
+
+
+<main class="flex flex-1 items-center justify-center py-20 px-6 sm:px-10">
+    <div class="flex max-w-3xl flex-col items-center gap-8 text-center">
+    <div class="flex flex-col gap-4">
+    <h1 class="text-white text-5xl font-black leading-tight tracking-tighter md:text-7xl">
+                                Elysian Table
+                            </h1>
+    <h2 class="text-white/90 text-lg font-normal leading-normal md:text-xl">
+                                Exquisite Dining, Unforgettable Moments
+                            </h2>
+    </div>
+    <div class="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
+        <a href="{% url 'book' %}">   
+             <button class="flex min-w-[160px] max-w-sm cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+    <span class="truncate">Book a Table</span>
+    </button>
+    </a>
+
+    <a href="{% url 'menu' %}">
+    <button class="flex min-w-[160px] max-w-sm cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-white/10 text-white text-base font-bold leading-normal tracking-[0.015em] border border-white/20 hover:bg-white/20 transition-colors">
+    <span class="truncate">View Menu</span>
+    </button>
+    </a>
+    </div>
+    </div>
+    </main>
+
+
+{% endblock %}

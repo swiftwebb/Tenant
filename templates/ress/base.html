@@ -1,0 +1,378 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Valloria Dining</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              50: '#fdfbf7',
+              100: '#faf6ed',
+              200: '#f4ebd3',
+              300: '#ead9a8',
+              400: '#ddb96d',
+              500: '#d4a64e',
+              600: '#c08d2e',
+              700: '#a67422',
+              800: '#8a5e1f',
+              900: '#6b481a',
+            },
+            bronze: {
+              600: '#8b6914',
+              700: '#705512',
+              800: '#4a3708',
+            },
+            cream: '#fef9f0',
+            darkBg: '#0a0806',
+          },
+          fontFamily: {
+            display: ["Playfair Display", "serif"],
+            serif: ["Cormorant Garamond", "serif"],
+            body: ["Inter", "sans-serif"]
+          },
+          boxShadow: {
+            'gold-sm': '0 2px 8px rgba(212, 166, 78, 0.15)',
+            'gold-md': '0 4px 20px rgba(212, 166, 78, 0.25)',
+            'gold-lg': '0 10px 40px rgba(212, 166, 78, 0.3)',
+            'gold-glow': '0 0 30px rgba(212, 166, 78, 0.4), 0 0 60px rgba(212, 166, 78, 0.2)',
+            'inner-gold': 'inset 0 2px 8px rgba(212, 166, 78, 0.1)',
+          },
+          animation: {
+            'fade-in': 'fadeIn 1s ease-out',
+            'fade-in-up': 'fadeInUp 1s ease-out',
+            'slide-down': 'slideDown 0.4s ease-out',
+            'shimmer': 'shimmer 3s ease-in-out infinite',
+            'pulse-gold': 'pulseGold 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideDown: {
+              '0%': { opacity: '0', transform: 'translateY(-20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            shimmer: {
+              '0%, 100%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+            },
+            pulseGold: {
+              '0%, 100%': { boxShadow: '0 0 20px rgba(212, 166, 78, 0.4)' },
+              '50%': { boxShadow: '0 0 40px rgba(212, 166, 78, 0.7)' },
+            }
+          }
+        },
+      },
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .glass-gold {
+      background: linear-gradient(135deg, 
+        rgba(212, 166, 78, 0.08) 0%, 
+        rgba(192, 141, 46, 0.05) 100%);
+      backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(212, 166, 78, 0.2);
+    }
+
+    .glass-dark {
+      background: rgba(10, 8, 6, 0.85);
+      backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(212, 166, 78, 0.15);
+    }
+
+    .gradient-gold {
+      background: linear-gradient(135deg, #d4a64e 0%, #c08d2e 50%, #a67422 100%);
+    }
+
+    .gradient-gold-text {
+      background: linear-gradient(135deg, #ead9a8 0%, #d4a64e 50%, #c08d2e 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    .gold-border {
+      border-image: linear-gradient(135deg, #d4a64e, #c08d2e, #a67422) 1;
+    }
+
+    .nav-link {
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #d4a64e, transparent);
+      transform: translateX(-50%);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .hero-overlay {
+      background: linear-gradient(180deg, 
+        rgba(10, 8, 6, 0.3) 0%, 
+        rgba(10, 8, 6, 0.75) 40%,
+        rgba(10, 8, 6, 0.9) 70%,
+        rgba(10, 8, 6, 0.95) 100%
+      );
+    }
+
+    .ornament {
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #d4a64e, transparent);
+      position: relative;
+    }
+
+    .ornament::before,
+    .ornament::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #d4a64e;
+      border-radius: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .ornament::before {
+      left: -3px;
+    }
+
+    .ornament::after {
+      right: -3px;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #d4a64e 0%, #c08d2e 100%);
+      box-shadow: 0 4px 20px rgba(212, 166, 78, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-gold::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    .btn-gold:hover::before {
+      left: 100%;
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(212, 166, 78, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .gold-divider {
+      height: 1px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(212, 166, 78, 0.3) 20%, 
+        rgba(212, 166, 78, 0.8) 50%, 
+        rgba(212, 166, 78, 0.3) 80%, 
+        transparent 100%);
+    }
+  </style>
+</head>
+
+<body class="bg-cream dark:bg-darkBg text-bronze-800 dark:text-gold-200 transition-colors duration-300">
+  <div class="min-h-screen flex flex-col">
+
+  <!-- Hero Background -->
+  <div class="absolute inset-0 z-0">
+    {% if home.image %}
+        <div class="absolute inset-0 hero-overlay z-10"></div>
+        <img class="h-full w-full object-cover" 
+             data-alt="Elegant and sophisticated restaurant interior" 
+             src="{{ home.image.url }}" />
+    {% else %}
+        <!-- Premium fallback background -->
+        <div class="absolute inset-0 bg-gradient-to-br from-bronze-800 via-bronze-700 to-darkBg z-10"></div>
+    {% endif %}
+  </div>
+
+  <!-- HEADER -->
+  <header class="fixed top-0 left-0 w-full z-50 glass-dark px-6 md:px-16 py-5 flex items-center justify-between animate-fade-in border-b border-gold-500/10">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-3 group">
+      <img src="{% static 'logo_dark.svg' %}" alt="logo" class="h-12 w-auto group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_8px_rgba(212,166,78,0.5)]">
+      <div class="flex flex-col">
+        <span class="text-2xl font-bold gradient-gold-text tracking-widest">VALLORIA</span>
+        <span class="text-[10px] text-gold-400 tracking-[0.3em] uppercase font-light">Fine Dining</span>
+      </div>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-10">
+      <a href="/" class="nav-link text-gold-300 hover:text-gold-400 font-medium text-sm uppercase tracking-[0.2em] transition-colors">Home</a>
+      <a href="{% url 'menu' %}" class="nav-link text-gold-400 hover:text-gold-300 font-medium text-sm uppercase tracking-[0.2em] transition-colors">Menu</a>
+      <a href="{% url 'book' %}" class="nav-link text-gold-400 hover:text-gold-300 font-medium text-sm uppercase tracking-[0.2em] transition-colors">Reserve</a>
+      
+      <div class="h-8 w-px bg-gradient-to-b from-transparent via-gold-500/30 to-transparent mx-2"></div>
+      
+      <a href="{% url 'book' %}" class="btn-gold px-8 py-3 text-darkBg font-semibold rounded-full text-sm uppercase tracking-wider">
+        Book Table
+      </a>
+    </nav>
+
+    <!-- Mobile -->
+    <button id="menu-btn" class="md:hidden text-3xl text-gold-400 hover:text-gold-300 transition-colors">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden fixed top-[92px] left-0 right-0 glass-dark border-b border-gold-500/20 p-8 z-40 space-y-6 animate-slide-down">
+    <a href="/" class="block text-lg font-semibold text-gold-300 hover:text-gold-400 transition-colors uppercase tracking-wider">Home</a>
+    <a href="{% url 'menu' %}" class="block text-lg text-gold-400 hover:text-gold-300 transition-colors uppercase tracking-wider">Menu</a>
+    <a href="{% url 'book' %}" class="block text-lg text-gold-400 hover:text-gold-300 transition-colors uppercase tracking-wider">Reserve</a>
+    <div class="gold-divider my-4"></div>
+    <a href="{% url 'book' %}" class="block btn-gold px-8 py-4 text-darkBg font-semibold rounded-full text-center uppercase tracking-wider">
+      Book Table
+    </a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow pt-32 relative z-20">
+    {% if messages %}
+      <div class="fixed top-28 right-5 z-50 space-y-3 animate-fade-in-up max-w-md">
+        {% for message in messages %}
+          <div class="glass-gold rounded-xl px-6 py-4 shadow-gold-lg border
+            {% if message.tags == 'success' %} border-green-400/40 bg-green-900/20
+            {% elif message.tags == 'error' %} border-red-400/40 bg-red-900/20
+            {% elif message.tags == 'warning' %} border-gold-400/40 bg-gold-900/20
+            {% else %} border-gold-400/30{% endif %}">
+            <div class="flex items-start justify-between gap-4">
+              <p class="text-gold-100 text-sm font-medium leading-relaxed">{{ message }}</p>
+              <button onclick="this.parentElement.parentElement.style.opacity='0'; this.parentElement.parentElement.style.transform='translateX(100px)'; setTimeout(()=>this.parentElement.parentElement.remove(), 300)" 
+                      class="text-gold-400/60 hover:text-gold-300 text-xl transition-colors flex-shrink-0">✕</button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  {% include "ress/footer.html" %}
+</div>
+
+<!-- Script -->
+<script>
+  document.getElementById("menu-btn").addEventListener("click", () => {
+    const menu = document.getElementById("mobile-menu");
+    menu.classList.toggle("hidden");
+  });
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Parallax effect on hero image
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.absolute.inset-0 img');
+        if (hero) {
+          hero.style.transform = `translateY(${scrolled * 0.4}px) scale(1.05)`;
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // Add shimmer effect to gold text on scroll
+  const goldTexts = document.querySelectorAll('.gradient-gold-text');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+      }
+    });
+  }, { threshold: 0.5 });
+
+  goldTexts.forEach(text => observer.observe(text));
+</script>
+
+
+
+{{ request.tenant.id|json_script:"tenant_id" }}
+<script>
+  const tenantId = JSON.parse(document.getElementById('tenant_id').textContent);
+
+  fetch("/track_visit/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      tenant_id: tenantId,
+      path: window.location.pathname,
+      referrer: document.referrer,
+      user_agent: navigator.userAgent
+    })
+  });
+</script>
+
+
+
+</body>
+</html>

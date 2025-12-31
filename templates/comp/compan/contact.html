@@ -1,0 +1,120 @@
+{% extends 'comp/base.html' %}
+{% block content %}
+
+<main class="flex flex-1 justify-center py-14 md:py-24 px-4 sm:px-6 lg:px-10 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
+  <div class="w-full max-w-6xl">
+
+    <!-- Heading -->
+    <div class="flex flex-col items-center text-center mb-14 md:mb-20">
+      <h1 class="text-4xl md:text-5xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
+        Get in Touch
+      </h1>
+      <p class="max-w-2xl mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400">
+        We’re here to support you. Fill out the form below and our team will respond promptly.
+      </p>
+    </div>
+
+    <!-- Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+
+      <!-- Form -->
+      <div class="lg:col-span-3 bg-white dark:bg-gray-800/90 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 transition hover:shadow-2xl">
+        <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Send a Message</h2>
+
+        <form method="POST" action="{% url 'contact' %}" class="space-y-6">
+          {% csrf_token %}
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+              <input name="name" required
+                class="rounded-xl mt-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 h-12 px-4 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/60 focus:outline-none w-full"
+                placeholder="John Doe" type="text" />
+            </div>
+
+            <div>
+              <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Company Email</label>
+              <input name="email" required
+                class="rounded-xl mt-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 h-12 px-4 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/60 w-full"
+                placeholder="you@gmail.com" type="email" />
+            </div>
+          </div>
+
+          <div>
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
+            <input name="phone" required
+              class="rounded-xl mt-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 h-12 px-4 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/60 w-full"
+              placeholder="+234 800 000 0000" type="tel" />
+          </div>
+
+          <div>
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
+            <textarea name="message" required
+              class="rounded-xl mt-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 p-4 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/60 w-full h-36 resize-none"
+              placeholder="How can we assist you today?"></textarea>
+          </div>
+
+          <button type="submit"
+            class="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold tracking-wide transition shadow-lg hover:shadow-xl">
+            Send Message
+          </button>
+        </form>
+      </div>
+
+      <!-- Contact Info + Map -->
+      <div class="lg:col-span-2 space-y-8">
+
+        <!-- Contact Details -->
+        <div class="bg-white dark:bg-gray-800/90 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
+          <h3 class="text-xl font-bold mb-6 text-gray-900 dark:text-white">Reach Us</h3>
+          <div class="space-y-6">
+
+            <!-- Email -->
+            <div class="flex gap-4">
+              <div class="h-12 w-12 rounded-xl bg-primary/10 dark:bg-primary/20 text-primary flex items-center justify-center text-xl">
+                <span class="material-symbols-outlined">mail</span>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-800 dark:text-gray-200">Email</p>
+                <a href="mailto:contact@procorp.com"
+                  class="text-gray-600 dark:text-gray-400 hover:text-primary transition">contact@procorp.com</a>
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="flex gap-4">
+              <div class="h-12 w-12 rounded-xl bg-primary/10 dark:bg-primary/20 text-primary flex items-center justify-center text-xl">
+                <span class="material-symbols-outlined">call</span>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-800 dark:text-gray-200">Phone</p>
+                <a href="tel:+15551234567"
+                  class="text-gray-600 dark:text-gray-400 hover:text-primary transition">+1 (555) 123-4567</a>
+              </div>
+            </div>
+
+            <!-- Location -->
+            <div class="flex gap-4">
+              <div class="h-12 w-12 rounded-xl bg-primary/10 dark:bg-primary/20 text-primary flex items-center justify-center text-xl">
+                <span class="material-symbols-outlined">location_on</span>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-800 dark:text-gray-200">Office</p>
+                <p class="text-gray-600 dark:text-gray-400">
+                  123 Innovation Drive, Tech Park, CA 94043
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Map -->
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+{% endblock %}

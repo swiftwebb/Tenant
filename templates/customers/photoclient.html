@@ -104,12 +104,12 @@
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                   <div>
-                    {{product.name}}
+                    {{product.full_name}}
 
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <a href="{% url 'customers:mess_detail_d' product.pk %}" class="text-gray-500 dark:text-gray-400 hover:text-primary">
+                  <a href="{% url 'customers:book_detail_d' product.pk %}" class="text-gray-500 dark:text-gray-400 hover:text-primary">
                     <span class="material-symbols-outlined">visibility</span>
                   </a>
                   <a href="{% url 'customers:dashboard_delete_book' product.pk %}" class="text-gray-500 dark:text-gray-400 hover:text-red-500">

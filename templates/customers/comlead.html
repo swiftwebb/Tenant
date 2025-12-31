@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4 sm:px-6 lg:px-10">
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8 text-center">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white">
+        {{ product.name }}
+      </h1>
+      <p class="text-gray-500 dark:text-gray-400 text-sm">
+        Leadership Profile Overview
+      </p>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+
+      <!-- Leader Image -->
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}"
+             class="w-full h-80 object-cover object-top rounded-t-2xl">
+      {% else %}
+        <div class="w-full h-80 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 dark:text-gray-500 italic">
+          No Profile Image Added
+        </div>
+      {% endif %}
+
+      <!-- Content -->
+      <div class="p-8 space-y-6">
+
+        <!-- Position -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+            Position
+          </h2>
+          <p class="text-gray-600 dark:text-gray-300 text-lg font-medium">
+            {{ product.title }}
+          </p>
+        </div>
+
+        <!-- Name -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+            Full Name
+          </h2>
+          <p class="text-gray-700 dark:text-gray-300 text-lg">
+            {{ product.name }}
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+
+      <a href="{% url 'customers:dashboard_company_leader' %}"
+         class="flex items-center justify-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 
+                dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-xl font-semibold shadow-sm transition-all">
+        ← Back
+      </a>
+
+      <a href="{% url 'customers:home_edit_ccoml' product.id %}"
+         class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl 
+                font-semibold shadow-md transition-all">
+        ✏️ Edit Leader
+      </a>
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

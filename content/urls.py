@@ -15,6 +15,7 @@ urlpatterns = [
     path('collab/', collab, name='collab'),
     path('collab/<int:id>', collabo, name='collabo'),
     path('cats/<int:id>/', cats, name='cats'),
+    path("track_visit/", track_visit, name="track_visit"),
     
     path('accounts/', include('allauth.urls')),
 ]

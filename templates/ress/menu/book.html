@@ -1,0 +1,81 @@
+{% extends 'ress/base.html' %}
+{% block content %}
+
+
+
+
+
+<form method="POST" action="{% url 'book' %}" class="w-full max-w-3xl mx-auto bg-zinc-900/30 p-8 rounded-xl border border-white/10 flex flex-col gap-6">
+    {% csrf_token %}
+
+    <!-- Name -->
+    <div class="flex flex-col">
+        <label for="name" class="mb-2 text-white font-medium">Your Name</label>
+        <input type="text" name="name" id="name" required
+            class="rounded-lg border-0 bg-[#493c22] p-3 text-white placeholder:text-white/50 focus:ring-2 focus:ring-primary"/>
+    </div>
+
+    <!-- Email -->
+    <div class="flex flex-col">
+        <label for="email" class="mb-2 text-white font-medium">Email</label>
+        <input type="email" name="email" id="email" required
+            class="rounded-lg border-0 bg-[#493c22] p-3 text-white placeholder:text-white/50 focus:ring-2 focus:ring-primary"/>
+    </div>
+
+    <!-- Phone -->
+    <div class="flex flex-col">
+        <label for="phone" class="mb-2 text-white font-medium">Phone Number</label>
+        <input type="tel" name="phone" id="phone" required
+            class="rounded-lg border-0 bg-[#493c22] p-3 text-white placeholder:text-white/50 focus:ring-2 focus:ring-primary"/>
+    </div>
+
+    <!-- Date -->
+    <div class="flex flex-col">
+        <label for="date" class="mb-2 text-white font-medium">Date</label>
+        <input type="date" name="date" id="date" min="{{ today }}" required
+        class="rounded-lg border-0 bg-[#493c22] p-3 text-white placeholder:text-white/50 focus:ring-2 focus:ring-primary"/>
+    
+    </div>
+
+    <!-- Time -->
+    <div class="flex flex-col">
+        <label for="time" class="mb-2 text-white font-medium">Time</label>
+        <select name="time" id="time" required
+            class="rounded-lg border-0 bg-[#493c22] p-3 text-white placeholder:text-white/50 focus:ring-2 focus:ring-primary">
+            <option value="">Select a time</option>
+            <option value="19:00">7:00 PM</option>
+            <option value="19:30">7:30 PM</option>
+            <option value="20:00">8:00 PM</option>
+            <option value="20:30">8:30 PM</option>
+            <option value="21:00">9:00 PM</option>
+            <option value="21:30">9:30 PM</option>
+        </select>
+    </div>
+
+    <!-- Guests -->
+    <div class="flex flex-col">
+        <label for="guests" class="mb-2 text-white font-medium">Number of Guests</label>
+        <input type="number" name="guests" id="guests" min="1" value="2" required
+            class="rounded-lg border-0 bg-[#493c22] p-3 text-white placeholder:text-white/50 focus:ring-2 focus:ring-primary"/>
+    </div>
+
+    <!-- Special Requests -->
+    <div class="flex flex-col">
+        <label for="special_requests" class="mb-2 text-white font-medium">Special Requests (Optional)</label>
+        <textarea name="special_requests" id="special_requests" rows="4"
+            class="rounded-lg border-0 bg-[#493c22] p-3 text-white placeholder:text-white/50 focus:ring-2 focus:ring-primary"
+            placeholder="e.g. dietary restrictions, allergies, special occasion"></textarea>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit"
+    class="w-full py-3 rounded-lg font-bold text-zinc-900 hover:opacity-90 transition-opacity"
+    style="background-color: #D4AF37;">
+    Find a Table
+</button>
+
+</form>
+
+
+
+{% endblock %}

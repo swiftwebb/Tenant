@@ -1,0 +1,170 @@
+<footer class="relative z-20 glass-dark border-t border-gold-500/20 mt-20 backdrop-blur-xl">
+  <div class="mx-auto max-w-screen-xl px-6 py-16">
+    
+    <!-- Top -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-16 text-center md:text-left">
+      <!-- Logo & Tagline -->
+      <div class="animate-fade-in">
+        <div class="flex flex-col items-center md:items-start">
+          <h2 class="text-3xl font-bold gradient-gold-text tracking-widest">VALLORIA</h2>
+          <span class="text-[10px] text-gold-400 tracking-[0.3em] uppercase font-light mt-1">Fine Dining</span>
+        </div>
+        <div class="flex justify-center md:justify-start my-6">
+          <div class="ornament"></div>
+        </div>
+        <p class="text-gold-400/80 text-sm leading-relaxed font-light">
+          Luxury dining, crafted flavors & unforgettable ambience.
+        </p>
+        <div class="mt-8 flex gap-4 justify-center md:justify-start">
+          <a href="#" class="w-11 h-11 rounded-full glass-gold flex items-center justify-center hover:border-gold-400 hover:shadow-gold-sm transition-all duration-300 group border border-gold-500/30">
+            <span class="text-gold-400 group-hover:text-gold-300 font-semibold transition-colors">f</span>
+          </a>
+          <a href="#" class="w-11 h-11 rounded-full glass-gold flex items-center justify-center hover:border-gold-400 hover:shadow-gold-sm transition-all duration-300 group border border-gold-500/30">
+            <span class="text-gold-400 group-hover:text-gold-300 font-semibold transition-colors">𝕏</span>
+          </a>
+          <a href="#" class="w-11 h-11 rounded-full glass-gold flex items-center justify-center hover:border-gold-400 hover:shadow-gold-sm transition-all duration-300 group border border-gold-500/30">
+            <span class="text-gold-400 group-hover:text-gold-300 font-semibold transition-colors">in</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="animate-fade-in">
+        <h3 class="text-lg font-semibold text-gold-200 mb-6 uppercase tracking-[0.2em] text-xs">Quick Links</h3>
+        <ul class="space-y-4">
+          <li>
+            <a href="/" class="text-gold-400/80 hover:text-gold-300 transition-all hover:translate-x-2 inline-flex items-center gap-2 duration-300 group">
+              <span class="w-1.5 h-1.5 rounded-full bg-gold-500/50 group-hover:bg-gold-400 transition-colors"></span>
+              <span class="text-sm uppercase tracking-wider">Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'menu' %}" class="text-gold-400/80 hover:text-gold-300 transition-all hover:translate-x-2 inline-flex items-center gap-2 duration-300 group">
+              <span class="w-1.5 h-1.5 rounded-full bg-gold-500/50 group-hover:bg-gold-400 transition-colors"></span>
+              <span class="text-sm uppercase tracking-wider">Menu</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'book' %}" class="text-gold-400/80 hover:text-gold-300 transition-all hover:translate-x-2 inline-flex items-center gap-2 duration-300 group">
+              <span class="w-1.5 h-1.5 rounded-full bg-gold-500/50 group-hover:bg-gold-400 transition-colors"></span>
+              <span class="text-sm uppercase tracking-wider">Reserve</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="animate-fade-in">
+        <h3 class="text-lg font-semibold text-gold-200 mb-6 uppercase tracking-[0.2em] text-xs">Contact</h3>
+        <ul class="space-y-4 text-gold-400/80">
+          <li class="flex items-start gap-3 justify-center md:justify-start group">
+            <span class="text-gold-500 mt-0.5 text-lg group-hover:scale-110 transition-transform">📍</span>
+            <span class="text-sm leading-relaxed">Ikoyi, Lagos, Nigeria</span>
+          </li>
+          <li class="flex items-center gap-3 justify-center md:justify-start group">
+            <span class="text-gold-500 text-lg group-hover:scale-110 transition-transform">📞</span>
+            <a href="tel:+2348001234567" class="hover:text-gold-300 transition-colors text-sm">+234 800 123 4567</a>
+          </li>
+          <li class="flex items-center gap-3 justify-center md:justify-start group">
+            <span class="text-gold-500 text-lg group-hover:scale-110 transition-transform">📧</span>
+            <a href="mailto:bookings@valloria.com" class="hover:text-gold-300 transition-colors text-sm">bookings@valloria.com</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="my-12 gold-divider"></div>
+
+    <!-- Bottom Bar -->
+    <div class="flex flex-col sm:flex-row items-center justify-between text-sm gap-4">
+      <p class="text-gold-400/70 text-xs">
+        © 2025 <span class="font-semibold gradient-gold-text">VALLORIA</span>. All Rights Reserved.
+      </p>
+      <div class="flex items-center gap-3">
+        <span class="w-1 h-1 rounded-full bg-gold-500/50"></span>
+        <p class="text-[10px] uppercase tracking-[0.25em] text-gold-400/60 font-light">
+          Fine Dining • Private Chef • Wine Lounge
+        </p>
+        <span class="w-1 h-1 rounded-full bg-gold-500/50"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decorative corner elements -->
+  <div class="absolute top-0 left-0 w-32 h-32 opacity-10">
+    <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-gold-500 to-transparent"></div>
+    <div class="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-gold-500 to-transparent"></div>
+  </div>
+  <div class="absolute top-0 right-0 w-32 h-32 opacity-10">
+    <div class="absolute top-0 right-0 w-full h-px bg-gradient-to-l from-gold-500 to-transparent"></div>
+    <div class="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-gold-500 to-transparent"></div>
+  </div>
+</footer>
+
+<style>
+  .glass-gold {
+    background: linear-gradient(135deg, 
+      rgba(212, 166, 78, 0.08) 0%, 
+      rgba(192, 141, 46, 0.05) 100%);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(212, 166, 78, 0.2);
+  }
+
+  .glass-dark {
+    background: rgba(10, 8, 6, 0.85);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(212, 166, 78, 0.15);
+  }
+
+  .gradient-gold-text {
+    background: linear-gradient(135deg, #ead9a8 0%, #d4a64e 50%, #c08d2e 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(212, 166, 78, 0.3) 20%, 
+      rgba(212, 166, 78, 0.8) 50%, 
+      rgba(212, 166, 78, 0.3) 80%, 
+      transparent 100%);
+  }
+
+  .ornament {
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d4a64e, transparent);
+    position: relative;
+  }
+
+  .ornament::before,
+  .ornament::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #d4a64e;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ornament::before {
+    left: -3px;
+  }
+
+  .ornament::after {
+    right: -3px;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+</style>

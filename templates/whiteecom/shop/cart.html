@@ -1,0 +1,120 @@
+{% extends 'whiteecom/base.html' %}
+{% block content %}
+<main class="px-4 sm:px-6 lg:px-8 py-10 flex-1">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-wrap justify-between gap-3 p-4">
+<div class="flex min-w-72 flex-col gap-3">
+<p class="text-[#111418] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">My Cart</p>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Review and manage your items before checkout.</p>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
+<div class="lg:col-span-2">
+<div class="rounded-xl bg-white dark:bg-gray-800/50 shadow-sm">
+<div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+<h3 class="text-lg font-semibold text-gray-800 dark:text-white">Products</h3>
+<a href="{% url 'remove_all' %}"><button class="text-sm font-medium text-red-500 hover:text-red-600 flex items-center gap-1">
+<span class="material-symbols-outlined text-base">delete</span>
+                                        Remove all
+                                    </button></a>
+</div>
+<div class="divide-y divide-gray-200 dark:divide-gray-700">
+  {% for cart in cart_items %}
+<div class="flex items-center gap-4 bg-transparent px-4 py-6 justify-between">
+<div class="flex items-center gap-4">
+  
+  <a href="{{ cart.product.get_absolute_url }}"><div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20" data-alt="Classic White T-Shirt" style='background-image: url("{{ cart.product.image.url }}");'></div></a>
+<div class="flex flex-col justify-center">
+<p class="text-[#111418] dark:text-white text-base font-medium leading-normal line-clamp-1">{{ cart.product.name }}</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">Size: {{ cart.product.size }},</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal line-clamp-2">Color: {{ cart.product.color }},</p>
+<p class="text-primary text-base font-semibold mt-1">₦{%if cart.product.discount_price %}{{ cart.product.discount_price }}{%else%}{{ cart.product.price}}{%endif%}</p>
+</div>
+</div>
+
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-[#111418] dark:text-white">
+<a href="{% url 'remove' cart.product.slug %}"><button class="text-base font-medium leading-normal flex h-8 w-8 items-center justify-center rounded-full bg-background-light dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600">-</button></a>
+<input class="text-base font-medium leading-normal w-8 p-0 text-center bg-transparent focus:outline-0 focus:ring-0 focus:border-none border-none [appearance:textfield] [&amp;::-webkit-inner-spin-button]:appearance-none [&amp;::-webkit-outer-spin-button]:appearance-none" type="number" value="{{ cart.quantity }}"/>
+<a href="{% url 'add_to' cart.product.slug %}"><button class="text-base font-medium leading-normal flex h-8 w-8 items-center justify-center rounded-full bg-background-light dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600">+</button></a>
+</div>
+<a href="{% url 'remove_item' cart.product.slug %}"><button class="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400">
+<span class="material-symbols-outlined">delete</span>
+</button></a>
+</div>
+</div>
+{% endfor %}
+</div>
+</div>
+</div>
+
+<!-- Right: Order Summary -->
+<div class="lg:col-span-1">
+<div class="rounded-xl bg-white dark:bg-gray-800/50 shadow-sm p-6 space-y-6 sticky top-24">
+  <h3 class="text-lg font-semibold text-gray-800 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-4">
+    Order Summary
+  </h3>
+
+  <!-- Subtotal and Promo -->
+  <div class="space-y-3">
+    <div class="flex justify-between text-sm">
+      <span class="text-gray-500 dark:text-gray-400">Subtotal</span>
+      <span class="font-medium text-gray-800 dark:text-white">₦{{ total_amount }}</span>
+    </div>
+
+    {% if tt %}
+    <div class="flex justify-between text-sm">
+      <span class="text-gray-500 dark:text-gray-400">Promo</span>
+      <span class="font-medium text-gray-800 dark:text-white">₦{{ tt }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="border-t border-gray-200 dark:border-gray-700"></div>
+
+  <div class="flex justify-between font-bold text-lg">
+    <span class="text-gray-900 dark:text-white">Total</span>
+    <span class="text-gray-900 dark:text-white">₦{{ total_amountss }}</span>
+  </div>
+
+  <div class="pt-2">
+    {% include 'whiteecom/shop/promo.html' %}
+  </div>
+
+  <!-- Buttons -->
+  <div class="space-y-3 pt-4">
+    <a href="{% url 'checkout' %}">
+      <button class=" mb-5  w-full flex items-center justify-center rounded-lg h-12 bg-primary hover:bg-primary/90 text-white gap-2 text-base font-bold tracking-wide transition-colors">
+        
+        Checkout
+        <span class="material-symbols-outlined">lock</span>
+      </button>
+    </a>
+
+    <a href="{% url 'product_list' %}">
+      <button class="w-full flex items-center justify-center rounded-lg h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-white gap-2 text-base font-bold tracking-wide transition-colors">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Continue Shopping
+      </button>
+    </a>
+
+    {% comment %} <a href="{% url 'pickupform' %}">
+      <button class="w-full flex items-center justify-center rounded-lg h-12 bg-primary/20 hover:bg-primary/30 text-primary font-semibold transition-colors">
+        Click here to pick up at the store
+      </button>
+    </a> {% endcomment %}
+  </div>
+
+  <!-- Secure Info -->
+  <div class="flex items-center justify-center pt-4 text-gray-500 dark:text-gray-400 text-sm">
+    <span class="material-symbols-outlined text-lg mr-2">verified_user</span>
+    <span>Secure payments by Flutterwave</span>
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+   {% endblock %}

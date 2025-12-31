@@ -5,7 +5,68 @@ from django.contrib import messages
 from django_ratelimit.decorators import ratelimit
 
 # === HOME PAGE ===
-@ratelimit(key='ip', rate='5/m', block=True)
+from django.core.mail import send_mail
+
+import json
+from datetime import timedelta
+from django.utils import timezone
+
+from django.conf import settings
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+from b_manager.models import WebsiteVisit,Client
+
+
+def get_client_ip(request):
+    """Returns real visitor IP even behind proxy (Cloudflare, Nginx, Render etc)."""
+    forwarded = request.META.get("HTTP_X_FORWARDED_FOR")
+    if forwarded:
+        return forwarded.split(",")[0].strip()  # First IP = Real client
+    return request.META.get("REMOTE_ADDR")
+
+
+
+@csrf_exempt
+def track_visit(request):
+    if request.method != "POST":
+        return JsonResponse({"status": "fail", "reason": "Method not allowed"}, status=405)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"status": "fail", "reason": "Invalid JSON"}, status=400)
+
+    ip_address = get_client_ip(request)
+
+    # Check if visit already logged
+    already_logged = WebsiteVisiterggssfe.objects.filter(ip_address=ip_address).exists()
+
+    if already_logged:
+        return JsonResponse({"status": "success", "message": "Visit already recorded recently"})
+
+    # Save visit
+    WebsiteVisiterggssfe.objects.create(
+        path=data.get("path", "/"),
+        referrer=data.get("referrer", ""),
+        user_agent=data.get("user_agent", request.META.get("HTTP_USER_AGENT", "")),
+        ip_address=ip_address,
+    )
+
+    return JsonResponse({"status": "success"})
+
+
+
+
+
+
+
+
+
+
+@ratelimit(key='ip', rate='7/m', block=True)
 def homie(request):
     home = Home.objects.all().order_by('-id')
     homes = home.first()
@@ -13,7 +74,7 @@ def homie(request):
 
 
 # === ABOUT PAGE ===
-@ratelimit(key='ip', rate='5/m', block=True)
+@ratelimit(key='ip', rate='7/m', block=True)
 def about(request):
     home = About.objects.all().order_by('-id')
     homes = home.first()
@@ -21,7 +82,7 @@ def about(request):
 
 
 # === CONTACT FORM ===
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key='ip', rate='7/m', block=True)
 def contact(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -33,12 +94,28 @@ def contact(request):
             messages=message,
             email=email,
         )
+        send_mail(
+            subject="Baxting's Website — New Client Message",
+            message=f"""
+        A potential client has just submitted a message through your website. Below are the details:
+
+        Name: {name}
+        Email: {email}
+
+        Message:
+        {message}
+        """,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[request.tenant.email],
+            fail_silently=False,
+        )
+
         messages.success(request, "Message recieved, We will get back to you shortly")
         return redirect('about')
     return redirect('about')
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key='ip', rate='7/m', block=True)
 def portfolio(request):
     category_slug = request.GET.get('category', None)
     categories = Categorysss.objects.all()
@@ -58,7 +135,7 @@ def portfolio(request):
 
 
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key='ip', rate='7/m', block=True)
 def cats(request, id):
     category = Categorysss.objects.filter(pk=id).first()
     if not category:
@@ -71,12 +148,12 @@ def cats(request, id):
         'homes': homes
     })
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key='ip', rate='7/m', block=True)
 def collab(request):
     home = Campagin.objects.all().order_by('-id')
     return render(request, 'con/content/coll.html', {'home': home})
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key='ip', rate='7/m', block=True)
 def collabo(request, id):
     home= Campagin.objects.filter(pk=id).first()
 
@@ -84,7 +161,7 @@ def collabo(request, id):
     return render(request, 'con/content/collab.html', {'home': home})
     
 
-@ratelimit(key='ip', rate='40/m', block=True)
+@ratelimit(key='ip', rate='7/m', block=True)
 def service(request):
     home = Service.objects.all().order_by('-id')
     return render(request, 'con/content/service.html', {'home': home})

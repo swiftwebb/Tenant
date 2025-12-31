@@ -20,11 +20,13 @@
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
     {% for photos in photo %}
+    <a class="group relative block overflow-hidden rounded-lg" href="{% url 'hoomedet' photos.id %}">
 <div class="group relative overflow-hidden rounded-xl">
 <div class="bg-cover bg-center flex flex-col gap-3 justify-end p-6 aspect-[3/4] transition-transform duration-300 group-hover:scale-105" data-alt="A candid black and white photo of a smiling couple at their wedding." style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 60%), url("{{photos.image.url}}");'>
 <p class="text-white text-lg font-bold leading-tight">{{photos.title}}</p>
 </div>
 </div>
+    </a>
 {% endfor %}
 
 </div>

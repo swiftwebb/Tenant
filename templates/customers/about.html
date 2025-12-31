@@ -5,22 +5,22 @@
 <div class="py-10">
 <div class="@container">
 <div class="@[480px]:p-4">
-<div class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4" data-alt="Abstract gradient background in shades of blue and purple" style='background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBiqdCbhdWkZx6hhgDoGX3GJWOQ9M1Y9XWKsldUnBsCbOVUi-56rPzPe96BkUHUlBf4ANTC96B5TZvswHAH4YSZ0TvJ3FfYx8Solzi9CUU8bCG3rktEFyw-b454wIkh4y8L2vTzqsV5nFgjhcVpOMLP3ct4B87K_c_vfWL5LLuFd_z4z2BVXDuS47hWnViusehqggX7WYL38kCNQhQecjTcUdHBEZ0fOUObY_o2QAZSFv_4t2BBUbkxM-iNaNMwjvCLNEwVUSu3eQkk");'>
-<div class="flex flex-col gap-2 text-center">
-<h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl">
+<div class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4 fade-slide" data-alt="Abstract gradient background in shades of blue and purple" style='background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBiqdCbhdWkZx6hhgDoGX3GJWOQ9M1Y9XWKsldUnBsCbOVUi-56rPzPe96BkUHUlBf4ANTC96B5TZvswHAH4YSZ0TvJ3FfYx8Solzi9CUU8bCG3rktEFyw-b454wIkh4y8L2vTzqsV5nFgjhcVpOMLP3ct4B87K_c_vfWL5LLuFd_z4z2BVXDuS47hWnViusehqggX7WYL38kCNQhQecjTcUdHBEZ0fOUObY_o2QAZSFv_4t2BBUbkxM-iNaNMwjvCLNEwVUSu3eQkk");'>
+<div class="flex flex-col gap-2 text-center fade-slide">
+<h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl fade-slide">
                                                 Building Your Success Online
                                             </h1>
-<h2 class="text-white text-base font-normal leading-normal @[480px]:text-lg">
+<h2 class="text-white text-base font-normal leading-normal @[480px]:text-lg fade-slide">
                                                 Our mission is to empower small businesses to create a professional online presence with ease.
                                             </h2>
 </div>
 
       {% if request.user.is_authenticated %}
-<a href="."><button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em]">
+<a href="{% url 'customers:dashboard' %}" class="fade-slide"><button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em]">
 <span class="truncate">Dashboard</span>
 </button></a>
 {% else %}
-<a href="{% url 'account_login' %}">
+<a href="{% url 'account_login' %}" class="fade-slide">
 <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em]">
 <span class="truncate">Start for Free</span>
 </button></a>
@@ -29,15 +29,16 @@
 </div>
 </div>
 </div>
-<div class="flex flex-col gap-10 px-4 py-10 @container">
-<div class="flex flex-col gap-4 text-center">
-<h1 class="text-[#111618] dark:text-white tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black max-w-3xl mx-auto">
+
+<div class="flex flex-col gap-10 px-4 py-10 @container fade-slide">
+<div class="flex flex-col gap-4 text-center fade-slide">
+<h1 class="text-[#111618] dark:text-white tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black max-w-3xl mx-auto fade-slide">
                                     Our Mission &amp; Values
                                 </h1>
-<p class="text-[#617c89] dark:text-gray-400 text-base font-normal leading-normal max-w-3xl mx-auto">We are driven by a set of core values that guide everything we do.</p>
+<p class="text-[#617c89] dark:text-gray-400 text-base font-normal leading-normal max-w-3xl mx-auto fade-slide">We are driven by a set of core values that guide everything we do.</p>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-<div class="flex flex-1 gap-3 rounded-xl border border-[#dbe2e6] dark:border-gray-700 bg-white dark:bg-background-dark p-6 flex-col text-center items-center">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 fade-slide">
+<div class="flex flex-1 gap-3 rounded-xl border border-[#dbe2e6] dark:border-gray-700 bg-white dark:bg-background-dark p-6 flex-col text-center items-center fade-slide">
 <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">flag</span></div>
 <div class="flex flex-col gap-1">
 <h2 class="text-[#111618] dark:text-white text-lg font-bold leading-tight">Our Mission</h2>
@@ -46,14 +47,14 @@
                                         </p>
 </div>
 </div>
-<div class="flex flex-1 gap-3 rounded-xl border border-[#dbe2e6] dark:border-gray-700 bg-white dark:bg-background-dark p-6 flex-col text-center items-center">
+<div class="flex flex-1 gap-3 rounded-xl border border-[#dbe2e6] dark:border-gray-700 bg-white dark:bg-background-dark p-6 flex-col text-center items-center fade-slide">
 <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">visibility</span></div>
 <div class="flex flex-col gap-1">
 <h2 class="text-[#111618] dark:text-white text-lg font-bold leading-tight">Our Vision</h2>
 <p class="text-[#617c89] dark:text-gray-400 text-sm font-normal leading-normal">A world where every small business has the tools they need to succeed online.</p>
 </div>
 </div>
-<div class="flex flex-1 gap-3 rounded-xl border border-[#dbe2e6] dark:border-gray-700 bg-white dark:bg-background-dark p-6 flex-col text-center items-center">
+<div class="flex flex-1 gap-3 rounded-xl border border-[#dbe2e6] dark:border-gray-700 bg-white dark:bg-background-dark p-6 flex-col text-center items-center fade-slide">
 <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">favorite</span></div>
 <div class="flex flex-col gap-1">
 <h2 class="text-[#111618] dark:text-white text-lg font-bold leading-tight">Our Core Values</h2>
@@ -62,87 +63,75 @@
 </div>
 </div>
 </div>
-<div class="px-4 py-10">
-<h2 class="text-[#111618] dark:text-white text-center text-[22px] font-bold leading-tight tracking-[-0.015em] pb-8">Our Journey</h2>
-<div class="grid grid-cols-[40px_1fr] gap-x-4">
-<div class="flex flex-col items-center gap-1 pt-3">
+
+<div class="px-4 py-10 fade-slide">
+<h2 class="text-[#111618] dark:text-white text-center text-[22px] font-bold leading-tight tracking-[-0.015em] pb-8 fade-slide">Our Journey</h2>
+<div class="grid grid-cols-[40px_1fr] gap-x-4 fade-slide">
+<div class="flex flex-col items-center gap-1 pt-3 fade-slide">
 <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 24px;">rocket_launch</span></div>
 <div class="w-[2px] bg-[#dbe2e6] dark:bg-gray-700 h-full"></div>
 </div>
-<div class="flex flex-1 flex-col pb-8">
+<div class="flex flex-1 flex-col pb-8 fade-slide">
 <p class="text-[#111618] dark:text-white text-lg font-medium leading-normal">Company Founded</p>
 <p class="text-[#617c89] dark:text-gray-400 text-base font-normal leading-normal">2025</p>
 </div>
-<div class="flex flex-col items-center gap-1">
+<div class="flex flex-col items-center gap-1 fade-slide">
 <div class="w-[2px] bg-[#dbe2e6] dark:bg-gray-700 h-full"></div>
 <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 24px;">groups</span></div>
 <div class="w-[2px] bg-[#dbe2e6] dark:bg-gray-700 h-full"></div>
 </div>
-<div class="flex flex-1 flex-col pb-8">
-<p class="text-[#111618] dark:text-white text-lg font-medium leading-normal">First 1,000 Users</p>
+<div class="flex flex-1 flex-col pb-8 fade-slide">
+<p class="text-[#111618] dark:text-white text-lg font-medium leading-normal">First 100 Users</p>
 <p class="text-[#617c89] dark:text-gray-400 text-base font-normal leading-normal">2025</p>
 </div>
-<!-- <div class="flex flex-col items-center gap-1">
-<div class="w-[2px] bg-[#dbe2e6] dark:bg-gray-700 h-full"></div>
-<div class="text-primary"><span class="material-symbols-outlined" style="font-size: 24px;">auto_awesome</span></div>
-</div>
-<div class="flex flex-1 flex-col pb-8">
-<p class="text-[#111618] dark:text-white text-lg font-medium leading-normal">Major Feature Launch</p>
-<p class="text-[#617c89] dark:text-gray-400 text-base font-normal leading-normal">2022</p>
-</div> -->
 </div>
 </div>
-<div class="px-4 py-10">
-{% comment %} <h2 class="text-[#111618] dark:text-white text-center text-[22px] font-bold leading-tight tracking-[-0.015em] pb-8">Meet the Team</h2>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> {% endcomment %}
-{% comment %} <div class="group relative flex flex-col items-center text-center">
-<img class="w-40 h-40 rounded-full object-cover mb-4" data-alt="Portrait of a smiling man in a suit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmLfAvGPlrJ3lxGhfpBHr6d084iMwNynNkk3BLToJwmo8mrIDq3FtCvmv-k9YeTyAE6gHEpOGBtJivELyO8FhhHrx04qGLH09RuoI9d5EyoRDZsaS6tUgil1FwVZj4wQB420TgR6G-rmD32L3iqyJBjcnvSsCRDRzIQgNr-Z3G0e99f7XXTc0daSvDnCTevoiN6eX9-bUU2KitiZTl2qdbBc2b2zGgWgp9C8wOCTZaztmOnXVNvjYXv4lDlY2mtS9rbIts3S1Lf-Fq"/>
-<h3 class="text-[#111618] dark:text-white text-lg font-bold">John Doe</h3>
-<p class="text-[#617c89] dark:text-gray-400 text-sm">CEO &amp; Founder</p>
-<div class="absolute inset-0 bg-black/70 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-<p class="text-white p-4 text-sm">John is passionate about helping small businesses succeed online.</p>
-</div> {% endcomment %}
+
+<div class="px-4 py-10 fade-slide">
 </div>
-{% comment %} <div class="group relative flex flex-col items-center text-center">
-<img class="w-40 h-40 rounded-full object-cover mb-4" data-alt="Portrait of a smiling woman with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfNIiyEEpFKNxe3UFyM-IzCpQ_pXYAFUBpkmjkPeLHEMEHa29CXEhLpS3rC3hF4u1Z70IFWTEEPyNdRthDTGyZD_N2xZwJb_8HAl4UFqJauuNH7C5zCcnuRhLYKIqa-3oKMCSLP7ePzbSFedLJnf2tJvGQqgg9APo-8ydO6peuEqT6IVnpGVg0EcPeJaqOisRL6YiALv0tMamFVj_adAi0dgHSdUh0kXU3XAQb6XJbsVA6tblvSQVuNt8IqtSCKZuJmB5TJJIOkF5b"/>
-<h3 class="text-[#111618] dark:text-white text-lg font-bold">Jane Smith</h3>
-<p class="text-[#617c89] dark:text-gray-400 text-sm">Head of Product</p>
-<div class="absolute inset-0 bg-black/70 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-<p class="text-white p-4 text-sm">Jane focuses on creating an intuitive user experience.</p>
-</div> {% endcomment %}
-</div>
-{% comment %} <div class="group relative flex flex-col items-center text-center">
-<img class="w-40 h-40 rounded-full object-cover mb-4" data-alt="Portrait of a smiling man with a beard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSItCMbX5VO3SnzXEf1R4PRFIarCCbq4ELiU5Cw579UYBX2eeb_5vNG87rUKqZs1Hbicw54e2lS-Wr033LwmhNunops7lr_e5TNnvrLQ0mTUdYC1dxdrlRByAbP7crw7i2U3iwgcGGARBenyxak__btfOZNj0sH7k8e8sW7eR0zdZX-aLGgStx8jvuHcLMqr-CesJUPfMOMHUem8AC3qCLC-3DNulbW4zc1RTh3Ne57m8Ovi41iQ6Jmmj1ML2DT-YF4-HblehfLkr9"/>
-<h3 class="text-[#111618] dark:text-white text-lg font-bold">Mike Johnson</h3>
-<p class="text-[#617c89] dark:text-gray-400 text-sm">Lead Engineer</p>
-<div class="absolute inset-0 bg-black/70 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-<p class="text-white p-4 text-sm">Mike leads the technical team building our platform.</p>
-</div> {% endcomment %}
-</div>
-</div>
-</div>
-<!-- <div class="px-4 py-10">
-<h2 class="text-[#111618] dark:text-white text-center text-[22px] font-bold leading-tight tracking-[-0.015em] pb-8">As Seen In</h2>
-<div class="flex justify-center items-center gap-8 sm:gap-12 flex-wrap">
-<img class="h-8 sm:h-10 opacity-60 dark:opacity-40" data-alt="Forbes logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNaRbo8RpMilsFQYsXtqD_RflSKbLQ45SjUJ1L3vH10ZjW-92ks0jxY1laYzjom645WiLI489IHthEBeuwtUgk8SEV4BedS80OpjjhYu7D6SefTn873uTx1sEo-mLwM61XhQvULDsoURUft2_AQgW1JR6fLfmg4J5v2b6yNVi-R-lvc0rnxKa3LnrSPEaJdVHm_XQiZ4iki9zqJq0dR25pGDRh8NFUuCCoOT1JJymQhWE9VswhCE-I4sKxUCDm0olJaNQbWxKpp4SB"/>
-<img class="h-8 sm:h-10 opacity-60 dark:opacity-40" data-alt="TechCrunch logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhn0VpFn-Qnhola6yVSmsm2Zc35AORKUza-zFfZfxGITdqECPQABvlR7MFb0GsxxR8AaZmMi3MZbZcw56Mb_TdEy_utG3dfUqRwa64MDCr0RkjUtMpPII-ymJOmbSdql-XQGC_hgmyXQ-SiOHhrdag18myqf9t6xAMHItddRjkwTnAlThaEkjCvwnJ4JDF9mJrmTuaL9IJvw45BEXhLE7qM3dX0fsW9LTis9obw2XaG7LWM5tuO3Z7-0XL12-ZGwa32zgnJPANBdlF"/>
-<img class="h-8 sm:h-10 opacity-60 dark:opacity-40" data-alt="Entrepreneur logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8qy0huePMIG5Ir2TdlyOWkT3HlK4OaMQp2IesfQNikn8vQAEUThL5Y1NzhYIllRz8A30ssDv3CxVTw_cevEGeQmIReY3MDjOIczMnS0EiPT6_X9TtqbZpnhbevzL2GIzSUpCZ5dSfIZbFbzei7KSpHIA_hARN-hDbzIxa6NpQMKluqoGNVMoG33oGei63IKL79mppZ47hM-5FL50tJGGrXdd9c_9GiG_shDPnqoWFsO8SdYfcUHviPdW9tKKWxu5lx4psXIpyDyQb"/>
-<img class="h-8 sm:h-10 opacity-60 dark:opacity-40" data-alt="Wired logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgqC00q0yU5s_LN13XQ8Za59Zo1h35eeqp5nlGdwX_7j32_Dn8QfyKm5BnwHZDTa3t2LJfLOqqs1GuKVnK2gxJCNnt-gpmpDT8I4yerHdNouj-EA3H7bS9Sy7Ur2cA88EKXBONeZGb3pLAxStsF-gFrKADZ4Q_XJRfgZlqrk9VLivLqcg2Axbj27c5miLu-lAWgiNIYW6Xbm3mVg78cRYi2iD0kPETDISRuB2dZ7x-b5VZJ_GZs3unqMtpgX7grMlxlgCM61hyZmzs"/>
-</div>
-</div> -->
-<div class="px-4 py-16">
-<div class="bg-primary/20 dark:bg-primary/30 rounded-xl p-8 md:p-12 text-center flex flex-col items-center gap-6">
-<h2 class="text-[#111618] dark:text-white text-3xl md:text-4xl font-bold">Ready to Build Your Website?</h2>
-<p class="text-[#111618] dark:text-gray-200 max-w-xl">Join thousands of small businesses who trust our platform to build their online presence.</p>
+
+<div class="px-4 py-16 fade-slide">
+<div class="bg-primary/20 dark:bg-primary/30 rounded-xl p-8 md:p-12 text-center flex flex-col items-center gap-6 fade-slide">
+<h2 class="text-[#111618] dark:text-white text-3xl md:text-4xl font-bold fade-slide">Ready to Build Your Website?</h2>
+<p class="text-[#111618] dark:text-gray-200 max-w-xl fade-slide">Join thousands of small businesses who trust our platform to build their online presence.</p>
 {% if request.user.is_authenticated %}
-<a href=""><button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em]">
+<a href="" class="fade-slide"><button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em]">
 <span class="truncate">Dashboard</span>
 </button></a>
 {% else %}
-<a href="{% url 'account_login' %}"><button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em]">
+<a href="{% url 'account_login' %}" class="fade-slide"><button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em]">
 <span class="truncate">Start for Free</span>
 </button></a>
 {% endif %}
 </div>
 </div>
-   {% endblock %}
+
+<style>
+/* ================= FADE SLIDE ANIMATIONS ================= */
+.fade-slide {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s ease-out, transform 0.8s ease-out;
+}
+
+.fade-slide.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+
+<script>
+const faders = document.querySelectorAll('.fade-slide');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('show');
+    }
+  });
+}, { threshold: 0.2 });
+
+faders.forEach(fader => observer.observe(fader));
+</script>
+
+{% endblock %}

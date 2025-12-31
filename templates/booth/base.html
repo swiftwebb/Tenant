@@ -68,7 +68,7 @@
     {% endif %}
     <!-- ✅ End Django Messages -->
   
-    <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+    <div class="relative flex h-auto min-h-screen w-full flex-col">
   
       <!-- Header -->
       <header class="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200/80 dark:border-white/10 px-6 py-4 bg-white dark:bg-background-dark shadow-sm">
@@ -93,9 +93,10 @@
           <span class="material-symbols-outlined text-3xl">menu</span>
         </button>
       </header>
-  
+      <div id="menu-backdrop" class="hidden fixed inset-0 bg-black/50 z-30 md:hidden"></div>
       <!-- Mobile Menu -->
-      <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-background-dark border-b border-gray-200/80 dark:border-gray-700 px-6 py-4 space-y-3">
+      {% comment %} <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-background-dark border-b border-gray-200/80 dark:border-gray-700 px-6 py-4 space-y-3"> {% endcomment %}
+        <div id="mobile-menu" class="hidden md:hidden fixed top-[73px] right-0 w-1/2 bg-white dark:bg-slate-900 border-l border-b border-gray-200/80 dark:border-gray-700 px-6 py-4 space-y-3 shadow-lg z-40">
         <a href="{% url 'home' %}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Home</a>
         <a href="{% url 'hoomelist' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary">Catalog</a>
          <a href="{% url 'aboutme' %}" class="block text-sm font-medium text-gray-900 dark:text-white hover:text-primary">ABout</a>
@@ -135,13 +136,52 @@
     </div>
   
     <!-- JS for mobile dropdown -->
+
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
+        const backdrop = document.getElementById('menu-backdrop');
+      
+        // Toggle menu and backdrop
         menuBtn.addEventListener('click', () => {
           mobileMenu.classList.toggle('hidden');
+          backdrop.classList.toggle('hidden');
+        });
+      
+        // Close menu when clicking backdrop
+        backdrop.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          backdrop.classList.add('hidden');
+        });
+      
+        // Close menu when clicking links
+        const menuLinks = mobileMenu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            backdrop.classList.add('hidden');
+          });
         });
       });
-    </script>
+      </script>
+    
+    
+      {{ request.tenant.id|json_script:"tenant_id" }}
+      <script>
+        const tenantId = JSON.parse(document.getElementById('tenant_id').textContent);
+      
+        fetch("/track_visit/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tenant_id: tenantId,
+            path: window.location.pathname,
+            referrer: document.referrer,
+            user_agent: navigator.userAgent
+          })
+        });
+      </script>
+
+    
 </body></html>

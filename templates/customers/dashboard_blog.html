@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="flex-1 px-4 sm:px-8 md:px-10 lg:px-20 xl:px-40 py-8">
+    <div class="mx-auto flex max-w-[1200px] flex-col gap-8">
+  
+      <!-- Header -->
+      <div class="flex flex-wrap justify-between gap-3">
+        <div class="flex min-w-72 flex-col gap-2">
+          <p class="text-text-primary-light dark:text-text-primary-dark text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">
+            Welcome back, {{ client.name }}!
+          </p>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal leading-normal">
+            Here's a summary of your Blog website activity.
+          </p>
+        </div>
+      </div>
+  
+      <!-- Stats Summary -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+          <div class="relative z-10 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <p class="text-white/80 text-sm font-semibold uppercase tracking-wide">
+                Total Messages
+              </p>
+              <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                <span class="material-symbols-outlined text-white text-2xl">inventory_2</span>
+              </div>
+            </div>
+            <p class="text-white text-4xl font-black leading-tight">
+              {{ products|length }}
+            </p>
+          </div>
+        </div>
+        <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+          <div class="relative z-10 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <p class="text-white/80 text-sm font-semibold uppercase tracking-wide">
+                Total Visits
+              </p>
+              <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                <span class="material-symbols-outlined text-white text-2xl">visibility</span>
+              </div>
+            </div>
+            <p class="text-white text-4xl font-black leading-tight">
+              {{ visit|length }}
+            </p>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Store Management -->
+      <h2
+        class="text-text-primary-light dark:text-text-primary-dark text-[22px] font-bold leading-tight tracking-[-0.015em] pt-5">
+        Manage Your Blog website
+      </h2>
+  
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+
+        <!-- Messages -->
+        <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+          <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+            <div class="bg-primary/20 text-primary p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">sell</span>
+            </div>
+            <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+              My Messages
+            </p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+              Manage messages from fans and clients.
+            </p>
+            <a href="{% url 'customers:dashboard_Book_blog' %}">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+                Manage Messages
+              </button>
+            </a>
+          </div>
+        </div>
+  
+        <!-- Blog Posts -->
+        <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+          <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+            <div class="bg-primary/20 text-primary p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">inventory_2</span>
+            </div>
+            <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+              My Blog Posts
+            </p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+              Add, edit, and manage your Blog. Keep your Blog fresh and organized.
+            </p>
+            <a href="{% url 'customers:dashboard_Blog' %}">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+                Manage Blog
+              </button>
+            </a>
+          </div>
+        </div>
+  
+        <!-- About Page -->
+        <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+          <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+            <div class="bg-primary/20 text-primary p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">local_shipping</span>
+            </div>
+            <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+              Edit About Pages
+            </p>
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+              Manage About page content.
+            </p>
+            <a href="{% url 'customers:dashboard_Book_blog_about' %}">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+                Edit About Page
+              </button>
+            </a>
+          </div>
+        </div>
+
+        <!-- Monetization Info -->
+        <div class="flex flex-col rounded-xl shadow-md bg-gradient-to-br from-green-500 to-teal-600 p-6 md:p-8 overflow-hidden">
+          <div class="flex flex-col items-start gap-4 h-full">
+            <div class="bg-white/20 text-white p-3 rounded-lg">
+              <span class="material-symbols-outlined !text-3xl">attach_money</span>
+            </div>
+            <p class="text-white text-xl font-bold leading-tight">
+              Monetize Your Blog
+            </p>
+            <p class="text-white/80 text-base font-normal flex-grow">
+              Once your website total visits reach 5,000, you can monetize your blog by contacting our support team and start earning.
+            </p>
+            <a href="mailto:info@baxting.com">
+              <button
+                class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-white text-green-600 font-medium hover:bg-gray-100 transition-colors w-full sm:w-auto">
+                Contact Support
+              </button>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+</main>
+
+{% endblock %}

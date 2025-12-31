@@ -39,14 +39,17 @@
               </span>
             </p>
   
-            {% if subscription.start_date %}
+            {% if client.paid_until %}
             <p class="text-gray-500 dark:text-gray-400">
-              Start date: 
+              Expiry date: 
               <span class="font-medium text-gray-800 dark:text-gray-200">
-                {{ subscription.start_date|date:"F j, Y" }}
+                {{ client.paid_until |date:"F j, Y" }}
               </span>
+              
             </p>
             {% endif %}
+
+
   
             {% if subscription.end_date %}
             <p class="text-gray-500 dark:text-gray-400">

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Menu Item Details</h1>
+      <p class="text-gray-500 dark:text-gray-400">View full dish details including price and ingredients.</p>
+    </div>
+    <a href="{% url 'customers:dashboard_restaurant' %}">
+      <button class="px-5 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all">← Back</button>
+    </a>
+  </div>
+
+  <!-- Menu Card -->
+  <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+
+    <!-- Image -->
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}"
+           class="w-full h-72 object-cover rounded-lg shadow-md">
+    {% else %}
+      <div class="w-full h-72 bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-center text-gray-500">
+        No image available
+      </div>
+    {% endif %}
+
+    <!-- Dish Name -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Dish Name</label>
+      <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-lg font-semibold text-gray-900 dark:text-white">
+        {{ product.name }}
+      </p>
+    </div>
+
+    <!-- Category -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Category</label>
+      {% if product.category %}
+        <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white font-medium">
+          {{ product.category.get_name_display|default:product.category.name }}
+        </p>
+      {% else %}
+        <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-500">Not categorized</p>
+      {% endif %}
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Description / Ingredients</label>
+      {% if product.description %}
+        <div class="mt-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-800 dark:text-gray-200 space-y-2">
+          {% for line in product.description.splitlines %}
+            {% if line %}
+            <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">restaurant</span>
+                <span>{{ line }}</span>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="mt-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-500">No description provided.</p>
+      {% endif %}
+    </div>
+
+    <!-- Price -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Price</label>
+      {% if product.price %}
+        <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white text-lg font-semibold">
+          ₦{{ product.price|floatformat:2 }}
+        </p>
+      {% else %}
+        <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-500">Price not set</p>
+      {% endif %}
+    </div>
+
+  </div>
+
+</main>
+
+{% endblock %}

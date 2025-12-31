@@ -5,4 +5,5 @@ from .models import *
 admin.site.register(Photo)
 admin.site.register(Service_Photo)
 admin.site.register(Bookings)
+admin.site.register(WebsiteVisitertgerg)
 admin.site.register(Myself)

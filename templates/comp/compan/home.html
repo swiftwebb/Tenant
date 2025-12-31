@@ -1,0 +1,124 @@
+{% extends 'comp/base.html' %}
+{% block content %}
+<main class="flex-grow">
+    <!-- HeroSection -->
+    <section class="relative py-20 md:py-32 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-background-dark dark:to-blue-900/20"></div>
+    <div class="absolute inset-0 opacity-30">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+    <div class="flex flex-col gap-8 text-center lg:text-left">
+    <div class="flex flex-col gap-6">
+    <div class="inline-flex items-center gap-2 self-center lg:self-start px-4 py-2 bg-primary/10 dark:bg-primary/20 rounded-full">
+    <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+    <span class="text-sm font-semibold text-primary">Trusted by 500+ Companies</span>
+    </div>
+    <h1 class="text-5xl font-extrabold leading-tight tracking-tighter text-[#0d121b] dark:text-white md:text-6xl lg:text-7xl">
+    Elevate Your Business with 
+    <span class="bg-gradient-to-r from-primary to-indigo-600 bg-clip-text text-transparent">Innovative Solutions</span>
+    </h1>
+    <h2 class="text-xl font-normal leading-relaxed text-gray-600 dark:text-gray-400">We provide cutting-edge technology and expert strategies to help you achieve your goals and stay ahead of the competition.</h2>
+    </div>
+    <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
+    <a href="{% url 'service' %}" class="group flex min-w-[140px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl h-14 px-8 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] transition-all hover:scale-105 hover:shadow-xl hover:shadow-primary/25">
+    <span class="truncate">Get Started</span>
+    <span class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">arrow_forward</span>
+    </a>
+    <a href="{% url 'about' %}" class="flex min-w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-8 bg-white border-2 border-gray-200 text-[#0d121b] dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em] transition-all hover:scale-105 hover:border-primary hover:shadow-lg">
+    <span class="truncate">Learn More</span>
+    </a>
+    </div>
+    </div>
+    <div class="w-full">
+    <div class="relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-indigo-500/20 rounded-2xl blur-3xl"></div>
+    <div class="relative aspect-video w-full rounded-2xl bg-gray-200 bg-cover bg-center bg-no-repeat shadow-2xl dark:bg-gray-800" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCPCzKo4y7G81If7p9h1hzaxuTsvA9btmO_sYFCNs9TahL_aqzwlTvhxtJLJThuRV_ED99da_ITUiq5rHcehKDUWDRiWrU6aiCaIefWyK89lAMdQPZnDWz86c7iHSb4-knV0p7Ih530cy53ZzreB8ktZnfSOIOOW1TlBz8mf16HQOoLN2ao7KOVpCoJsurNqSoM5mVPXIIpffiTC-bSUHq7UhsjKgoVQpK7FyyiS2RUXETSarj4gDs5PyFk58JYkUvXOzkoZmU5NBCo");'></div>
+    </div>
+    </div>
+    </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section class="relative py-20 md:py-32 bg-white dark:bg-background-dark">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col items-center text-center mb-16">
+    <span class="inline-block px-4 py-2 bg-primary/10 dark:bg-primary/20 rounded-full text-sm font-semibold text-primary mb-4">What We Offer</span>
+    <h2 class="text-4xl font-bold leading-tight tracking-tighter text-[#0d121b] dark:text-white md:text-5xl">Our Premier Services</h2>
+    <p class="mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">Discover the range of solutions we offer to help your business thrive in the digital age.</p>
+    </div>
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {% for services in service %}
+    <div class="group relative flex flex-col gap-6 rounded-2xl border border-gray-200/80 bg-white p-8 shadow-sm transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 dark:border-gray-800/80 dark:bg-gray-900/50 dark:hover:border-primary/50">
+    <div class="flex size-16 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-blue-600 text-white shadow-lg shadow-primary/25">
+    <span class="material-symbols-outlined text-4xl">query_stats</span>
+    </div>
+    <div class="flex flex-col gap-3">
+    <h3 class="text-2xl font-bold text-[#0d121b] dark:text-white">{{services.title }}</h3>
+    <p class="text-base leading-relaxed text-gray-600 dark:text-gray-400">{{services.overview}}</p>
+    </div>
+    {% comment %} <div class="mt-auto pt-4 flex items-center gap-2 text-primary font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+    <span>Learn more</span>
+    <span class="material-symbols-outlined text-xl">arrow_forward</span>
+    </div> {% endcomment %}
+    </div>
+    {%endfor%}
+    </div>
+    </div>
+    </section>
+    
+    <!-- Why Choose Us Section -->
+    <section class="py-20 md:py-32 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-background-dark">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+    <div class="w-full order-2 lg:order-1">
+    <div class="relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-indigo-500/20 rounded-2xl blur-2xl"></div>
+    <div class="relative aspect-video w-full rounded-2xl bg-gray-200 bg-cover bg-center bg-no-repeat shadow-2xl dark:bg-gray-800" style='background-image: url("{{home.image.url}}");'></div>
+    </div>
+    </div>
+    <div class="flex flex-col gap-8 order-1 lg:order-2">
+    <div class="flex flex-col gap-4">
+    <span class="inline-block px-4 py-2 bg-primary/10 dark:bg-primary/20 rounded-full text-sm font-semibold text-primary self-start">Why Choose Us</span>
+    <h2 class="text-4xl font-bold leading-tight tracking-tighter text-[#0d121b] dark:text-white md:text-5xl">ProCorp is Your Ideal Partner</h2>
+    <p class="mt-2 text-lg text-gray-600 dark:text-gray-400">{{home.overview}}</p>
+    </div>
+    <ul class="flex flex-col gap-6">
+
+        {% for line in home.description.splitlines %}
+        {% if line %}
+
+        <li class="flex items-start gap-4 p-4 rounded-xl hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
+            <div>   
+                <p class="text-gray-600 dark:text-gray-400">{{ line }}</p>
+                </div>
+                </li>
+
+        {% endif %}
+        {% endfor %}
+
+
+
+
+
+    </ul>
+    </div>
+    </div>
+    </section>
+    
+    </main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {% endblock %}

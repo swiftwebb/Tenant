@@ -1,0 +1,43 @@
+{% extends 'comp/base.html' %}
+{% block content %}
+
+
+
+
+
+<div class="w-full py-20 md:py-32 text-center">
+    <div class="flex flex-col gap-6 items-center">
+    <div class="flex flex-col gap-4 text-center">
+    <h1 class="text-4xl font-black leading-tight tracking-[-0.033em] md:text-6xl max-w-3xl mx-auto">Elevate Your Business with Our Expert Solutions</h1>
+    <h2 class="text-base font-normal leading-normal text-gray-600 dark:text-gray-400 md:text-lg max-w-2xl mx-auto">We provide innovative and tailored services to help you achieve your business goals and stay ahead of the competition.</h2>
+    </div>
+    <a href="{% url 'contact' %}" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] mt-4">
+    <span class="truncate">Request a Quote</span>
+    </a>
+    </div>
+    </div>
+    <!-- SectionHeader Component -->
+
+
+
+    <h2 class="text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5 text-center">Our Core Services</h2>
+
+    <!-- Services Grid - Loop INSIDE the grid -->
+    <div class="flex justify-center w-full p-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl w-full place-items-center lg:place-items-stretch">
+        
+        {% for services in service %}
+        <div class="flex flex-col gap-6 p-6 bg-white dark:bg-background-dark/50 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-200/50 dark:border-gray-800/50 w-full max-w-md lg:max-w-none">
+          <div class="flex items-center gap-4">
+            <div class="p-3 rounded-lg bg-primary/10 text-primary">
+              <span class="material-symbols-outlined" data-icon="cloud_upload">query_stats</span>
+            </div>
+            <p class="text-lg font-bold">{{services.title}}</p>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">{{services.overview}}</p>
+        </div>
+        {% endfor %}
+        
+      </div>
+    </div>
+{% endblock %}

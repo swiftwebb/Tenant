@@ -25,13 +25,13 @@ class Categorysss(models.Model):
 
 
 class Socails(models.Model):
-    name = models.CharField(blank=True)
+    name = models.CharField()
     like = models.CharField(blank=True)
     comment = models.CharField(blank=True)
     views = models.CharField(blank=True)
-    thumbnail = CloudinaryField(folder='tunb/', blank=True, null=True)
-    link = models.URLField(blank=True)
-    category = models.ForeignKey(Categorysss, on_delete=models.SET_NULL, null=True, blank=True)
+    thumbnail = CloudinaryField(folder='tunb/',)
+    link = models.URLField(help_text="paste the link of the video")
+    category = models.ForeignKey(Categorysss, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -41,40 +41,50 @@ class Socails(models.Model):
 
 
 class Campagin(models.Model):
-    Title = models.CharField(blank=True)
-    social = models.ForeignKey(Socails, on_delete=models.CASCADE,null=True, blank=True)
-    problem=  models.TextField(blank=True)
-    overview=  models.TextField(max_length=150,blank=True)
+    Title = models.CharField()
+    social = models.ForeignKey(Socails, on_delete=models.CASCADE)
+    problem=  models.TextField(help_text="explain the problems the clients faced")
+    overview=  models.TextField(help_text="share the overview of what you did")
 
-    solution=  models.TextField(blank=True)
-    result =  models.TextField(blank=True)
+    solution=  models.TextField(help_text="Share the solutions that you took")
+    result =  models.TextField(help_text="Share the result")
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Service(models.Model):
-    name = models.CharField(blank=True)
-    description = models.TextField(blank=True, help_text="list what will post either one video or multiple video and the socail media")
-    amount = models.FloatField(null=True, blank=True)
+    name = models.CharField()
+    description = models.TextField(help_text="list of what will you post either one video or multiple video and the socail media you'll post it")
+    amount = models.FloatField(help_text=" the amount you'll charge")
 
 
 
 
 class Mess(models.Model):
-    name = models.CharField(blank=True)
-    email = models.EmailField(blank=True)
+    name = models.CharField()
+    email = models.EmailField()
     messages = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Home(models.Model):
-    title = models.CharField(blank=True)
-    description = models.TextField(blank=True)
-    image = CloudinaryField(folder='homie/', blank=True, null=True)
+    title = models.CharField()
+    description = models.TextField()
+    image = CloudinaryField(folder='homie/',)
     
 
 class About(models.Model):
-    title = models.CharField(blank=True)
-    description = models.TextField(blank=True)
-    image =CloudinaryField(folder='about/', blank=True, null=True)
+    title = models.CharField()
+    description = models.TextField()
+    image =CloudinaryField(folder='about/',)
     
 
+
+class WebsiteVisiterggssfe(models.Model):
+    path = models.CharField(max_length=255)  # Optional: track which page
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.CharField(max_length=255, blank=True)
+    referrer = models.CharField(max_length=255, blank=True, null=True) 
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.ip_address} visited {self.path} at {self.timestamp}"

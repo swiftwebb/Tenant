@@ -12,6 +12,9 @@
       <p class="mt-2 text-sm text-black/60 dark:text-white/60">
         {% trans "Welcome back to Baxting." %}
       </p>
+      <p class="mt-2 text-sm text-black/60 dark:text-white/60">
+        {% trans "Welcome back to Baxting. if you have an account with our delivery service you can just log in with the same credentials." %}
+      </p>
     </div>
 
     <form method="post" action="{% url 'account_login' %}" class="mt-8 space-y-6">
@@ -40,9 +43,15 @@
         {% trans "Log In" %}
       </button>
 
-      <a href="{% url 'customers:plan_list' %}" class="group relative flex w-full justify-center rounded-lg border border-transparent bg-gray-400 py-3 px-4 text-sm font-bold text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark">
+      <a href="{% url 'customers:home' %}" class="group relative flex w-full justify-center rounded-lg border border-transparent bg-gray-400 py-3 px-4 text-sm font-bold text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark">
         {% trans "Cancel" %}
       </a>
+      <p class="text-center text-sm text-black/60 dark:text-white/60 mt-4">
+        {% trans "Don't have an account?" %}
+        <a href="{% url 'account_signup' %}" class="text-primary font-semibold hover:underline">
+          {% trans "Sign Up" %}
+        </a>
+      </p>
     </form>
   </div>
 </div>

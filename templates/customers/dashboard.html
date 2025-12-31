@@ -11,33 +11,117 @@
           Welcome back, {{ client.name }}!
         </p>
         <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal leading-normal">
-          Here's a summary of your e-commerce activity.
+          Here's a summary of your E-commerce website activity.
         </p>
       </div>
     </div>
 
-    <!-- Stats Summary -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-      <div
-        class="flex flex-col gap-2 rounded-xl bg-card-light dark:bg-card-dark p-6 border border-border-light dark:border-border-dark shadow-sm">
-        <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-medium leading-normal">
-          Active Products
-        </p>
-        <p class="text-text-primary-light dark:text-text-primary-dark tracking-light text-3xl font-bold leading-tight">
-          {{ products|length }}
-        </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Active Products Card -->
+      <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+        <div class="relative z-10 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <p class="text-white/80 text-sm font-semibold uppercase tracking-wide">
+              Active Products
+            </p>
+            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+              <span class="material-symbols-outlined text-white text-2xl">inventory_2</span>
+            </div>
+          </div>
+          <p class="text-white text-4xl font-black leading-tight">
+            {{ products|length }}
+          </p>
+        </div>
       </div>
-
-      <div
-        class="flex flex-col gap-2 rounded-xl bg-card-light dark:bg-card-dark p-6 border border-border-light dark:border-border-dark shadow-sm">
-        <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-medium leading-normal">
-          My Orders
-        </p>
-        <p class="text-text-primary-light dark:text-text-primary-dark tracking-light text-3xl font-bold leading-tight">
-          {{ order|length }}
-        </p>
+    
+      <!-- My Orders Card -->
+      <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+        <div class="relative z-10 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <p class="text-white/80 text-sm font-semibold uppercase tracking-wide">
+              My Orders
+            </p>
+            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+              <span class="material-symbols-outlined text-white text-2xl">shopping_cart</span>
+            </div>
+          </div>
+          <p class="text-white text-4xl font-black leading-tight">
+            {{ order|length }}
+          </p>
+        </div>
+      </div>
+    
+      <!-- My Sales Card -->
+      <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+        <div class="relative z-10 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <p class="text-white/80 text-sm font-semibold uppercase tracking-wide">
+              My Sales
+            </p>
+            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+              <span class="material-symbols-outlined text-white text-2xl">trending_up</span>
+            </div>
+          </div>
+          <p class="text-white text-4xl font-black leading-tight">
+            {{ sales|length }}
+          </p>
+        </div>
+      </div>
+    
+      <!-- Customer's Visit Card -->
+      <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+        <div class="relative z-10 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <p class="text-white/80 text-sm font-semibold uppercase tracking-wide">
+              Customer Visits
+            </p>
+            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+              <span class="material-symbols-outlined text-white text-2xl">visibility</span>
+            </div>
+          </div>
+          <p class="text-white text-4xl font-black leading-tight">
+            {{ visit|length }}
+          </p>
+        </div>
+      </div>
+    
+      <!-- Transactions Button Card -->
+      <div class="stat-card group relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 p-6 shadow-xl hover:shadow-2xl lg:col-span-2">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20"></div>
+        <div class="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16"></div>
+        <a href="{% url 'customers:transaction' %}" class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 h-full">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-sm shadow-lg">
+              <span class="material-symbols-outlined text-white text-4xl">receipt_long</span>
+            </div>
+            <div class="text-center md:text-left">
+              <p class="text-white text-2xl font-black">
+                View All Transactions
+              </p>
+              <p class="text-white/80 text-sm font-medium mt-1">
+                See complete transaction history & analytics
+              </p>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-white text-3xl">arrow_forward</span>
+        </a>
       </div>
     </div>
+    
+    <style>
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+      }
+      
+      .group:hover .material-symbols-outlined {
+        animation: float 1s ease-in-out infinite;
+      }
+    </style>
 
     <!-- Store Management -->
     <h2
@@ -46,6 +130,9 @@
     </h2>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+
+
+
 
       <!-- My Products -->
       <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
@@ -151,27 +238,48 @@
           </a>
         </div>
       </div>
+
       <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
         <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
           <div class="bg-primary/20 text-primary p-3 rounded-lg">
             <span class="material-symbols-outlined !text-3xl">local_shipping</span>
           </div>
           <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
-            Edit Delivery
+            See Sales 
           </p>
           <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
-            Manage delivery zones, pricing, and logistics for smooth nationwide fulfillment.
+            View detailed sales reports, charts, and performance metrics for your store.
           </p>
-          <a href="https://wa.me/14155238886?text=Hello%20{{ request.tenant.name }}!%20Your%20AI%20assistant%20is%20ready%20to%20help%20you%20manage%20your%20store.">
+          <a href="{% url 'customers:orders_chart_page' %}">
             <button
               class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
-              Edit whatsapp
+              See Sales
             </button>
           </a>
         </div>
       </div>
+
+
+      {% comment %} <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+        <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+          <div class="bg-primary/20 text-primary p-3 rounded-lg">
+            <span class="material-symbols-outlined !text-3xl">local_shipping</span>
+          </div>
+          <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+            See Sales 
+          </p>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+            Manage Your Sales
+          </p>
+          <a href="https://wa.me/14155238886?text=Hello%20{{ request.tenant.name }}!%20Your%20AI%20assistant%20is%20ready%20to%20help%20you%20manage%20your%20store.">
+            <button
+              class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+              See Sales
+            </button>
+          </a>
+        </div>
+      </div> {% endcomment %}
     </div>
   </div>
 </main>
-
 {% endblock %}

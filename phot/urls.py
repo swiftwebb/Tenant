@@ -18,6 +18,7 @@ urlpatterns = [
     path('homelist/', hoomelist, name='hoomelist'),
     path('about/', contact, name='contact'),
     path("hoomedet/<int:id>/",hoomedet, name="hoomedet"),
+    path("track_visit/", track_visit, name="track_visit"),
 
 ]
 

@@ -100,26 +100,81 @@
             </div>
             {% endif %}
             <div class="flex justify-between text-base font-bold text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-700 pt-2">
-              <span>Grand Total</span>
+              <span>Total product price</span>
               <span>₦{{ order.get_total }}</span>
             </div>
 
             <!-- Payment / Delivery Status -->
-            <div class="mt-2">
-              {% if order.status == "delivered" %}
-                <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-800/30 dark:text-green-300">Delivered</span>
-              {% elif order.Paid %}
-                <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-800/30 dark:text-blue-300">Paid</span>
-              {% else %}
-                <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-700 dark:bg-red-800/30 dark:text-red-300">Unpaid</span>
-              {% endif %}
-            </div>
+
           </div>
         </div>
       </div>
 
       <!-- Sidebar (Customer, Shipping, Actions) -->
       <div class="space-y-6">
+
+        <!-- ✅ INSERTED ORDER SUMMARY BOX -->
+        <div class="lg:col-span-1 space-y-8">
+          <div class="bg-white dark:bg-background-dark rounded-xl shadow-sm">
+            <h3 class="text-[#111418] dark:text-white text-lg font-bold leading-tight px-6 py-4 border-b border-gray-200 dark:border-gray-700">Order Summary</h3>
+            <div class="p-6 space-y-3">
+
+              <div class="flex justify-between text-sm">
+                <p class="text-gray-500 dark:text-gray-400">Subtotal</p>
+                <p class="text-[#111418] dark:text-white">${{ order.amount }}</p>
+              </div>
+
+              <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
+
+              <div class="flex justify-between text-sm">
+                <p class="text-gray-500 dark:text-gray-400">Total Price</p>
+                <p class="text-gray-900 dark:text-white font-medium">₦{{ total_price|floatformat:2 }}</p>
+              </div>
+
+              <div class="flex justify-between text-sm">
+                <p class="text-gray-500 dark:text-gray-400">Product Discount</p>
+                <p class="text-red-600 font-medium">-₦{{ total_discount|floatformat:2 }}</p>
+              </div>
+
+              {% if order.coupon %}
+              <div class="flex justify-between text-sm">
+                <p class="text-gray-500 dark:text-gray-400">Promo Code ({{ order.coupon.code }})</p>
+                <p class="text-red-600 font-medium">-₦{{ promo_discount|floatformat:2 }}</p>
+              </div>
+              {% endif %}
+
+              {% if order.delivery_fee %}
+              <div class="flex justify-between text-sm">
+                <p class="text-gray-500 dark:text-gray-400">Delivery fee</p>
+                <p class="text-blue-600 font-medium">+₦{{ order.delivery_fee }}</p>
+              </div>
+              {% endif %}
+
+              <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
+
+              <div class="flex justify-between font-bold text-base">
+                <p>Grand Total</p>
+                <p>₦{{ order.amount|floatformat:2 }}</p>
+                
+              </div>
+              <div class="mt-2">
+                {% if order.status == "delivered" %}
+                  <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-800/30 dark:text-green-300">Delivered</span>
+                  {% endif %}
+                  {% if order.status == "shipping (payment on delivery)"  %}
+                  <span class=" inline-block px-3 py-1 text-sm font-semibold rounded-full bg-orange-100 text-orange-700 dark:bg-red-800/30 dark:text-orange-300">Payment to be made on delivery</span>
+                {% endif %}
+                {% if order.status == "shipping"  %}
+                  <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-800/30 dark:text-blue-300 ">Paid</span>
+                {% endif %}
+              </div>
+
+            </div>
+            
+          </div>
+        </div>
+        <!-- END SUMMARY -->
+
         <!-- Customer Info -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 sm:p-6">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Customer</h3>
@@ -143,11 +198,11 @@
           <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Actions</h3>
 
           <a href="{% url 'customers:dashboard_delete_order' order.pk %}">
-            <button class="w-full h-10 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-bold transition-colors">Delete</button>
+            <button class="w-full h-10 rounded-lg mb-3 bg-red-600 hover:bg-red-700 text-white text-sm font-bold transition-colors">Delete</button>
           </a>
 
           <a href="{% url 'customers:dashboard_orderlist' %}">
-            <button class="w-full h-10 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold">Back</button>
+            <button class="mt-5 mb-5 w-full h-10 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold">Back</button>
           </a>
 
           {% if order.status != "delivered" %}

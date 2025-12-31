@@ -51,7 +51,7 @@ class SubscriptionPlan(models.Model):
     description = models.TextField(blank=True)
     can_use_custom_domain = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    start_date = models.DateTimeField()
+    start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     cancelled_date = models.DateTimeField(null=True, blank=True)
 
@@ -60,9 +60,22 @@ class SubscriptionPlan(models.Model):
         return self.name
 
 class Job(models.Model):
+
+    PLAN_LEVELS = [
+        ('free', 'Free Plan'),
+        ('basic', 'Basic Plan'),
+        ('premium', 'Premium Plan'),
+    ]
+
     name = models.CharField(blank=True, null=True)
     svg_url = models.CharField(max_length=200, blank=True, null=True, help_text="Live preview or demo link")
     det = models.CharField( blank=True, null=True)
+    min_plan = models.CharField(
+        max_length=20,
+        choices=PLAN_LEVELS,
+        default='free',
+        help_text="Minimum subscription plan required to use this template.", blank=True, null=True
+    )
 
     def __str__(self):
         return self.name
@@ -131,6 +144,8 @@ class Client(TenantMixin):
     urlconf = models.CharField(max_length=255, default='ecom.urls')
     Tagline = models.CharField(max_length=120,null=True, blank=True, unique=True)
     business_description = models.CharField(max_length=500,null=True, blank=True)
+    business_logistics = models.CharField(max_length=500,null=True, blank=True)
+    business_working_hours = models.CharField(max_length=500,null=True, blank=True)
     street_address = models.CharField(max_length=25,null=True, blank=True)
     apartment_address = models.CharField(max_length=250,null=True, blank=True)
     city = models.CharField(max_length=100, blank=True, null=True)
@@ -145,6 +160,11 @@ class Client(TenantMixin):
     # logo = models.ImageField( upload_to='logo/', null=True, blank=True)
     # business_picture = models.ImageField( upload_to='buinesspics/', null=True, blank=True)
     # phone_number = PhoneNumberField(region="NG",null=True, blank=True)
+    phone_number = models.CharField(max_length=40,null=True, blank=True)
+    tiktok = models.CharField(max_length=40,null=True, blank=True)
+    facebook = models.CharField(max_length=40,null=True, blank=True)
+    instagram = models.CharField(max_length=40,null=True, blank=True)
+    linkedin = models.CharField(max_length=40,null=True, blank=True)
     phone_number = models.CharField(max_length=40,null=True, blank=True)
     account_number = models.IntegerField(null=True, blank=True)
     email = models.EmailField(blank=True, null=True)
@@ -162,6 +182,8 @@ class Client(TenantMixin):
     api_key = models.CharField(max_length=100, blank=True, null=True)
     api_secret = models.CharField(max_length=100, blank=True, null=True)
     flutterwave_subaccount_id = models.CharField(max_length=50, blank=True, null=True)
+    flutterwave_split_code = models.CharField(max_length=50, blank=True, null=True)
+    flutterwave_payment_code = models.CharField(max_length=50, blank=True, null=True)
     logo = models.ImageField(
         upload_to=logo_upload_to,
         null=True, blank=True
@@ -171,6 +193,12 @@ class Client(TenantMixin):
         upload_to=business_picture_upload_to,
         null=True, blank=True
     )
+
+    free = models.BooleanField(default=False)      
+    paystack_subscription_code = models.CharField(max_length=100, blank=True, null=True)
+    paystack_customer_code = models.CharField(max_length=100, blank=True, null=True)
+    paystack_email_token = models.CharField(max_length=100, blank=True, null=True)
+    auto_renew = models.BooleanField(default=True) 
 
 
 
@@ -245,3 +273,39 @@ class ChatHistory(models.Model):
     role = models.CharField(max_length=20)  # "user" or "assistant"
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class Tut(models.Model):
+    name = models.CharField(max_length=1000)
+    video = models.URLField()
+
+class Review(models.Model):
+    name = models.OneToOneField(Client, on_delete=models.CASCADE)
+    comment = models.TextField()
+    rating = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class WebsiteVisit(models.Model):
+    tenant = models.ForeignKey(Client, on_delete=models.CASCADE)  # Or your Tenant model
+    path = models.CharField(max_length=255)  # Optional: track which page
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.CharField(max_length=255, blank=True)
+    referrer = models.CharField(max_length=255, blank=True, null=True) 
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.tenant} visited {self.path} at {self.timestamp}"
+
+
+
+
+
+
+
+
+class Tutorial(models.Model):
+    Title = models.CharField(max_length=255, blank=True)
+    video = models.URLField()

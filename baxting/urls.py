@@ -5,6 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from b_manager.views import *
 from ecommerce.views import *
+from blog.views import *
 
 
 urlpatterns = [

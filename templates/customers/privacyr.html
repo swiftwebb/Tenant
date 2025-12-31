@@ -1,68 +1,330 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="mx-auto max-w-4xl">
-<div class="mb-12 text-center">
-<p class="text-sm font-semibold uppercase tracking-wider text-primary">Last Updated: October 26, 2023</p>
-<h1 class="mt-2 text-4xl font-extrabold tracking-tight text-[#111618] dark:text-background-light sm:text-5xl">Privacy Policy</h1>
-</div>
-<div class="space-y-10 text-base leading-relaxed text-[#111618]/80 dark:text-background-light/80">
-<div class="space-y-4">
-<h2 class="text-2xl font-bold tracking-tight text-[#111618] dark:text-background-light">Introduction</h2>
-<p>Welcome to CraftSites! This Privacy Policy explains how we collect, use, and protect your information when you use our website builder and services. We are committed to protecting your privacy and ensuring that your personal information is handled responsibly.</p>
-</div>
-<div class="space-y-4">
-<h2 class="text-2xl font-bold tracking-tight text-[#111618] dark:text-background-light">Information We Collect</h2>
-<p>We collect information from you in several ways:</p>
-<ul class="list-disc space-y-2 pl-6">
-<li><strong>Information you provide directly:</strong> When you sign up for an account, create a website, or contact us, we may ask for information such as your name, email address, and payment details.</li>
-<li><strong>Information collected automatically:</strong> We may collect information about your use of our services, including your IP address, browser type, and pages visited. This information helps us improve our services and understand how users interact with our platform.</li>
-<li><strong>Cookies and similar technologies:</strong> We use cookies to enhance your experience, remember your preferences, and analyze website traffic. You can manage your cookie preferences through your browser settings.</li>
-</ul>
-</div>
-<div class="space-y-4">
-<h2 class="text-2xl font-bold tracking-tight text-[#111618] dark:text-background-light">How We Use Your Information</h2>
-<p>We use the information we collect for various purposes:</p>
-<ul class="list-disc space-y-2 pl-6">
-<li><strong>Providing and improving our services:</strong> To enable you to create and manage your websites, and to enhance the functionality and user experience of our platform.</li>
-<li><strong>Communicating with you:</strong> To send you updates, newsletters, and important information about your account and our services.</li>
-<li><strong>Personalizing your experience:</strong> To tailor our services to your needs and preferences.</li>
-<li><strong>Ensuring security:</strong> To protect our platform and users from fraud and unauthorized access.</li>
-</ul>
-</div>
-<div class="space-y-4">
-<h2 class="text-2xl font-bold tracking-tight text-[#111618] dark:text-background-light">Sharing Your Information</h2>
-<p>We may share your information with third parties in the following circumstances:</p>
-<ul class="list-disc space-y-2 pl-6">
-<li><strong>Service providers:</strong> We engage third-party service providers to assist us in delivering our services, such as payment processing, hosting, and analytics. These providers are contractually obligated to protect your information.</li>
-<li><strong>Legal requirements:</strong> We may disclose your information if required by law or in response to a valid legal request.</li>
-<li><strong>Business transfers:</strong> In the event of a merger, acquisition, or sale of all or a portion of our assets, your information may be transferred to the acquiring entity.</li>
-</ul>
-</div>
-<div class="space-y-4">
-<h2 class="text-2xl font-bold tracking-tight text-[#111618] dark:text-background-light">Data Security</h2>
-<p>We implement appropriate technical and organizational measures to protect your information from unauthorized access, use, or disclosure. However, no method of transmission over the internet or electronic storage is completely secure, and we cannot guarantee absolute security.</p>
-</div>
-<div class="space-y-4">
-<h2 class="text-2xl font-bold tracking-tight text-[#111618] dark:text-background-light">Your Rights</h2>
-<p>You have certain rights regarding your personal information, including the right to:</p>
-<ul class="list-disc space-y-2 pl-6">
-<li><strong>Access:</strong> Request access to the personal information we hold about you.</li>
-<li><strong>Correct:</strong> Request correction of inaccurate or incomplete information.</li>
-<li><strong>Delete:</strong> Request deletion of your personal information, subject to certain exceptions.</li>
-<li><strong>Object:</strong> Object to the processing of your personal information for certain purposes.</li>
-</ul>
-<p>To exercise these rights, please contact us at the email address provided below.</p>
-</div>
-<div class="space-y-4">
-<h2 class="text-2xl font-bold tracking-tight text-[#111618] dark:text-background-light">Changes to This Policy</h2>
-<p>We may update this Privacy Policy from time to time. We will notify you of any significant changes by posting the updated policy on our website and, where appropriate, through other communication channels.</p>
-</div>
-<div class="space-y-4">
-<h2 class="text-2xl font-bold tracking-tight text-[#111618] dark:text-background-light">Contact Us</h2>
-<p>If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at: <a class="text-primary hover:underline" href="mailto:privacy@craftsites.com">privacy@craftsites.com</a></p>
-</div>
-</div>
+
+<style>
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .section-card {
+    animation: fade-in-up 0.6s ease-out forwards;
+    opacity: 0;
+  }
+  
+  .section-card:nth-child(1) { animation-delay: 0.1s; }
+  .section-card:nth-child(2) { animation-delay: 0.2s; }
+  .section-card:nth-child(3) { animation-delay: 0.3s; }
+  .section-card:nth-child(4) { animation-delay: 0.4s; }
+  .section-card:nth-child(5) { animation-delay: 0.5s; }
+  .section-card:nth-child(6) { animation-delay: 0.6s; }
+  .section-card:nth-child(7) { animation-delay: 0.7s; }
+  .section-card:nth-child(8) { animation-delay: 0.8s; }
+</style>
+
+<div class="min-h-screen bg-gradient-to-br from-background-light via-slate-50 to-slate-100 dark:from-background-dark dark:via-slate-900 dark:to-slate-950 py-12 px-4 sm:px-6 lg:px-8">
+  
+  <!-- Decorative Background Elements -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none opacity-10 z-0">
+    <div class="absolute top-20 right-20 w-96 h-96 bg-primary rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 left-20 w-80 h-80 bg-blue-400 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative z-10 mx-auto max-w-5xl">
+    
+    <!-- Header Section -->
+    <div class="mb-16 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 dark:bg-primary/20 rounded-full mb-6">
+        <span class="material-symbols-outlined text-primary text-lg">policy</span>
+        <p class="text-sm font-bold uppercase tracking-wider text-primary">Last Updated: October 26, 2025</p>
+      </div>
+      
+      <h1 class="mt-4 text-5xl sm:text-6xl md:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+        Privacy <span class="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">Policy</span>
+      </h1>
+      <p class="mt-6 text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
+        Your privacy is our priority. Learn how we protect and handle your data at Baxting.
+      </p>
+    </div>
+
+    <!-- Policy Content -->
+    <div class="space-y-6">
+
+      <!-- INTRODUCTION -->
+      <div class="section-card bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-8 md:p-10 shadow-xl border border-slate-200/50 dark:border-slate-800/50 hover:shadow-2xl transition-all duration-300">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center shadow-lg">
+            <span class="material-symbols-outlined text-white text-3xl">info</span>
+          </div>
+          <div>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white">Introduction</h2>
+            <div class="h-1 w-20 bg-gradient-to-r from-primary to-blue-500 rounded-full mt-2"></div>
+          </div>
+        </div>
+        <div class="space-y-4 text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300">
+          <p>
+            Welcome to <strong class="text-slate-900 dark:text-white">Baxting</strong>! This Privacy Policy outlines how we collect, use, store, and protect your information when you use our website-building platform and services. 
+            At Baxting, we are committed to safeguarding your data and ensuring your privacy is respected at all times.
+          </p>
+        </div>
+      </div>
+
+      <!-- INFO WE COLLECT -->
+      <div class="section-card bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-8 md:p-10 shadow-xl border border-slate-200/50 dark:border-slate-800/50 hover:shadow-2xl transition-all duration-300">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg">
+            <span class="material-symbols-outlined text-white text-3xl">database</span>
+          </div>
+          <div>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white">Information We Collect</h2>
+            <div class="h-1 w-20 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mt-2"></div>
+          </div>
+        </div>
+        <p class="text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-4">
+          We collect information from you in the following ways:
+        </p>
+        <ul class="space-y-4 text-base md:text-lg leading-relaxed">
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">person_add</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Information you provide directly:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> When you create an account, publish a website, purchase hosting, or contact support. This may include your name, email address, business information, and payment details.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">analytics</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Information collected automatically:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> We collect data about your interactions with Baxting, such as IP address, browser type, device information, pages visited, and session activity to help optimize performance and security.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">cookie</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Cookies and similar technologies:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> Cookies allow us to remember your settings, improve platform functionality, and analyze traffic. You may disable cookies anytime through your browser settings, though some features may not operate correctly.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- HOW WE USE IT -->
+      <div class="section-card bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-8 md:p-10 shadow-xl border border-slate-200/50 dark:border-slate-800/50 hover:shadow-2xl transition-all duration-300">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+            <span class="material-symbols-outlined text-white text-3xl">settings</span>
+          </div>
+          <div>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white">How We Use Your Information</h2>
+            <div class="h-1 w-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-2"></div>
+          </div>
+        </div>
+        <p class="text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-4">
+          We use the information we collect to:
+        </p>
+        <ul class="space-y-4 text-base md:text-lg leading-relaxed">
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">web</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Provide and maintain the Baxting platform</strong>
+              <span class="text-slate-700 dark:text-slate-300"> including website creation, hosting, templates, and builder tools.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">auto_awesome</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Improve and personalize user experience</strong>
+              <span class="text-slate-700 dark:text-slate-300"> through platform updates, analytics, and feature enhancements.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">mail</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Send service-related communication</strong>
+              <span class="text-slate-700 dark:text-slate-300"> including account updates, system notifications, security alerts, and billing information.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">verified_user</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Enhance security</strong>
+              <span class="text-slate-700 dark:text-slate-300"> by preventing fraud, abuse, or unauthorized access to your sites or account.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- SHARING POLICY -->
+      <div class="section-card bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-8 md:p-10 shadow-xl border border-slate-200/50 dark:border-slate-800/50 hover:shadow-2xl transition-all duration-300">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg">
+            <span class="material-symbols-outlined text-white text-3xl">share</span>
+          </div>
+          <div>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white">Sharing Your Information</h2>
+            <div class="h-1 w-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mt-2"></div>
+          </div>
+        </div>
+        <p class="text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-4">
+          We do not sell your data. However, information may be shared in limited circumstances:
+        </p>
+        <ul class="space-y-4 text-base md:text-lg leading-relaxed">
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">engineering</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Service providers:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> Baxting works with hosting, analytics, payment, and security partners. These providers are required to protect your information and use it only to support our platform.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">gavel</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Legal obligations:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> We may disclose information if legally required or in response to valid regulatory or investigative requests.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">business</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Business transfers:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> If Baxting undergoes a merger, acquisition, restructuring, or asset sale, user data may transfer to the acquiring party as part of continuity of service.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- SECURITY -->
+      <div class="section-card bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-8 md:p-10 shadow-xl border border-slate-200/50 dark:border-slate-800/50 hover:shadow-2xl transition-all duration-300">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg">
+            <span class="material-symbols-outlined text-white text-3xl">security</span>
+          </div>
+          <div>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white">Data Security</h2>
+            <div class="h-1 w-20 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full mt-2"></div>
+          </div>
+        </div>
+        <p class="text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300">
+          We employ industry-standard security practices, encryption, and access controls to protect your information. 
+          While we take every reasonable measure to secure data, no online transmission or storage method is 100% guaranteed.
+        </p>
+      </div>
+
+      <!-- YOUR RIGHTS -->
+      <div class="section-card bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-8 md:p-10 shadow-xl border border-slate-200/50 dark:border-slate-800/50 hover:shadow-2xl transition-all duration-300">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
+            <span class="material-symbols-outlined text-white text-3xl">shield_person</span>
+          </div>
+          <div>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white">Your Rights</h2>
+            <div class="h-1 w-20 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mt-2"></div>
+          </div>
+        </div>
+        <p class="text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300 mb-4">
+          You may exercise the following rights at any time:
+        </p>
+        <ul class="space-y-4 text-base md:text-lg leading-relaxed">
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">visibility</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Access:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> You can request details of the personal data we hold.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">edit</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Correction:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> You may update or correct inaccurate information.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">delete</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Deletion:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> You may request deletion of your information, except where retention is required by law or security protocols.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">upload_file</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Data portability:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> Request export of your stored data where applicable.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-primary text-xl mt-1 flex-shrink-0">block</span>
+            <div>
+              <strong class="text-slate-900 dark:text-white">Objection:</strong>
+              <span class="text-slate-700 dark:text-slate-300"> You may object to certain uses such as marketing emails or tracking.</span>
+            </div>
+          </li>
+        </ul>
+        <p class="mt-6 text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300">
+          To submit a request, contact us using the information below.
+        </p>
+      </div>
+
+      <!-- CHANGES -->
+      <div class="section-card bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-8 md:p-10 shadow-xl border border-slate-200/50 dark:border-slate-800/50 hover:shadow-2xl transition-all duration-300">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center shadow-lg">
+            <span class="material-symbols-outlined text-white text-3xl">update</span>
+          </div>
+          <div>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white">Changes to This Policy</h2>
+            <div class="h-1 w-20 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full mt-2"></div>
+          </div>
+        </div>
+        <p class="text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300">
+          Baxting reserves the right to update this Privacy Policy as needed. Any significant changes will be communicated through email or platform notifications. Continued use of Baxting after changes signifies acceptance.
+        </p>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="section-card bg-gradient-to-br from-primary to-blue-500 rounded-3xl p-8 md:p-10 shadow-2xl text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+          <div class="absolute top-10 right-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+          <div class="absolute bottom-10 left-10 w-48 h-48 bg-blue-200 rounded-full blur-2xl"></div>
+        </div>
+        <div class="relative z-10">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
+              <span class="material-symbols-outlined text-white text-3xl">contact_support</span>
+            </div>
+            <div>
+              <h2 class="text-3xl font-bold text-white">Contact Us</h2>
+              <div class="h-1 w-20 bg-white/50 rounded-full mt-2"></div>
+            </div>
+          </div>
+          <div class="space-y-4 text-base md:text-lg leading-relaxed">
+            <p>For questions regarding this Privacy Policy or your data rights, please contact our Data Protection Team at:</p>
+            <div class="flex items-center gap-3 p-4 bg-white/10 backdrop-blur-sm rounded-xl">
+              <span class="material-symbols-outlined text-2xl">email</span>
+              <a class="font-bold hover:underline" href="mailto:info@baxting.com">info@baxting.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="mt-12 text-center">
+      <p class="text-slate-600 dark:text-slate-400 mb-4">Have questions about your data?</p>
+      <a href="{% url 'customers:help' %}" class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-blue-500 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+        <span class="material-symbols-outlined">help</span>
+        Visit Help Center
+      </a>
+    </div>
+  </div>
 </div>
 
-
-   {% endblock %}
+{% endblock %}

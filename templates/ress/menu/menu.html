@@ -1,0 +1,84 @@
+{% extends 'ress/base.html' %}
+{% block content %}
+
+<style>
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+</style>
+
+    <!-- Header -->
+    <div class="flex flex-wrap justify-between gap-3 px-4">
+        <div class="flex min-w-72 flex-col gap-3">
+            <p class="text-white text-4xl font-black leading-tight tracking-[-0.033em]">Our Menu</p>
+            <p class="text-[#cbb790] text-base font-normal leading-normal">
+                A curated selection of masterfully crafted dishes.
+            </p>
+        </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="sticky top-0 z-10 bg-background-dark py-4 px-3 border-b border-white/20">
+        <div class="flex gap-3 overflow-x-auto pb-2 hide-scrollbar">
+            {% for cat in categories %}
+                <a href="?category={{ cat.name }}"
+                   class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg px-4 whitespace-nowrap cursor-pointer transition-all
+                   {% if selected_category == cat.name %}
+                       bg-primary text-background-dark font-bold shadow-lg
+                   {% else %}
+                       bg-white/10 text-white hover:bg-white/20 dark:hover:bg-[#5a4a2a]
+                   {% endif %}">
+                    {{ cat.get_name_display }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Items Display -->
+    <div class="flex flex-col gap-8 px-4 mb-6">
+
+        <section>
+            <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5">
+                {{ selected_category|title }}
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for item in items %}
+                <div class="flex flex-col gap-2 p-4 rounded-lg border border-primary/50 relative
+                            {% if item.is_special %} bg-primary/10 {% else %} bg-background-dark {% endif %}">
+                    
+                    {% if item.is_special %}
+                    <div class="absolute top-2 right-2 flex items-center gap-2 bg-primary/20 text-primary text-xs font-bold px-2 py-1 rounded-full">
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span>Chef's Special</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="flex items-center gap-4 justify-between">
+                        <div class="flex items-center gap-4">
+                            {% if item.image %}
+                            <div class="bg-center bg-cover bg-no-repeat rounded-lg size-16"
+                                 style='background-image: url("{{ item.image.url }}");'></div>
+                            {% else %}
+                            <div class="bg-[#3a3a3a] rounded-lg size-16 flex items-center justify-center text-white text-xs">
+                                No Image
+                            </div>
+                            {% endif %}
+
+                            <div class="flex flex-col justify-center">
+                                <p class="text-white text-base font-medium line-clamp-1">{{ item.name }}</p>
+                                <p class="text-[#cbb790] text-sm font-normal line-clamp-2">{{ item.description }}</p>
+                            </div>
+                        </div>
+
+                        <p class="text-white text-base font-semibold">₦{{ item.price }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-white/60 text-sm">No menu items available in this category.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+    </div>
+
+
+{% endblock %}

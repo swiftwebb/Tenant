@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Booking Details</h1>
+      <p class="text-gray-500 dark:text-gray-400">View customer reservation information</p>
+    </div>
+    <a href="{% url 'customers:dashboard_restaurant_Book' %}">
+      <button class="px-5 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all">← Back</button>
+    </a>
+  </div>
+
+  <!-- Booking Card -->
+  <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+
+    <!-- Name -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Booked By</label>
+      <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-lg font-semibold text-gray-900 dark:text-white">
+        {{ product.name }}
+      </p>
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Email</label>
+      <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white">
+        {{ product.email }}
+      </p>
+    </div>
+
+    <!-- Phone -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Phone Number</label>
+      <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white">
+        {{ product.phone }}
+      </p>
+    </div>
+
+    <!-- Date -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Date Reserved</label>
+      <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white font-medium">
+        {{ product.date }}
+      </p>
+    </div>
+
+    <!-- Time -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Time</label>
+      <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white font-medium">
+        {{ product.time }}
+      </p>
+    </div>
+
+    <!-- Guests -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Number of Guests</label>
+      <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white font-medium">
+        {{ product.guests }}
+      </p>
+    </div>
+
+    <!-- Special Requests -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Special Requests</label>
+      {% if product.special_requests %}
+        <div class="mt-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-800 dark:text-gray-200 space-y-2">
+          {% for line in product.special_requests.splitlines %}
+            {% if line %}
+            <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">chat</span>
+                <span>{{ line }}</span>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="mt-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-500">No special requests</p>
+      {% endif %}
+    </div>
+
+    <!-- Created At -->
+    <div>
+      <label class="text-sm text-gray-600 dark:text-gray-300">Booking Created On</label>
+      <p class="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white">
+        {{ product.created_at|date:"M j, Y, g:i A" }}
+      </p>
+    </div>
+
+  </div>
+
+</main>
+
+{% endblock %}

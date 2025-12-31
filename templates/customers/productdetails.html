@@ -57,11 +57,11 @@
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="text-sm text-gray-600 dark:text-gray-300">Price</label>
-            <p class="mt-1 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">${{ product.price }}</p>
+            <p class="mt-1 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">₦{{ product.price }}</p>
           </div>
           <div>
             <label class="text-sm text-gray-600 dark:text-gray-300">Discount price</label>
-            <p class="mt-1 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">${%if product.discount_price %} {{ product.discount_price }}{%else%} N/A{%endif%}</p>
+            <p class="mt-1 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">₦{%if product.discount_price %} {{ product.discount_price }}{%else%} N/A{%endif%}</p>
           </div>
           <div>
             <label class="text-sm text-gray-600 dark:text-gray-300">Stock/Quantity</label>

@@ -1,0 +1,12 @@
+Hi {{ user.get_full_name|default:user.username }},
+
+Thanks for signing up at {{ current_site.name }}!
+
+Please confirm your email address by clicking the link below:
+
+{{ activate_url }}
+
+If you didn’t request this, feel free to ignore it.
+
+Best,  
+The {{ current_site.name }} Team

@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
-project = os.getenv('PROJECT')
+project = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -27,7 +27,9 @@ else:
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.ngrok-free.app",
+]
 # Application definition
 
 SHARED_APPS = [
@@ -48,7 +50,8 @@ SHARED_APPS = [
     'django_twilio',
     'widget_tweaks',
     'crispy_forms',
-    'crispy_bootstrap4', 
+    'crispy_bootstrap4',
+     'corsheaders', 
 ]
 TENANT_APPS = (
     # your tenant-specific apps
@@ -65,6 +68,11 @@ TENANT_APPS = (
     'ecom.apps.EcomConfig',
     'content.apps.ContentConfig',
     'phot.apps.PhotConfig',
+    # 'landing.apps.LandingConfig',
+    'blog.apps.BlogConfig',
+    
+    'company.apps.CompanyConfig',
+    'restaurant.apps.RestaurantConfig',
 )
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
@@ -73,6 +81,7 @@ MIDDLEWARE = [
     'django_tenants.middleware.main.TenantMainMiddleware',
     'b_manager.middleware.TenantStatusMiddleware',
     "b_manager.middleware.CloudinaryTenantMiddleware",  
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -100,6 +109,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+
+
+                
+                'b_manager.context_processors.tenant',
             ],
         },
     },
@@ -107,15 +121,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'baxting.wsgi.application'
 
+
+CORS_ALLOWED_ORIGINS = [
+    "http://opestore.localhost:8000",        # local tenant site
+    #"http://tenant1.example.com",   # production tenant
+]
+
+
+
+
+
+
+
+
 CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://:AvdWQBjGM3WIgJRUVu55zUqFVfYopupq@redis-12888.c44.us-east-1-2.ec2.cloud.redislabs.com:12888/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
     }
 }
+
+
 
 # optional — tell django-ratelimit which cache to use
 RATELIMIT_CACHE = 'default'
@@ -173,15 +202,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = [ BASE_DIR / 'static' ]
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'static',  # for development
 # ]
-
-STATIC_ROOT = BASE_DIR / 'staticfiles' 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -249,6 +281,43 @@ else:
 
 
 
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+PAYSTACK_BASE_URL = os.getenv('PAYSTACK_BASE_URL')
 
 
 
+# settings.py
+
+# settings.py
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+
+# # --- These three lines are the crucial change ---
+# EMAIL_PORT = 465 
+# EMAIL_USE_TLS = False  # MUST be False for port 465
+# EMAIL_USE_SSL = True   # MUST be True for port 465
+# # -----------------------------------------------
+
+# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  
+# DEFAULT_FROM_EMAIL = 'no-reply@baxting.com'
+
+
+
+
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.zoho.com'
+
+# --- These three lines are the crucial change ---
+EMAIL_PORT = 465 
+EMAIL_USE_TLS = False  # MUST be False for port 465
+EMAIL_USE_SSL = True   # MUST be True for port 465
+# -----------------------------------------------
+
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  
+DEFAULT_FROM_EMAIL = 'no-reply@baxting.com'

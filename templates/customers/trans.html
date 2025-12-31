@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="px-4 sm:px-6 lg:px-10 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+  <div class="max-w-7xl mx-auto space-y-8">
+
+    <!-- Header -->
+    <div class="flex flex-wrap justify-between items-center gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Transactions</h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-1">
+          View all transaction records in one place.
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="{% url 'customers:dashboard' %}">
+          <button class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-800 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 transition-all duration-200">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            <span>Go Back</span>
+          </button>
+        </a>
+      </div>
+    </div>
+
+    <!-- Transactions Table for large screens -->
+    <div class="hidden md:block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-gray-100 dark:bg-gray-700">
+          <tr>
+            <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Transaction ID</th>
+            <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Order ID</th>
+            <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Customer</th>
+            <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 text-right">Amount(receievd)</th>
+            <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          {% for trans in order %}
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+            <td class="p-4 font-medium text-blue-600 dark:text-blue-400 hover:underline">
+              #{{ trans.id }}
+            </td>
+            <td class="p-4 font-medium text-blue-400 dark:text-blue-400 hover:underline">
+              {% if trans.order %}
+                <a href="{% url 'customers:order_detail_d' trans.order.pk %}">#{{ trans.order.ref_code }}</a>
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td class="p-4 text-gray-700 dark:text-gray-200">
+              {% if trans.order and trans.order.address %}
+                {{ trans.order.address.first_name }} {{ trans.order.address.last_name }}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td class="p-4 text-right text-gray-700 dark:text-gray-200 font-semibold">₦{{ trans.amount|floatformat:2 }}</td>
+            <td class="p-4 text-center">
+              {% if trans.order %}
+                {% with status=trans.order.status|lower %}
+                  {% if status == "delivered" %}
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-800/30 dark:text-green-300">{{ trans.order.status }}</span>
+                  {% elif status == "shipping" %}
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-800/30 dark:text-blue-300">{{ trans.order.status }}</span>
+                  {% else %}
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-700 dark:bg-purple-800/30 dark:text-purple-300">{{ trans.order.status }}</span>
+                  {% endif %}
+                {% endwith %}
+              {% else %}
+                <span class="text-gray-500 dark:text-gray-400">N/A</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">No transactions found yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile card view -->
+    <div class="md:hidden space-y-4">
+      {% for trans in order %}
+      <a href="{% url 'customers:order_detail_d' trans.order.pk %}" class="group">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5 flex justify-between items-center gap-4 hover:shadow-lg transition-shadow duration-300">
+          
+          <!-- Left side: Transaction Info -->
+          <div class="flex flex-col gap-1">
+            <p class="font-semibold text-blue-600 dark:text-blue-400 group-hover:underline">
+              Transaction #{{ trans.id }}
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              {% if trans.order and trans.order.address %}
+                {{ trans.order.address.first_name }} {{ trans.order.address.last_name }}
+              {% else %}
+                N/A
+              {% endif %}
+            </p>
+          </div>
+      
+          <!-- Right side: Amount & Status -->
+          <div class="flex flex-col items-end gap-1">
+            <p class="font-bold text-gray-800 dark:text-gray-200 text-lg">₦{{ trans.amount|floatformat:2 }}</p>
+            {% if trans.order %}
+              {% with status=trans.order.status|lower %}
+                {% if status == "delivered" %}
+                  <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-800/30 dark:text-green-300">{{ trans.order.status }}</span>
+                {% elif status == "shipping" %}
+                  <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-800/30 dark:text-blue-300">{{ trans.order.status }}</span>
+                {% else %}
+                  <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700 dark:bg-red-800/30 dark:text-red-300">{{ trans.order.status }}</span>
+                {% endif %}
+              {% endwith %}
+            {% else %}
+              <span class="text-gray-400 dark:text-gray-500 text-xs">N/A</span>
+            {% endif %}
+          </div>
+      
+        </div>
+      </a>
+       {% endfor %}
+    </div>
+
+  </div>
+</main>
+
+{% endblock %}
