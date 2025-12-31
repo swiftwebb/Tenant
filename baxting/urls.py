@@ -9,7 +9,7 @@ from blog.views import *
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('htjhtewhmdmtedtf/', admin.site.urls),
     path('', include('b_manager.urls')),
     path('accounts/', include('allauth.urls')),
 ]

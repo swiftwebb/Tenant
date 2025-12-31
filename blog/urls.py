@@ -7,7 +7,7 @@ from .views import *
 app_name = 'blog'
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('hthedfgdmftdtm/', admin.site.urls),
     path('', homm, name="hoom"),
 
     path('contact/', contact, name="contact"),

@@ -10,7 +10,7 @@ app_name = 'shop'
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('jytertcdrjtmyrcfhg/', admin.site.urls),
     path('', home, name='home'),
     path('products/',product_list, name='product_list'),
     path("track_visit/", track_visit, name="track_visit"),
