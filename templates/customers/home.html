@@ -326,8 +326,17 @@
                   style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBMFQ61l1BtRAVOBzuKwi8GZ5nadbrTKU5lfdV4rQmZEl2lPlQdetKIbbUSbZFbhJp3Z-WhtsgdLkKm1N4HY4nF0aG9-mMXH9iLl90ppGAkKeVrL2Wt_0hw_fDRw1efpPKrDQLqRLf_G5jW9TCAzgI8WlCNATKoIyTRSVVvwQF49wNg8QUpj-V-expvObb-28l0FICfmgO-ZftiK9ZvC-U-o9PNn6r8lgsmZTq5FGjGLbP5kVxodg6DrD1xKiRxXMq_IrUD3zrWczk");'>
               </div> {% endcomment %}
               <div class="w-full aspect-video rounded-xl overflow-hidden bg-gray-200 dark:bg-white/10">
-                <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" class="w-full h-full" frameborder="0" src="{{about.video}}" title="YouTube video player"></iframe>
-                </div>
+                <iframe 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen="" 
+                  class="w-full h-full" 
+                  frameborder="0" 
+                  src="{{about.video}}" 
+                  title="YouTube video player"
+                  referrerpolicy="strict-origin-when-cross-origin">
+                </iframe>
+              </div>
+              
           </div>
       </div>
 
