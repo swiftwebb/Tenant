@@ -322,7 +322,7 @@ EMAIL_USE_SSL = True   # MUST be True for port 465
 
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  
-DEFAULT_FROM_EMAIL = 'no-reply@baxting.com'
+DEFAULT_FROM_EMAIL = 'info@baxting.com'
 
 ACCOUNT_LOGIN_METHODS = {"email"}
 
