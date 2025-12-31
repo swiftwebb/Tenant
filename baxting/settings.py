@@ -14,7 +14,7 @@ project = True
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dwg4lkpgv!14+ei2&smdb+gwynm-b_-fga2ft6n9ytb=8yc6qm'
+SECRET_KEY = os.getenv('SECRET_KEY')  
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if project==True:
