@@ -1095,7 +1095,7 @@ def setts(request):
                 return render(request, 'customers/det.html', {'form': form, 'webname': webname, 'jtype': jtype})
 
             business_slug = slugify(client.business_name)
-            domain_name = f"https://{business_slug}.baxting.com"
+            domain_name = f"{business_slug}.baxting.com"
             client.save()
 
             Domain.objects.update_or_create(
@@ -1184,7 +1184,7 @@ def fom(request):
                 return render(request, 'customers/det.html', {'form': form, 'webname': webname, 'jtype': jtype})
 
             business_slug = slugify(client.business_name)
-            domain_name = f"https://{business_slug}.baxting.com"
+            domain_name = f"{business_slug}.baxting.com"
             client.save()
 
             Domain.objects.update_or_create(
