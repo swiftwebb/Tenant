@@ -1077,7 +1077,7 @@ def setts(request):
             client.save()
 
             send_mail(
-                subject=f"New Form Submission from {client.business_name}",
+                subject=f"New Form Submission from {client.business_name} settings",
                 message=f"""
         A user just submitted their details.
 
@@ -1167,7 +1167,7 @@ def fom(request):
             client.bank_name = form.cleaned_data.get("bank_name")
             client.save()
             send_mail(
-                subject=f"New Form Submission from {client.business_name}",
+                subject=f"New Form Submission from {client.business_name} New User",
                 message=f"""
         A user just submitted their details.
 
