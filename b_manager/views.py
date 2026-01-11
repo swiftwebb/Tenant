@@ -1084,8 +1084,6 @@ def setts(request):
         Name: {request.user.username}
         Business Name: {client.business_name}
         Job Type: {client.job_type.name}
-        Bank: {client.bank}
-        Bank Account Name: {client.bank_name}
         """,
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=['info@baxting.com'],   # <-- your email here
@@ -1097,7 +1095,7 @@ def setts(request):
                 return render(request, 'customers/det.html', {'form': form, 'webname': webname, 'jtype': jtype})
 
             business_slug = slugify(client.business_name)
-            domain_name = f"{business_slug}.baxting.com"
+            domain_name = f"https://{business_slug}.baxting.com"
             client.save()
 
             Domain.objects.update_or_create(
@@ -1176,15 +1174,25 @@ def fom(request):
         Name: {request.user.username}
         Business Name: {client.business_name}
         Job Type: {client.job_type.name}
-        Bank: {client.bank}
-        Bank Account Name: {client.bank_name}
         """,
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=['info@baxting.com'],   # <-- your email here
                 fail_silently=False,
             )
+            if not client.business_name:
+                messages.error(request, "Please enter a business name to create a domain or choose another business name.")
+                return render(request, 'customers/det.html', {'form': form, 'webname': webname, 'jtype': jtype})
 
-            messages.success(request, f"Your business details have been saved successfully! Domain: {domain_name}")
+            business_slug = slugify(client.business_name)
+            domain_name = f"https://{business_slug}.baxting.com"
+            client.save()
+
+            Domain.objects.update_or_create(
+                tenant=client,
+                defaults={"domain": domain_name, "is_primary": True}
+            )
+
+            messages.success(request, f"Your business details have been saved successfully!")
             return redirect('customers:myweb')
         else:
 
