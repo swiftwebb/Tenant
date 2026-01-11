@@ -32,7 +32,7 @@
             Your live website URL
           </p>
           <div class="flex w-full items-stretch rounded-xl shadow-sm">
-            <input id="website-url" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111618] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-[#617c89] dark:placeholder:text-gray-500 p-[15px] rounded-r-none border-r-0 text-base font-normal leading-normal" readonly value="{{ domain.domain }}"/>
+            <input id="website-url" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111618] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark focus:border-primary h-14 placeholder:text-[#617c89] dark:placeholder:text-gray-500 p-[15px] rounded-r-none border-r-0 text-base font-normal leading-normal" readonly value="https://{{ domain.domain }}"/>
             <button id="copy-btn" class="text-primary flex border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark items-center justify-center px-4 rounded-r-xl border-l-0 hover:bg-primary/10 dark:hover:bg-primary/20">
               <span class="material-symbols-outlined text-2xl">content_copy</span>
             </button>
@@ -67,7 +67,7 @@
 
       <div class="flex items-center justify-center gap-4">
         <!-- Facebook -->
-        <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_url }}"
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://{{ share_url }}"
      target="_blank" rel="noopener noreferrer"
      class="flex size-12 items-center justify-center rounded-full bg-white dark:bg-white/10 shadow-sm hover:bg-gray-100 dark:hover:bg-white/20">
    
@@ -78,7 +78,7 @@
         </button>
         </a>
         <!-- Twitter -->
-        <a href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&url={{ share_url }}"
+        <a href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&url=https://{{ share_url }}"
      target="_blank" rel="noopener noreferrer"
      class="flex size-12 items-center justify-center rounded-full bg-white dark:bg-white/10 shadow-sm hover:bg-gray-100 dark:hover:bg-white/20">
    
@@ -89,7 +89,7 @@
         </button>
         </a>
         <!-- LinkedIn -->
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_url }}"
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://{{ share_url }}"
      target="_blank" rel="noopener noreferrer"
      class="flex size-12 items-center justify-center rounded-full bg-white dark:bg-white/10 shadow-sm hover:bg-gray-100 dark:hover:bg-white/20">
     
