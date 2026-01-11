@@ -193,7 +193,7 @@
 
         <!-- Logo Upload -->
         <div>
-          <label for="id_logo" class="block text-sm font-semibold mb-2">Upload Logo</label>
+          <label for="id_logo" class="block text-sm font-semibold mb-2">Upload Logo (optional)</label>
           
           <!-- Preview -->
           <img id="logo-preview" 
@@ -239,7 +239,7 @@
 
         {% if form.tiktok %}
         <div>
-          <label for="id_tiktok" class="block text-sm font-semibold mb-2">Business Profile Tikiok link(optional) if you want it to show on your website</label>
+          <label for="id_tiktok" class="block text-sm font-semibold mb-2">Business Tiktok Link (Optional) – Display on your website if provided</label>
           {{ form.tiktok }}
           {% if form.tiktok.errors %}
             <p class="mt-2 text-sm text-red-600">{{ form.tiktok.errors.0 }}</p>
@@ -249,7 +249,7 @@
 
         {% if form.facebook %}
         <div>
-          <label for="id_facebook" class="block text-sm font-semibold mb-2">Business Profile Facebook link(optional) if you want it to show on your website</label>
+          <label for="id_facebook" class="block text-sm font-semibold mb-2">Business Facebook Link (Optional) – Display on your website if provided</label>
           {{ form.facebook }}
           {% if form.facebook.errors %}
             <p class="mt-2 text-sm text-red-600">{{ form.facebook.errors.0 }}</p>
@@ -259,7 +259,7 @@
 
         {% if form.instagram %}
         <div>
-          <label for="id_instagram" class="block text-sm font-semibold mb-2">Business Profile instagram link(optional) if you want it to show on your website</label>
+          <label for="id_instagram" class="block text-sm font-semibold mb-2">Business Instagram Link (Optional) – Display on your website if provided</label>
           {{ form.instagram }}
           {% if form.instagram.errors %}
             <p class="mt-2 text-sm text-red-600">{{ form.instagram.errors.0 }}</p>
@@ -270,7 +270,7 @@
 
         {% if form.linkedin %}
         <div>
-          <label for="id_linkedin" class="block text-sm font-semibold mb-2">Business Profile linkedin link(optional) if you want it to show on your website</label>
+          <label for="id_linkedin" class="block text-sm font-semibold mb-2">Business Linkedin Link (Optional) – Display on your website if provided</label>
           {{ form.linkedin }}
           {% if form.linkedin.errors %}
             <p class="mt-2 text-sm text-red-600">{{ form.linkedin.errors.0 }}</p>
