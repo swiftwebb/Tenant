@@ -9,12 +9,10 @@
   <div class="w-full max-w-md space-y-8 bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md">
     <div class="text-center">
       <h2 class="text-3xl font-bold tracking-tight">{% trans "Create your account." %}</h2>
-      <p class="mt-2 text-sm text-black/60 dark:text-white/60">
-        {% trans "Join Baxting and launch your website today. " %}
-        {% comment %} {% trans "Join Baxting and launch your website today. if you have an account with our delivery service you can just log in with the same credentials. " %} {% endcomment %}
+      {% comment %} <p class="mt-2 text-sm text-black/60 dark:text-white/60">
+        {% trans "Join Baxting and launch your website today. if you have an account with our delivery service you can just log in with the same credentials. " %}
 
-
-      </p>
+      </p> {% endcomment %}
     </div>
 
     <form method="post" action="{% url 'account_signup' %}" class="mt-8 space-y-6">

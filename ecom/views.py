@@ -1215,13 +1215,13 @@ def verify_payment(request):
         customer_num = order.address.phone_number
 
 
-        three_percent = order.amount * 0.03
+        three_percent = order.amount * 0.025
 
         # Apply condition
         if three_percent > 5000:
             final_amount = order.amount - 5000
         else:
-            final_amount = round(order.amount * 0.97, 0)
+            final_amount = round(order.amount * 0.975, 0)
         
         trans = Trans.objects.create(
             order=order,
@@ -1243,6 +1243,23 @@ def verify_payment(request):
         """,
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[request.tenant.email ],   # <-- your email here
+                fail_silently=False,
+            )
+        send_mail(
+                subject=f"New Order Paid {request.tenant}",
+                message=f"""
+        A Customer just Paid, their details.
+
+        Customer first name : {customer_first_name}
+        Customer last Name: {customer_last_name}
+        Amount paid: ₦{order.amount}
+        Commision Paid to Baxting: ₦{tttt}
+        Customer Email: {customer_email}
+        Customer Phone Number: {customer_num}
+       
+        """,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[settings.EMAIL_HOST_USER ],   # <-- your email here
                 fail_silently=False,
             )
 
@@ -1572,7 +1589,28 @@ def paydelivery(request):
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[request.tenant.email ],   # <-- your email here
                 fail_silently=False,
+            
+
             )
+
+    send_mail(
+                subject=f"New Order (pay on delivery){request.tenant}",
+                message=f"""
+        A Customer just placed an order, their details. Payment will be made on delivery
+
+        Customer first name : {customer_first_name}
+        Customer last Name: {customer_last_name}
+        Amount to be paid: ₦{order.amount}
+        Customer Email: {customer_email}
+        Customer Phone Number: {customer_num}
+       
+        """,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[settings.EMAIL_HOST_USER ],   # <-- your email here
+                fail_silently=False,
+            )
+
+
 
 
     if request.user.is_authenticated:

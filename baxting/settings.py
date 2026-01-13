@@ -22,9 +22,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # else:
 #     DEBUG = True
 
-DEBUG = False
+DEBUG = True
 
-RATELIMIT_IP_META_KEY = 'HTTP_X_FORWARDED_FOR'
+# RATELIMIT_IP_META_KEY = 'HTTP_X_FORWARDED_FOR'
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
 CSRF_TRUSTED_ORIGINS = [
@@ -313,16 +313,13 @@ PAYSTACK_BASE_URL = os.getenv('PAYSTACK_BASE_URL')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.com'
-
-# --- These three lines are the crucial change ---
-EMAIL_PORT = 465 
-EMAIL_USE_TLS = False  # MUST be False for port 465
-EMAIL_USE_SSL = True   # MUST be True for port 465
-# -----------------------------------------------
-
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  
-DEFAULT_FROM_EMAIL = 'info@baxting.com'
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 ACCOUNT_LOGIN_METHODS = {"email"}
 

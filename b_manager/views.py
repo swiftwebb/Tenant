@@ -1719,11 +1719,11 @@ def mark_order_delivered(request, order_id):
             cart_item.product.cost * cart_item.quantity 
             for cart_item in order.cart.all()
         )
-        if order.amount > 166667:
+        if order.amount > 200000:
             amount_after_fee = order.amount - 5000
         else:
 
-            amount_after_fee = 0.97 * order.amount
+            amount_after_fee = 0.975 * order.amount
 
 
         # Create Sale record
