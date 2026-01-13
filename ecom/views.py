@@ -1237,6 +1237,7 @@ def verify_payment(request):
         Customer last Name: {customer_last_name}
         Amount paid: ₦{order.amount}
         Commision Paid to Baxting: ₦{tttt}
+        Final Amount to receive into your account: ₦{final_amount}
         Customer Email: {customer_email}
         Customer Phone Number: {customer_num}
        
@@ -1254,6 +1255,7 @@ def verify_payment(request):
         Customer last Name: {customer_last_name}
         Amount paid: ₦{order.amount}
         Commision Paid to Baxting: ₦{tttt}
+        Final Amount to receive into your account: ₦{final_amount}
         Customer Email: {customer_email}
         Customer Phone Number: {customer_num}
        
