@@ -249,12 +249,23 @@
 <div class="flex flex-col gap-2 text-left">
 <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">See Your Website Come to Life. Before We Build It.</h1>
 <h2 class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">Experience a demo live, interactive demo of your future website will look like. No guesswork, just a perfect preview of what we'll build for you.</h2>
+{% if request.user.is_authenticated %}
+<div class="mt-6">
+  <a href="{% url 'customers:dashboard' %}" class="get-started-btn inline-flex items-center gap-3 px-8 py-4 bg-white text-purple-700 font-bold text-lg rounded-full shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 hover:-translate-y-1 group">
+    <span>Dashboard</span>
+    <span class="material-symbols-outlined text-2xl group-hover:translate-x-2 transition-transform duration-300">arrow_forward</span>
+  </a>
+</div>
+
+
+{% else %}
 <div class="mt-6">
   <a href="{% url 'customers:plan_list' %}" class="get-started-btn inline-flex items-center gap-3 px-8 py-4 bg-white text-purple-700 font-bold text-lg rounded-full shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 hover:-translate-y-1 group">
     <span>Get Started with Your Website</span>
     <span class="material-symbols-outlined text-2xl group-hover:translate-x-2 transition-transform duration-300">arrow_forward</span>
   </a>
 </div>
+{%endif%}
 </div>
 </div>
 </div>
