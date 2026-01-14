@@ -78,7 +78,7 @@
 
         {% if form.business_logistics %}
         <div>
-          <label for="id_business_logistics" class="block text-sm font-semibold mb-2">Logistics Provider for Customer Deliveries</label>
+          <label for="id_business_logistics" class="block text-sm font-semibold mb-2">Logistics Provider for Customer Deliveries and Coverage Areas (e.g., Uber – Lagos only)</label>
           {{ form.business_logistics }}
           {% if form.business_logistics.errors %}
             <p class="mt-2 text-sm text-red-600">{{ form.business_logistics.errors.0 }}</p>
