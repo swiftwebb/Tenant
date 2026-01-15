@@ -509,6 +509,13 @@ def checkout(request):
 
 
                     )
+                has_base_delivery = DeliveryBase.objects.exists()
+
+                if has_base_delivery:
+                    base = DeliveryBase.objects.first()
+                    base_price = base.price or 0
+                else:
+                    base_price = 3000
 
                 city = default_address.city.strip().title()
                 state = default_address.state.strip().title()
@@ -529,7 +536,7 @@ def checkout(request):
 
                     if distance_result:
                         distance_km, duration_min = distance_result
-                        order.delivery_fee = round(3000 + (distance_km * 50) + (duration_min * 20), 0)
+                        order.delivery_fee = round(base_price + (distance_km * 50) + (duration_min * 20), 0)
                     else:
                         
                         messages.error(request, "we don't deliver to that location")
@@ -653,8 +660,16 @@ def checkout(request):
 
 
                     )
+        
+        has_base_delivery = DeliveryBase.objects.exists()
 
+        if has_base_delivery:
+            base = DeliveryBase.objects.first()
+            base_price = base.price or 0
+        else:
+            base_price = 3000
 
+    
         city = city.strip().title()
         state = state.strip().title()
 
@@ -675,7 +690,7 @@ def checkout(request):
 
             if distance_result:
                 distance_km, duration_min = distance_result
-                order.delivery_fee = round(3000 + (distance_km * 50) + (duration_min * 20), 0)
+                order.delivery_fee = round(base_price + (distance_km * 50) + (duration_min * 20), 0)
             
             else:
                 messages.error(request, "we don't deliver to that location")
@@ -1532,116 +1547,106 @@ def paym(request):
 
 
 
+
 @ratelimit(key='ip', rate='10/m', block=True)
 def paydelivery(request):
 
+    # Ensure session exists for guest users
+    if not request.session.session_key:
+        request.session.create()
 
+    # --- GET ORDER ---
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=False).last()
-
     else:
-        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
+        order = Order.objects.filter(
+            session_key=request.session.session_key,
+            Paid=False
+        ).last()
 
+    # ❗ STOP if no order
+    if not order:
+        messages.error(request, "No active order found.")
+        return redirect("home")  # or cart page
 
+    # ❗ STOP if no address
+    if not order.address:
+        messages.error(request, "Please add a delivery address.")
+        return redirect("checkout")
 
-    # --- GET CART ---
-    if request.user.is_authenticated:
-        cart = Cart.objects.filter(user=request.user, ordered=False)
-    else:
-        cart = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
-
-
-
-
-    if order.delivery_fee != 0:
-
+    # --- UPDATE ORDER STATUS ---
+    if order.delivery_fee and order.delivery_fee > 0:
         order.status = "shipping (payment on delivery)"
+    else:
+        order.status = "pay on delivery"
 
     order.Paid = True
     order.deliv = True
     order.ordered_date = timezone.now()
 
-
-
-
-
-    if not order.ref_code or order.ref_code.strip() == "":
-        new_ref = create_ref_code()
-
-        order.ref_code = new_ref
+    if not order.ref_code:
+        order.ref_code = create_ref_code()
 
     order.save()
 
-    customer_first_name = order.address.first_name
-    customer_last_name = order.address.last_name
-    customer_email = order.address.email
-    customer_num = order.address.phone_number
-
-
-    send_mail(
-                subject=f"New Order (pay on delivery)",
-                message=f"""
-        A Customer just placed an order, their details. Payment will be made on delivery
-
-        Customer first name : {customer_first_name}
-        Customer last Name: {customer_last_name}
-        Amount to be paid: ₦{order.amount}
-        Customer Email: {customer_email}
-        Customer Phone Number: {customer_num}
-       
-        """,
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[request.tenant.email ],   # <-- your email here
-                fail_silently=False,
-            
-
-            )
-
-    send_mail(
-                subject=f"New Order (pay on delivery){request.tenant}",
-                message=f"""
-        A Customer just placed an order, their details. Payment will be made on delivery
-
-        Customer first name : {customer_first_name}
-        Customer last Name: {customer_last_name}
-        Amount to be paid: ₦{order.amount}
-        Customer Email: {customer_email}
-        Customer Phone Number: {customer_num}
-       
-        """,
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[settings.EMAIL_HOST_USER ],   # <-- your email here
-                fail_silently=False,
-            )
-
-
-
-
-    if request.user.is_authenticated:
-        Cart.objects.filter(user=request.user, ordered=False).update(ordered=True)
-        Cart.objects.filter(user=request.user, ordered=False).delete()
-    else:
-        Cart.objects.filter(session_key=request.session.session_key, ordered=False).update(ordered=True)
-        Cart.objects.filter(session_key=request.session.session_key, ordered=False).delete()
-
-
-
+    # --- CUSTOMER DETAILS ---
+    address = order.address
+    customer_first_name = address.first_name or ""
+    customer_last_name = address.last_name or ""
+    customer_email = address.email or ""
+    customer_num = address.phone_number or ""
 
     amount = order.amount or (order.get_total() + order.delivery_fee)
 
+    # --- SEND EMAIL TO TENANT ---
+    send_mail(
+        subject="New Order (Pay on Delivery)",
+        message=f"""
+A new order has been placed (Pay on Delivery)
 
+Customer: {customer_first_name} {customer_last_name}
+Amount: ₦{amount}
+Email: {customer_email}
+Phone: {customer_num}
+Ref: {order.ref_code}
+        """,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[request.tenant.email],
+        fail_silently=False,
+    )
 
+    # --- SEND EMAIL TO ADMIN ---
+    send_mail(
+        subject=f"New Order (Pay on Delivery) - {request.tenant}",
+        message=f"""
+A new order has been placed (Pay on Delivery)
 
-    context = {
-        "amount": amount,
-        "email": order.email,
-        "ref": order.ref_code,
-        "otime": order.ordered_date,
-    }
+Customer: {customer_first_name} {customer_last_name}
+Amount: ₦{amount}
+Email: {customer_email}
+Phone: {customer_num}
+Ref: {order.ref_code}
+        """,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[settings.EMAIL_HOST_USER],
+        fail_silently=False,
+    )
 
+    # --- CLEAR CART ---
+    if request.user.is_authenticated:
+        Cart.objects.filter(user=request.user, ordered=False).update(ordered=True)
+        Cart.objects.filter(user=request.user, ordered=True).delete()
+    else:
+        Cart.objects.filter(
+            session_key=request.session.session_key,
+            ordered=False
+        ).update(ordered=True)
+        Cart.objects.filter(
+            session_key=request.session.session_key,
+            ordered=True
+        ).delete()
 
-    
-    return redirect('paysuc')
+    return redirect("paysuc")
 
 def paysuc(request):
 
