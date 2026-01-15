@@ -1,0 +1,31 @@
+{% extends "developer/whiteecom/base.html" %}
+{% load widget_tweaks %}
+{% load i18n %}
+
+{% block title %}{% trans "Verify Your Email Address" %}{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-gray-50 dark:bg-background-dark">
+  <div class="w-full max-w-md bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md space-y-6 text-center">
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+      {% trans "Verify Your Email Address" %}
+    </h2>
+
+    <p class="text-black/70 dark:text-white/70 text-sm">
+      {% trans "We’ve sent a verification email to your inbox. Please follow the link in that email to complete your signup process." %}
+    </p>
+
+    <p class="text-black/70 dark:text-white/70 text-sm">
+      {% trans "If you don’t see it in your inbox, please check your spam or junk folder." %}
+    </p>
+
+    <p class="text-black/70 dark:text-white/70 text-sm">
+      {% trans "If you still haven’t received the email after a few minutes, contact our support team for assistance." %}
+    </p>
+
+    <a href="{% url 'account_login' %}" class="group relative flex w-full justify-center rounded-lg border border-transparent bg-primary py-3 px-4 text-sm font-bold text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark">
+      {% trans "Back to Sign In" %}
+    </a>
+  </div>
+</div>
+{% endblock %}
