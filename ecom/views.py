@@ -172,6 +172,8 @@ def home(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_list(request):
+
+    items = True
     product_list = Product.objects.filter(best_sellers=items,image__isnull=False).order_by('-id')  # newest first
     paginator = Paginator(product_list, 12)  # 👈 8 products per page (adjust as you like)
 
