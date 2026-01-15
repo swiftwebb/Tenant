@@ -1181,6 +1181,7 @@ class ProductForm(forms.ModelForm):
             'discount_price',
             'category',
             'best_sellers',
+            "cost"
         ]
 
     def __init__(self, *args, **kwargs):
