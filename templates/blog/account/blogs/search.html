@@ -1,0 +1,89 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+
+<main class="flex flex-col lg:flex-row gap-8 px-4 lg:px-12 py-8">
+
+  <!-- Main Content -->
+  <div class="w-full lg:w-3/4 flex flex-col gap-6">
+
+    <!-- Heading -->
+    <div class="flex flex-col gap-2 mb-6">
+      <h1 class="text-3xl md:text-4xl font-black text-[#0d141b] dark:text-slate-50">Search Results</h1>
+      <p class="text-base text-[#4c739a] dark:text-slate-400">
+        Showing {{ queryset.count }} result{{ queryset.count|pluralize }} for "{{ request.GET.q }}"
+      </p>
+    </div>
+
+    <!-- Search Input -->
+    <div class="w-full mb-6">
+      <form method="GET" action="{% url 'search' %}" class="flex w-full rounded-xl overflow-hidden shadow-sm">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search articles..."
+               class="flex-1 px-4 py-3 text-base text-[#0d141b] dark:text-slate-50 bg-slate-100 dark:bg-slate-800/50 focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-l-xl border-none placeholder:text-[#4c739a] dark:placeholder:text-slate-400"/>
+        <button type="submit" class="px-6 bg-primary text-white font-semibold hover:bg-primary/90 transition rounded-r-xl">
+          Search
+        </button>
+      </form>
+    </div>
+
+    <!-- Result Cards -->
+    <div class="flex flex-col gap-6">
+      {% for blog in queryset %}
+      <a href="{% url 'det' blog.slug %}">
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-xl hover:shadow-lg transition-shadow flex flex-col md:flex-row gap-6">
+          
+          <!-- Text content -->
+          <div class="flex-1 flex flex-col gap-4">
+            <p class="text-sm text-[#4c739a] dark:text-slate-400">
+              {{ blog.cataegory }} • {{ blog.created_at|date:"d M Y" }}
+            </p>
+            <h2 class="text-xl md:text-2xl font-bold text-[#0d141b] dark:text-slate-50">{{ blog.title }}</h2>
+            <p class="text-sm text-[#4c739a] dark:text-slate-400 line-clamp-3">
+              {{ blog.overview }}
+            </p>
+            <a href="{% url 'det' blog.slug %}" class="inline-block mt-2 px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm font-medium text-[#0d141b] dark:text-slate-50 hover:bg-slate-300 dark:hover:bg-slate-600 transition">
+              Read More
+            </a>
+          </div>
+
+
+          <!-- Thumbnail -->
+          {% if blog.thumbnail %}
+          <div class="w-full md:w-56 bg-center bg-cover rounded-lg aspect-video md:aspect-square flex-shrink-0"
+               style="background-image: url('{{ blog.thumbnail.url }}')">
+          </div>
+          {% endif %}
+        </div>
+    </a>
+      {% empty %}
+        <p class="text-gray-500 dark:text-gray-400">No results found.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination (if needed) -->
+    {% if queryset.has_other_pages %}
+      <nav class="flex justify-center mt-8 gap-2">
+        {% if queryset.has_previous %}
+          <a href="?q={{ request.GET.q }}&page={{ queryset.previous_page_number }}" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">Prev</a>
+        {% endif %}
+
+        {% for num in queryset.paginator.page_range %}
+          {% if num >= queryset.number|add:'-2' and num <= queryset.number|add:'2' %}
+            {% if num == queryset.number %}
+              <span class="px-3 py-1 rounded bg-primary text-white">{{ num }}</span>
+            {% else %}
+              <a href="?q={{ request.GET.q }}&page={{ num }}" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">{{ num }}</a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {% if queryset.has_next %}
+          <a href="?q={{ request.GET.q }}&page={{ queryset.next_page_number }}" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">Next</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+
+  </div>
+
+</main>
+
+{% endblock %}

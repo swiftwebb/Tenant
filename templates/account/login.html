@@ -29,7 +29,43 @@
 
       <div>
         {{ form.password.label_tag }}
-        {{ form.password|add_class:"relative block w-full appearance-none rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-background-dark px-3 py-3 placeholder-black/50 dark:placeholder-white/50 focus:z-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm" }}
+
+        <div class="relative">
+          {{ form.password|add_class:"block w-full rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-background-dark px-3 py-3 pr-10 placeholder-black/50 dark:placeholder-white/50 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm" }}
+
+          <button
+            type="button"
+            onclick="togglePassword()"
+            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-primary"
+            aria-label="Toggle password visibility"
+          >
+            <!-- Eye Open -->
+            <svg id="eye-open" xmlns="http://www.w3.org/2000/svg"
+                 class="h-5 w-5"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5
+                   c4.478 0 8.268 2.943 9.542 7
+                   -1.274 4.057-5.064 7-9.542 7
+                   -4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+
+            <!-- Eye Closed -->
+            <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg"
+                 class="h-5 w-5 hidden"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3l18 18" />
+            </svg>
+          </button>
+        </div>
+
         {{ form.password.errors }}
       </div>
 
@@ -55,4 +91,23 @@
     </form>
   </div>
 </div>
+<script>
+  function togglePassword() {
+    const input = document.getElementById("id_password");
+    const eyeOpen = document.getElementById("eye-open");
+    const eyeClosed = document.getElementById("eye-closed");
+
+    if (!input) return;
+
+    if (input.type === "password") {
+      input.type = "text";
+      eyeOpen.classList.add("hidden");
+      eyeClosed.classList.remove("hidden");
+    } else {
+      input.type = "password";
+      eyeOpen.classList.remove("hidden");
+      eyeClosed.classList.add("hidden");
+    }
+  }
+</script>
 {% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+
+<style>
+.comment-text {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+</style>
+
+<main class="flex-grow">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+        <div class="max-w-3xl mx-auto">
+
+            <!-- Article Header -->
+            <article>
+                <header class="text-center mb-8">
+                    <h1 class="font-display text-3xl md:text-5xl font-extrabold tracking-tight text-[#0d141b] dark:text-slate-50 mb-4">
+                        {{ blog.title }}
+                    </h1>
+                    <div class="flex items-center justify-center gap-4 text-slate-500 dark:text-slate-400">
+                        <span class="font-display text-sm">{{ blog.created_at|date:"F j, Y" }}</span>
+                    </div>
+                </header>
+
+                <!-- Featured Image -->
+                {% if blog.thumbnail %}
+                <div class="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl min-h-[24rem] mb-8 shadow-sm" 
+                    style='background-image: url("{{ blog.thumbnail.url }}");'></div>
+                {% endif %}
+
+                <!-- Article Body -->
+                <div class="prose prose-lg dark:prose-invert max-w-none text-slate-800 dark:text-slate-300 font-body leading-relaxed">
+                    {% for line in blog.description.splitlines %}
+                        {% if line %}
+                            <p class="mt-3 mb-3">{{ line }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- Related Posts Section -->
+    <section class="bg-slate-100/70 dark:bg-slate-900/50 py-16 md:py-24">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="font-display text-3xl font-bold text-center mb-10 text-[#0d141b] dark:text-slate-50">
+                You Might Also Like
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for recent_blog in recent %}
+                <div class="bg-background-light dark:bg-background-dark rounded-xl shadow-sm overflow-hidden flex flex-col group">
+                    {% if recent_blog.thumbnail %}
+                    <div class="w-full h-48 bg-cover bg-center" 
+                        style='background-image: url("{{ recent_blog.thumbnail.url }}")'></div>
+                    {% endif %}
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 class="font-display text-lg font-bold text-[#0d141b] dark:text-slate-50 mb-2 group-hover:text-primary transition-colors">
+                            {{ recent_blog.title }}
+                        </h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed flex-grow">
+                            {{ recent_blog.overview }}
+                        </p>
+                        <a class="font-display text-sm font-semibold text-primary mt-4 self-start" 
+                           href="{% url 'det' recent_blog.slug %}">Read More →</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Comments Section -->
+    <section class="py-16 md:py-24">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="font-display text-3xl font-bold mb-8 text-[#0d141b] dark:text-slate-50">Join the Conversation</h2>
+
+            <!-- New Comment Form -->
+            <div class="mb-12">
+                <div class="flex items-start gap-4">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-10 w-10 flex-shrink-0"></div>
+                    <div class="w-full">
+                        {% if not request.user.is_authenticated %}
+                            <p class="text-gray-600">
+                                You must <a href="{% url 'account_login' %}" class="text-blue-500 underline">log in</a> to leave a comment.
+                            </p>
+                        {% else %}
+                            <form method="POST" action="{% url 'post_comment' blog.slug %}">
+                                {% csrf_token %}
+                                <textarea 
+                                    name="comment"
+                                    id="comment-box"
+                                    maxlength="100"
+                                    class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary focus:ring-primary dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                    placeholder="Write a comment..."
+                                    rows="4"></textarea>
+                                <button class="mt-3 flex min-w-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-slate-50 text-sm font-bold leading-normal tracking-wide font-display hover:bg-primary/90 transition-colors">
+                                    <span class="truncate">Post Comment</span>
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing Comments -->
+            <div class="space-y-8">
+                {% for comment in blog.comment.all %}
+                <div class="flex items-start gap-4">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-10 w-10 flex-shrink-0"></div>
+                    <div class="flex-1">
+                        <p class="font-display font-semibold text-[#0d141b] dark:text-slate-50">{{ comment.name.username }}</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ comment.created|timesince }} ago</p>
+                        <p class="mb-3 text-slate-700 dark:text-slate-300 mt-1 comment-text">{{ comment.comment }}</p>
+
+                        {% if request.user == comment.name %}
+                        <a href="{% url 'delete_comment' comment.id %}" 
+                           class="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400"
+                           title="Delete comment">
+                            <span class="material-symbols-outlined text-xl">delete</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}
