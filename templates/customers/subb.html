@@ -9,11 +9,11 @@
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Subscription</h1>
         <p class="text-gray-500 dark:text-gray-400">Manage your current plan and billing status.</p>
       </div>
-      <a href="{% url 'customers:plan_list' %}">
+      {% comment %} <a href="{% url 'customers:plan_list' %}">
         <button class="px-4 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90">
           Switch Plan
         </button>
-      </a>
+      </a> {% endcomment %}
     </div>
   
     {% if subscription %}
@@ -71,11 +71,11 @@
         </div>
         {% endif %}
       </div>
-      <div class="mt-8 flex flex-col sm:flex-row gap-4">
+      {% comment %} <div class="mt-8 flex flex-col sm:flex-row gap-4">
         <a href="{% url 'customers:plan_list' %}"  class="w-full sm:w-auto px-4 py-2 bg-white text-gray-800 dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
             Switch Subscription
           </a>
-      </div>
+      </div> {% endcomment %}
       
   
       <!-- Actions -->

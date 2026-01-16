@@ -407,6 +407,19 @@ def jjob(request):
 def upgrade_init(request):
     if request.method != 'POST':
         return redirect('customers:plan_list')
+
+    
+    send_mail(
+                subject=f"plan activated {request.user.email} ",
+                message=f"""
+        A user just submitted their details.
+
+        Name: {request.user.username}
+        """,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=['info@baxting.com'],   # <-- your email here
+                fail_silently=False,
+            )
     
     plan_id = request.POST.get('plan_id')
     plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
@@ -870,6 +883,18 @@ def cancel_subscription(request):
         except requests.RequestException as e:
             print("Paystack request error:", str(e))
             messages.error(request, "Network error: Could not reach Paystack API.")
+
+        send_mail(
+                subject=f"plan cancelled {client.email} ",
+                message=f"""
+        A user just submitted their details.
+
+        Name: {request.user.username}
+        """,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=['info@baxting.com'],   # <-- your email here
+                fail_silently=False,
+            )
 
         return redirect('customers:dashboard')
 
