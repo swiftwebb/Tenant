@@ -1455,7 +1455,10 @@ class SaletForm(forms.ModelForm):
             'reference',
             'product',
             'quantity_sold',
+            'cost',
+            'amount',
             'total',
+
 
         ]
 
