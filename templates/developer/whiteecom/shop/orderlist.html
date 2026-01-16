@@ -36,7 +36,7 @@
         {% for orders in order %}
     <tr class="hover:bg-gray-50 dark:hover:bg-background-dark/50 transition-colors block md:table-row py-4 md:py-0 border-b md:border-b-0 border-gray-200 dark:border-gray-700">
         <td class="px-6 py-2 text-blue-800 md:py-4 whitespace-nowrap block md:table-cell"><span class="md:hidden font-bold">Order ID: </span><a href="{{orders.get_absolute_urlss}}"> <span class="text-sm text-blue-900 dark:text-gray-200">#{{orders.ref_code}}</span></a></td>
-    <td class="px-6 py-2 md:py-4 whitespace-nowrap block md:table-cell"><span class="md:hidden font-bold">Date: </span><span class="text-sm text-gray-500 dark:text-gray-400">{{ orders.ordered_date }}</span></td>
+        <td class="px-6 py-2 md:py-4 whitespace-nowrap block md:table-cell"><span class="md:hidden font-bold">Date: </span><span class="text-sm text-gray-500 dark:text-gray-400">{{ orders.ordered_date }}</span></td>
     <td class="px-6 py-2 md:py-4 whitespace-nowrap block md:table-cell"><span class="md:hidden font-bold">Items: </span><span class="text-sm text-gray-500 dark:text-gray-400">{{ orders.cart.count }}</span></td>
     <td class="px-6 py-2 md:py-4 whitespace-nowrap block md:table-cell"><span class="md:hidden font-bold">Total Price: </span><span class="text-sm text-gray-900 dark:text-gray-200">₦{{ orders.amount }}</span></td>
     <td class="px-6 py-2 md:py-4 whitespace-nowrap block md:table-cell">
