@@ -3,6 +3,7 @@ from decimal import Decimal
 import json
 from datetime import timedelta
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 from django.core.mail import send_mail
 # Create your views here.
@@ -1548,6 +1549,7 @@ def paym(request):
 
 
 
+
 @ratelimit(key='ip', rate='10/m', block=True)
 def paydelivery(request):
 
@@ -1555,7 +1557,7 @@ def paydelivery(request):
     if not request.session.session_key:
         request.session.create()
 
-    # --- GET ORDER ---
+    # ---------------- GET ACTIVE ORDER ----------------
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=False).last()
     else:
@@ -1564,41 +1566,59 @@ def paydelivery(request):
             Paid=False
         ).last()
 
-    # ❗ STOP if no order
     if not order:
         messages.error(request, "No active order found.")
-        return redirect("home")  # or cart page
+        return redirect("home")
 
-    # ❗ STOP if no address
     if not order.address:
         messages.error(request, "Please add a delivery address.")
         return redirect("checkout")
 
-    # --- UPDATE ORDER STATUS ---
+    # ---------------- GET CART ITEMS ----------------
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user, ordered=False)
+    else:
+        cart_items = Cart.objects.filter(
+            session_key=request.session.session_key,
+            ordered=False
+        )
+
+    if not cart_items.exists():
+        messages.error(request, "Your cart is empty.")
+        return redirect("cart")
+
+    # ---------------- ATTACH CARTS TO ORDER ----------------
+    order.cart.set(cart_items)
+
+    # ---------------- UPDATE ORDER ----------------
+    order.Paid = True
+    order.deliv = True
+    order.ordered_date = timezone.now()
+
     if order.delivery_fee and order.delivery_fee > 0:
         order.status = "shipping (payment on delivery)"
     else:
         order.status = "pay on delivery"
 
-    order.Paid = True
-    order.deliv = True
-    order.ordered_date = timezone.now()
-
     if not order.ref_code:
         order.ref_code = create_ref_code()
 
+    order.amount = order.get_total() + (order.delivery_fee or 0)
     order.save()
 
-    # --- CUSTOMER DETAILS ---
+    # ---------------- MARK CARTS AS ORDERED ----------------
+    cart_items.update(ordered=True)
+
+    # ---------------- CUSTOMER DETAILS ----------------
     address = order.address
     customer_first_name = address.first_name or ""
     customer_last_name = address.last_name or ""
     customer_email = address.email or ""
     customer_num = address.phone_number or ""
 
-    amount = order.amount or (order.get_total() + order.delivery_fee)
+    amount = order.amount
 
-    # --- SEND EMAIL TO TENANT ---
+    # ---------------- EMAIL TENANT ----------------
     send_mail(
         subject="New Order (Pay on Delivery)",
         message=f"""
@@ -1615,7 +1635,7 @@ Ref: {order.ref_code}
         fail_silently=False,
     )
 
-    # --- SEND EMAIL TO ADMIN ---
+    # ---------------- EMAIL ADMIN ----------------
     send_mail(
         subject=f"New Order (Pay on Delivery) - {request.tenant}",
         message=f"""
@@ -1631,20 +1651,6 @@ Ref: {order.ref_code}
         recipient_list=[settings.EMAIL_HOST_USER],
         fail_silently=False,
     )
-
-    # --- CLEAR CART ---
-    if request.user.is_authenticated:
-        Cart.objects.filter(user=request.user, ordered=False).update(ordered=True)
-        Cart.objects.filter(user=request.user, ordered=True).delete()
-    else:
-        Cart.objects.filter(
-            session_key=request.session.session_key,
-            ordered=False
-        ).update(ordered=True)
-        Cart.objects.filter(
-            session_key=request.session.session_key,
-            ordered=True
-        ).delete()
 
     return redirect("paysuc")
 
