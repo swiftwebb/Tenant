@@ -1531,7 +1531,7 @@ def domn(request):
 
 @ratelimit(key='ip', rate='15/m', block=True)
 @login_required
-def transactioned(request):
+def transaction(request):
     tenant = request.user.tenant
 
     import cloudinary
@@ -1729,65 +1729,69 @@ def dashboard_orderlist(request):
 
 
 
-
-
 @ratelimit(key='ip', rate='15/m', block=True)
 @login_required
 @require_POST
 def mark_order_delivered(request, order_id):
     tenant = request.user.tenant
-
     with schema_context(tenant.schema_name):
-        from ecom.models import Order, Sale, Product
+        from ecom.models import Order, Sale,Product
 
-        with transaction.atomic():
-            order = Order.objects.select_for_update().get(pk=order_id)
+        order = get_object_or_404(Order, pk=order_id)
 
-            # 🚫 Prevent double processing
-            if order.status == "delivered":
-                return redirect('customers:order_detail_d', pk=order_id)
+ 
 
-            total_cost = sum(
-                cart_item.product.cost * cart_item.quantity
-                for cart_item in order.cart.all()
-            )
+        # Calculate total cost of all products in the cart
+        total_cost = sum(
+            cart_item.product.cost * cart_item.quantity 
+            for cart_item in order.cart.all()
+        )
+        if order.amount > 200000:
+            amount_after_fee = order.amount - 5000
+        else:
 
-            if order.amount > 200000:
-                amount_after_fee = order.amount - 5000
+            amount_after_fee = 0.975 * order.amount
+
+
+        # Create Sale record
+        if order.status == "shipping (payment on delivery)":
+            sale = Sale.objects.create(
+            cost=total_cost,
+            amount= order.amount,
+            total= order.amount - total_cost,
+            reference=order.ref_code
+        )
+        if order.status == "shipping":  
+
+            sale = Sale.objects.create(
+            cost=total_cost,
+            amount= amount_after_fee,
+            total= amount_after_fee - total_cost,
+            reference=order.ref_code
+        )
+
+        # Add products from cart to Sale
+        for cart_item in order.cart.all():
+            sale.product.add(cart_item.product)
+        
+        for cart_item in order.cart.all():
+            product = cart_item.product
+            if product.quantity >= cart_item.quantity:
+                product.quantity -= cart_item.quantity
+                product.save()
             else:
-                amount_after_fee = 0.975 * order.amount
+                # Just in case — avoid negative stock
+                product.quantity = 0
+                product.save()
 
-            if order.status == "shipping (payment on delivery)":
-                sale = Sale.objects.create(
-                    cost=total_cost,
-                    amount=order.amount,
-                    total=order.amount - total_cost,
-                    reference=order.ref_code
-                )
+               # Mark order delivered
+        order.status = 'delivered'
+        order.save()
 
-            elif order.status == "shipping":
-                sale = Sale.objects.create(
-                    cost=total_cost,
-                    amount=amount_after_fee,
-                    total=amount_after_fee - total_cost,
-                    reference=order.ref_code
-                )
 
-            for cart_item in order.cart.all():
-                sale.product.add(cart_item.product)
-
-                # ✅ ATOMIC stock reduction
-                Product.objects.filter(
-                    id=cart_item.product.id,
-                    quantity__gte=cart_item.quantity
-                ).update(
-                    quantity=F('quantity') - cart_item.quantity
-                )
-
-            order.status = "delivered"
-            order.save()
 
     return redirect('customers:order_detail_d', pk=order_id)
+
 
 @ratelimit(key='ip', rate='15/m', block=True)
 @login_required
