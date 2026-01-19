@@ -68,7 +68,7 @@ class Product(models.Model):
     image = CloudinaryField(folder='ecom', null=True, blank=True)
     best_sellers = models.BooleanField(default=False,)
     created_at = models.DateTimeField(auto_now_add=True)
-    cost = models.FloatField(validators=[MinValueValidator(0)], default = 500)
+    cost = models.FloatField(validators=[MinValueValidator(0)], default = 0, help_text="The total cost you spent to get the product")
 
 
 
@@ -253,6 +253,10 @@ class Sale(models.Model):
     amount = models.FloatField(help_text="The amount you sold the product", validators=[MinValueValidator(0)])
     total = models.FloatField(help_text="The profit you made")
     created_at = models.DateTimeField(auto_now_add=True)
+
+    delivery_feeeeee = models.FloatField(default=0.0)
+
+    
        
     def save(self, *args, **kwargs):
         if not self.reference:

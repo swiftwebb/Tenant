@@ -1758,16 +1758,19 @@ def mark_order_delivered(request, order_id):
             sale = Sale.objects.create(
             cost=total_cost,
             amount= order.amount,
-            total= order.amount - total_cost,
-            reference=order.ref_code
+            total= order.amount - total_cost - order.delivery_fee,
+            reference=order.ref_code,
+            delivery_feeeeee = order.delivery_fee
+
         )
         if order.status == "shipping":  
 
             sale = Sale.objects.create(
             cost=total_cost,
             amount= amount_after_fee,
-            total= amount_after_fee - total_cost,
-            reference=order.ref_code
+            total= amount_after_fee - total_cost - order.delivery_fee,
+            reference=order.ref_code,
+            delivery_feeeeee = order.delivery_fee
         )
 
         # Add products from cart to Sale
