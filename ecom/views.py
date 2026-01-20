@@ -40,6 +40,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @ratelimit(key='ip', rate='5/m', block=True)  # 5 attempts per minute per IP
 def login_view(request):
+
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -122,6 +123,17 @@ def get_delivery_distance(origin, destination):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def removecoupon(request):
+
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=False).last()
     else:
@@ -158,6 +170,16 @@ def get_coupon(request, code):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def home(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
 
 
     items = True
@@ -173,6 +195,16 @@ def home(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_list(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
 
     items = True
     product_list = Product.objects.filter(best_sellers=items,image__isnull=False).order_by('-id')  # newest first
@@ -185,6 +217,16 @@ def product_list(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_detail(request, slug):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     product = get_object_or_404(Product, slug=slug)
     category = product.category
 
@@ -204,6 +246,16 @@ def product_detail(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_from(request, slug):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     product = get_object_or_404(Product, slug=slug)
 
 
@@ -229,6 +281,16 @@ def remove_from(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def cart_view(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user, ordered=False)
     else:
@@ -276,6 +338,16 @@ def cart_view(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def add_to(request, slug):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     # Get the product
     product = get_object_or_404(Product, slug=slug)
 
@@ -328,6 +400,16 @@ def add_to(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove(request, slug):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     product = get_object_or_404(Product, slug=slug)
 
 
@@ -363,6 +445,16 @@ def remove(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_item(request, slug):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     product = get_object_or_404(Product, slug=slug)
 
     if request.user.is_authenticated:
@@ -387,6 +479,16 @@ def remove_item(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_all(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     if request.user.is_authenticated:
         Cart.objects.filter(user=request.user, ordered=False).delete()
     else:
@@ -409,6 +511,16 @@ def remove_all(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def checkout(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
 
     default_address_s = None
     if request.user.is_authenticated:
@@ -894,6 +1006,16 @@ def checkout(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def addcoupon(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     if request.method == 'POST':
         code = request.POST.get('promo')
         coupon = get_coupon(request, code)
@@ -1437,6 +1559,16 @@ def ordderlist(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def orderdet(request, id):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     order = get_object_or_404(Order, id=id)
     cart_items = order.cart.all()
 
