@@ -41,6 +41,7 @@ SHARED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'django.contrib.sitemaps',
     'whitenoise.runserver_nostatic',
     'cloudinary_storage',
@@ -333,3 +334,5 @@ ACCOUNT_SIGNUP_FIELDS = [
 
 ACCOUNT_UNIQUE_EMAIL = True
 #
+
+SITE_ID = 1
