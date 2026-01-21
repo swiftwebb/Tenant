@@ -150,6 +150,16 @@ def login_view(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def homm(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     blog = Blog.objects.filter(featured=True).order_by("-id").first()
     recent = Blog.objects.all().order_by("-id")[:3]
     context = {
@@ -161,6 +171,16 @@ def homm(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def blogdet(request, slug):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     blog = Blog.objects.filter(slug=slug).first()
 
     recent = Blog.objects.exclude(slug=slug).order_by("-id")[:3]
@@ -177,6 +197,16 @@ def blogdet(request, slug):
 @ratelimit(key='ip', rate='10/m', block=True)
 @login_required
 def post_comment(request, slug):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     blog = get_object_or_404(Blog, slug=slug)
 
     if request.method == "POST":
@@ -221,6 +251,16 @@ def delete_comment(request, pk):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def about(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     blog = Abbb.objects.all().first()
     context = {
         'blog': blog,
@@ -230,6 +270,16 @@ def about(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def blogall(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     blog_list = Blog.objects.all().order_by("-id")  # all blogs ordered by newest first
 
     # Paginate: 6 blogs per page
@@ -251,6 +301,16 @@ def blogall(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def contact(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     if request.method == 'POST':
         name = request.POST.get('name')
         message = request.POST.get('message')
@@ -283,6 +343,16 @@ def contact(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def search(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     queryset = Blog.objects.all()
     query = request.GET.get('q')
     if query:

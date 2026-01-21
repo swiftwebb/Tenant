@@ -68,6 +68,16 @@ def track_visit(request):
 
 @ratelimit(key='ip', rate='7/m', block=True)
 def homie(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     home = Home.objects.all().order_by('-id')
     homes = home.first()
     return render(request, 'con/content/homie.html', {'homes': homes})
@@ -76,6 +86,16 @@ def homie(request):
 # === ABOUT PAGE ===
 @ratelimit(key='ip', rate='7/m', block=True)
 def about(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     home = About.objects.all().order_by('-id')
     homes = home.first()
     return render(request, 'con/content/about.html', {'homes': homes})
@@ -117,6 +137,16 @@ def contact(request):
 
 @ratelimit(key='ip', rate='7/m', block=True)
 def portfolio(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     category_slug = request.GET.get('category', None)
     categories = Categorysss.objects.all()
 
@@ -150,11 +180,31 @@ def cats(request, id):
 
 @ratelimit(key='ip', rate='7/m', block=True)
 def collab(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     home = Campagin.objects.all().order_by('-id')
     return render(request, 'con/content/coll.html', {'home': home})
 
 @ratelimit(key='ip', rate='7/m', block=True)
 def collabo(request, id):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     home= Campagin.objects.filter(pk=id).first()
 
 
@@ -163,5 +213,15 @@ def collabo(request, id):
 
 @ratelimit(key='ip', rate='7/m', block=True)
 def service(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     home = Service.objects.all().order_by('-id')
     return render(request, 'con/content/service.html', {'home': home})

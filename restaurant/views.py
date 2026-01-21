@@ -86,6 +86,16 @@ def track_visit(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def home(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     home = Hom.objects.all().first()
 
     return render(request, "ress/menu/home.html",{'home':home})
@@ -149,6 +159,16 @@ def book(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def menu(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     selected_category = request.GET.get("category", "main_courses")  # default
 
     categories = Catgg.objects.all()

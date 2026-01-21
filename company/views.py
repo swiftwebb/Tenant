@@ -128,6 +128,16 @@ def track_visit(request):
 
 @ratelimit(key='ip', rate='10/m', block=True) 
 def home(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     home = Ideal.objects.all().first()
     service = Serv.objects.filter(premium=True).order_by('-id')
     context={
@@ -138,6 +148,16 @@ def home(request):
 
 @ratelimit(key='ip', rate='10/m', block=True) 
 def about(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     about = Abut.objects.all().first()
     lead = Leaders.objects.all()
     context={
@@ -148,6 +168,16 @@ def about(request):
 
 @ratelimit(key='ip', rate='10/m', block=True) 
 def service(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     service = Serv.objects.all().order_by('-id')
     context={
         'service':service,
@@ -157,6 +187,16 @@ def service(request):
 
 @ratelimit(key='ip', rate='10/m', block=True) 
 def contact(request):
+    tenant = request.user.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     if request.method == 'POST':
         name = request.POST.get('name')
         phone = request.POST.get('phone')
