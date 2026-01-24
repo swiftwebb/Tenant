@@ -56,7 +56,7 @@ class BlogForm(forms.ModelForm):
         model = Client
         fields = [
             'business_name', 'Tagline', 'business_description', 'logo',
-            'street_address', 'apartment_address', 'city', 'state', 'zip',
+            
             'phone_number', 'bank', 'account_no', 'account_name','tiktok',
             'facebook','instagram',
         ]
@@ -80,26 +80,6 @@ class BlogForm(forms.ModelForm):
             'class': 'hidden',
             'id': 'dropzone-file',
             'type': 'file',
-            }),
-            'street_address': forms.TextInput(attrs={
-        'class':'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"Street Address",
-            }),
-            'apartment_address': forms.TextInput(attrs={
-        'class':'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"Apartment Address (optional)",
-            }),
-            'city': forms.TextInput(attrs={
-        'class':'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"City",
-            }),
-            'state': forms.TextInput(attrs={
-        'class':'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"State",
-            }),
-            'zip': forms.TextInput(attrs={
-        'class':'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"Zip",
             }),
             'phone_number': forms.TextInput(attrs={
         'class':'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
@@ -182,7 +162,7 @@ class CompanyForm(forms.ModelForm):
         fields = [
             'business_name', 'Tagline', 'business_description', 'logo',
             'street_address', 'apartment_address', 'city', 'state', 'zip',
-            'phone_number', 'bank', 'account_no', 'account_name','linkedin',
+            'phone_number', 'linkedin',
             'facebook','instagram',
         ]
         widgets = {
@@ -234,18 +214,6 @@ class CompanyForm(forms.ModelForm):
         'class':'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
         'placeholder':"Phone Number",
         'required': 'required', 
-            }),
-            'bank': forms.TextInput(attrs={
-        'class':'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"Bank",
-            }),
-            'account_no': forms.TextInput(attrs={
-        'class':'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"Account number",
-            }),
-            'account_name': forms.TextInput(attrs={
-        'class':'form-input mb-4 mt-3 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"Account Name",
             }),
 
             'linkedin': forms.TextInput(attrs={
@@ -473,7 +441,7 @@ class RestForm(forms.ModelForm):
         fields = [
             'business_name', 'Tagline', 'business_description', 'logo',
             'street_address', 'apartment_address', 'city', 'state', 'zip',
-            'phone_number', 'bank', 'account_no', 'account_name','tiktok',
+            'phone_number', 'tiktok',
             'facebook','instagram','business_working_hours',
         ]
         widgets = {
@@ -526,19 +494,7 @@ class RestForm(forms.ModelForm):
         'placeholder':"Phone Number",
         'required': 'required', 
             }),
-            'bank': forms.TextInput(attrs={
-        'class':'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"Bank",
-            }),
-            'account_no': forms.TextInput(attrs={
-        'class':'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"Account number",
-            }),
-            'account_name': forms.TextInput(attrs={
-        'class':'form-input mb-4 mt-3 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-        'placeholder':"Account Name",
-        'required':'required',
-            }),
+         
             'tiktok': forms.TextInput(attrs={
                 'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
                          'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
@@ -758,40 +714,12 @@ class FoodtForm(forms.ModelForm):
 
 
 class FreeForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # --- Fetch bank list dynamically from Paystack ---
-        try:
-            headers = {"Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"}
-            response = requests.get("https://api.paystack.co/bank?country=nigeria", headers=headers)
-            banks = response.json().get("data", [])
-            bank_choices = [("", "Select your bank")]
-            bank_choices += [(bank["code"], bank["name"]) for bank in banks]
-        except Exception:
-            bank_choices = [("", "Select your bank")]
-
-        # --- Apply Tailwind styling to the dropdown ---
-        self.fields["bank"].widget = forms.Select(
-            choices=bank_choices,
-            attrs={
-                "class": (
-                    "form-select mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg "
-                    "text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 "
-                    "border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark "
-                    "h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal "
-                    "appearance-none"
-                ),
-                "required": "required",
-            },
-        )
 
     class Meta:
         model = Client
         fields = [
             'business_name', 'Tagline', 'business_description', 'logo',
-            'street_address', 'apartment_address', 'city', 'state', 'zip',
-            'phone_number', 'bank', 'account_no', 'account_name','business_picture','linkedin','tiktok',
+            'phone_number', 'business_picture','linkedin','tiktok',
             'facebook','instagram',
         ]
         widgets = {
@@ -828,41 +756,7 @@ class FreeForm(forms.ModelForm):
     'id': 'business-picture-upload',
     'type': 'file',
 }),
-            'street_address': forms.TextInput(attrs={
-                'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "Street Address",
-            }),
-            'apartment_address': forms.TextInput(attrs={
-                'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "Apartment Address",
-            }),
-            'city': forms.TextInput(attrs={
-                'class': 'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "City",
-            }),
-            'state': forms.TextInput(attrs={
-                'class': 'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "State",
-            }),
-            'zip': forms.TextInput(attrs={
-                'class': 'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "Zip",
-            }),
+           
             'phone_number': forms.TextInput(attrs={
                 'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
                          'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
@@ -870,21 +764,6 @@ class FreeForm(forms.ModelForm):
                          'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
                 'placeholder': "Phone Number",
                 'required': 'required', 
-            }),
-            'account_no': forms.TextInput(attrs={
-                'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "Account number",
-                'required': 'required', 
-            }),
-            'account_name': forms.TextInput(attrs={
-                'readonly': True,
-                'class': 'form-input bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 cursor-not-allowed '
-                         'rounded-lg w-full h-14 p-[15px] text-base font-normal leading-normal border border-gray-300 '
-                         'dark:border-gray-600',
-                        
             }),
             'tiktok': forms.TextInput(attrs={
                 'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
@@ -945,8 +824,7 @@ class PhotoForm(forms.ModelForm):
         model = Client
         fields = [
             'business_name', 'Tagline', 'business_description', 'logo',
-            'street_address', 'apartment_address', 'city', 'state', 'zip',
-            'phone_number', 'bank', 'account_no', 'account_name','business_picture','linkedin','tiktok',
+            'phone_number', 'business_picture','linkedin','tiktok',
             'facebook','instagram',
         ]
         widgets = {
@@ -983,41 +861,7 @@ class PhotoForm(forms.ModelForm):
     'id': 'business-picture-upload',
     'type': 'file',
 }),
-            'street_address': forms.TextInput(attrs={
-                'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "Street Address",
-            }),
-            'apartment_address': forms.TextInput(attrs={
-                'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "Apartment Address",
-            }),
-            'city': forms.TextInput(attrs={
-                'class': 'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "City",
-            }),
-            'state': forms.TextInput(attrs={
-                'class': 'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "State",
-            }),
-            'zip': forms.TextInput(attrs={
-                'class': 'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "Zip",
-            }),
+            
             'phone_number': forms.TextInput(attrs={
                 'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
                          'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
@@ -1078,8 +922,8 @@ class influForm(forms.ModelForm):
         model = Client
         fields = [
             'business_name', 'Tagline', 'business_description', 'logo',
-            'street_address', 'apartment_address', 'city', 'state', 'zip',
-            'phone_number', 'bank', 'account_no', 'account_name','business_picture','linkedin','tiktok',
+            
+            'phone_number', 'business_picture','linkedin','tiktok',
             'facebook','instagram',
         ]
         widgets = {
@@ -1116,41 +960,7 @@ class influForm(forms.ModelForm):
     'id': 'business-picture-upload',
     'type': 'file',
 }),
-            'street_address': forms.TextInput(attrs={
-                'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "Street Address",
-            }),
-            'apartment_address': forms.TextInput(attrs={
-                'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "Apartment Address",
-            }),
-            'city': forms.TextInput(attrs={
-                'class': 'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "City",
-            }),
-            'state': forms.TextInput(attrs={
-                'class': 'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "State",
-            }),
-            'zip': forms.TextInput(attrs={
-                'class': 'form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
-                         'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
-                         'border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-14 '
-                         'placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal',
-                'placeholder': "Zip",
-            }),
+            
             'phone_number': forms.TextInput(attrs={
                 'class': 'form-input mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg '
                          'text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 '
@@ -1456,7 +1266,7 @@ class AboutconForm(forms.ModelForm):
 
 
 from phot.models import *
-class PhotoForm(forms.ModelForm):
+class PhotoFormss(forms.ModelForm):
     class Meta:
         model = Photo
         fields = [

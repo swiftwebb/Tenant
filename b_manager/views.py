@@ -3417,12 +3417,12 @@ def photo_edit_d(request, pk):
         product = get_object_or_404(Photo, pk=pk)
 
         if request.method == 'POST':
-            form = PhotoForm(request.POST, request.FILES, instance=product, tenant=tenant)
+            form = PhotoFormss(request.POST, request.FILES, instance=product, tenant=tenant)
             if form.is_valid():
                 form.save()
                 return redirect('customers:photo_detail_d', pk=product.pk)
         else:
-            form = PhotoForm(instance=product, tenant=tenant)
+            form = PhotoFormss(instance=product, tenant=tenant)
 
         return render(request, 'customers/photouc.html', {'form': form, 'product': product})
 
@@ -3442,12 +3442,12 @@ def photo_create_camp(request):
             api_secret=tenant.api_secret,
         )
         if request.method == 'POST':
-            form = PhotoForm(request.POST, request.FILES, tenant=tenant)
+            form = PhotoFormss(request.POST, request.FILES, tenant=tenant)
             if form.is_valid():
                 product = form.save()
                 return redirect('customers:photo_detail_d', pk=product.pk)
         else:
-            form = PhotoForm(tenant=tenant)
+            form = PhotoFormss(tenant=tenant)
 
         return render(request, 'customers/photouc.html', {'form': form})
 
