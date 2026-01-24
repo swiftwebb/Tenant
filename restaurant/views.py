@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django_ratelimit.decorators import ratelimit
 from datetime import date
+from django_tenants.utils import schema_context
 
 from django.core.mail import send_mail
 from django.conf import settings

@@ -4,6 +4,7 @@ import json
 from datetime import timedelta
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+from django_tenants.utils import schema_context
 
 from django.core.mail import send_mail
 # Create your views here.

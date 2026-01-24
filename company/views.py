@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
+from django_tenants.utils import schema_context
 
 from b_manager.models import WebsiteVisit
 from django.core.mail import send_mail
