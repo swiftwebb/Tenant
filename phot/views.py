@@ -67,6 +67,16 @@ def track_visit(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def home(request):
+    tenant = request.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     photo = Photo.objects.filter(featured=True).all().order_by('-id')
     return render(request, "booth/photo/home.html", {"photo":photo} )
 
@@ -74,6 +84,16 @@ def home(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def hoomelist(request):
+    tenant = request.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     photos = Photo.objects.all().order_by('-id') 
     paginator = Paginator(photos, 24)            
     page_number = request.GET.get('page')
@@ -87,6 +107,16 @@ def hoomelist(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def hoomedet(request, id):
+    tenant = request.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     photo = get_object_or_404(Photo, id=id)
     return render(request, "booth/photo/homedetail.html", {"photo":photo} )
 
@@ -95,6 +125,16 @@ def hoomedet(request, id):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def aboutme(request):
+    tenant = request.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     photot = Myself.objects.all().order_by('-id')
     photo = photot.first()
     return render(request, "booth/photo/homeabout.html", {"photo":photo} )
@@ -102,11 +142,31 @@ def aboutme(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def service(request):
+    tenant = request.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     photo = Service_Photo.objects.all().order_by('-id')
     return render(request, "booth/photo/homeservice.html", {"photo":photo} )
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def contact(request):
+    tenant = request.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     if request.method == 'POST':
         name = request.POST.get('name')
         message = request.POST.get('message')
@@ -139,6 +199,16 @@ def contact(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def about(request):
+    tenant = request.tenant
+
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
     return render(request, "booth/photo/homecontact.html", {} )
 
 

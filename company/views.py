@@ -128,7 +128,7 @@ def track_visit(request):
 
 @ratelimit(key='ip', rate='10/m', block=True) 
 def home(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -148,7 +148,7 @@ def home(request):
 
 @ratelimit(key='ip', rate='10/m', block=True) 
 def about(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -168,7 +168,7 @@ def about(request):
 
 @ratelimit(key='ip', rate='10/m', block=True) 
 def service(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -187,7 +187,7 @@ def service(request):
 
 @ratelimit(key='ip', rate='10/m', block=True) 
 def contact(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 

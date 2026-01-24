@@ -86,7 +86,7 @@ def track_visit(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def home(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -159,7 +159,7 @@ def book(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def menu(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 

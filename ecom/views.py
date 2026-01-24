@@ -124,7 +124,7 @@ def get_delivery_distance(origin, destination):
 @ratelimit(key='ip', rate='10/m', block=True)
 def removecoupon(request):
 
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -170,7 +170,7 @@ def get_coupon(request, code):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def home(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -195,7 +195,7 @@ def home(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_list(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -217,7 +217,7 @@ def product_list(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_detail(request, slug):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -246,7 +246,7 @@ def product_detail(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_from(request, slug):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -281,7 +281,7 @@ def remove_from(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def cart_view(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -338,7 +338,7 @@ def cart_view(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def add_to(request, slug):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -400,7 +400,7 @@ def add_to(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove(request, slug):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -445,7 +445,7 @@ def remove(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_item(request, slug):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -479,7 +479,7 @@ def remove_item(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_all(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -511,7 +511,7 @@ def remove_all(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def checkout(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -1006,7 +1006,7 @@ def checkout(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def addcoupon(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -1559,7 +1559,7 @@ def ordderlist(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def orderdet(request, id):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 

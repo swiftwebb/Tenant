@@ -68,7 +68,7 @@ def track_visit(request):
 
 @ratelimit(key='ip', rate='7/m', block=True)
 def homie(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -86,7 +86,7 @@ def homie(request):
 # === ABOUT PAGE ===
 @ratelimit(key='ip', rate='7/m', block=True)
 def about(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -137,7 +137,7 @@ def contact(request):
 
 @ratelimit(key='ip', rate='7/m', block=True)
 def portfolio(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -180,7 +180,7 @@ def cats(request, id):
 
 @ratelimit(key='ip', rate='7/m', block=True)
 def collab(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -195,7 +195,7 @@ def collab(request):
 
 @ratelimit(key='ip', rate='7/m', block=True)
 def collabo(request, id):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -213,7 +213,7 @@ def collabo(request, id):
 
 @ratelimit(key='ip', rate='7/m', block=True)
 def service(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 

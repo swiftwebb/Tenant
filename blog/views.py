@@ -150,7 +150,7 @@ def login_view(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def homm(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -171,7 +171,7 @@ def homm(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def blogdet(request, slug):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -197,7 +197,7 @@ def blogdet(request, slug):
 @ratelimit(key='ip', rate='10/m', block=True)
 @login_required
 def post_comment(request, slug):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -251,7 +251,7 @@ def delete_comment(request, pk):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def about(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -270,7 +270,7 @@ def about(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def blogall(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -301,7 +301,7 @@ def blogall(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def contact(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
@@ -343,7 +343,7 @@ def contact(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def search(request):
-    tenant = request.user.tenant
+    tenant = request.tenant
 
     import cloudinary
 
