@@ -25,6 +25,33 @@ from django.conf import settings
 
 
 class BlogForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # --- Fetch bank list dynamically from Paystack ---
+        try:
+            headers = {"Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"}
+            response = requests.get("https://api.paystack.co/bank?country=nigeria", headers=headers)
+            banks = response.json().get("data", [])
+            bank_choices = [("", "Select your bank")]
+            bank_choices += [(bank["code"], bank["name"]) for bank in banks]
+        except Exception:
+            bank_choices = [("", "Select your bank")]
+
+        # --- Apply Tailwind styling to the dropdown ---
+        self.fields["bank"].widget = forms.Select(
+            choices=bank_choices,
+            attrs={
+                "class": (
+                    "form-select mb-4 flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg "
+                    "text-primary-text dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 "
+                    "border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark "
+                    "h-14 placeholder:text-secondary-text p-[15px] text-base font-normal leading-normal "
+                    "appearance-none"
+                ),
+                "required": "required",
+            },
+        )
     class Meta:
         model = Client
         fields = [
@@ -113,6 +140,37 @@ class BlogForm(forms.ModelForm):
                 'placeholder': "Facebook",
             }),
         }
+
+
+    
+    def clean_business_name(self):
+        business_name = self.cleaned_data.get("business_name")
+
+        if Client.objects.exclude(pk=self.instance.pk).filter(business_name__iexact=business_name).exists():
+            raise forms.ValidationError("This business name already exists. Please choose another name.")
+
+        return business_name
+
+    def clean(self):
+        cleaned_data = super().clean()
+        account_name = cleaned_data.get("account_name")
+        bank_code = cleaned_data.get("bank")
+
+        if not account_name:
+            raise forms.ValidationError("Invalid bank details. Please verify your account before submitting.")
+
+        # Fetch bank name from Paystack list
+        try:
+            headers = {"Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"}
+            response = requests.get("https://api.paystack.co/bank?country=nigeria", headers=headers)
+            banks = response.json().get("data", [])
+            bank_name = next((b["name"] for b in banks if b["code"] == bank_code), None)
+            cleaned_data["bank_name"] = bank_name
+        except Exception:
+            cleaned_data["bank_name"] = None
+
+        return cleaned_data
+
 
 
 

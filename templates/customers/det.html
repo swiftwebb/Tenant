@@ -97,6 +97,7 @@
         </div>
         {%endif%}
 
+        {% if form.street_address %}
         <!-- Address -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -120,6 +121,7 @@
           </div>
 
         </div>
+        {%endif%}
 
         <!-- Contact -->
         <div>
@@ -130,12 +132,16 @@
           {% endif %}
         </div>
 
+
+        {% if form.bank %}
+
         <!-- Bank Info -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
           <!-- Info / Note Box -->
           <div class="md:col-span-3">
             <div class="rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-sm text-yellow-900 dark:border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-200">
+              {% if jtype == "Store" %}
               <p class="font-semibold mb-1">Service Fee Notice</p>
               <p>
                 A 2.5% service fee applies to every transaction made on your website.
@@ -146,6 +152,24 @@
                 This fee covers website maintenance and ongoing support. We recommend slightly adjusting
                 your product prices if necessary.
               </p>
+              {% elif jtype == "Blogger" %}
+              <p class="font-semibold mb-1">Service Fee Notice</p>
+              <p>
+                A 10% maintenance fee is applied to advertising revenue generated on your blog.
+
+                This fee covers website maintenance, hosting, and ongoing technical support.
+                
+                Example:
+                If your blog generates ₦100,000 in ad revenue, a ₦10,000 maintenance fee will be deducted, and ₦90,000 will be paid directly into your account.
+                
+                We are committed to keeping your blog running smoothly while ensuring transparent and timely payouts.
+              </p>
+              <p class="mt-2">
+                This fee covers website maintenance and ongoing support. 
+              </p>
+
+
+              {%endif%}
             </div>
           </div>
         
@@ -189,6 +213,7 @@
           </div>
         
         </div>
+        {%endif%}
         
 
         <!-- Logo Upload -->
