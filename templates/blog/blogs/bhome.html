@@ -17,6 +17,8 @@
 
       <!-- FEATURED POSTS -->
       <div class="grid grid-cols-1 gap-10">
+        {% if blog.slug %}
+
         <a href="{% url 'det' blog.slug %}">
 
         <div
@@ -34,6 +36,7 @@
           </div>
         </div>
         </a>
+        {%endif%}
       
       </div>
       
