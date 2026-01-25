@@ -1122,6 +1122,7 @@ def setts(request):
                 return render(request, 'customers/det.html', {'form': form, 'webname': webname, 'jtype': jtype})
 
             business_slug = slugify(client.business_name)
+            business_slug = business_slug.replace("_", "-")
             domain_name = f"{business_slug}.baxting.com"
             client.save()
 
@@ -1211,6 +1212,7 @@ def fom(request):
                 return render(request, 'customers/det.html', {'form': form, 'webname': webname, 'jtype': jtype})
 
             business_slug = slugify(client.business_name)
+            business_slug = business_slug.replace("_", "-")
             domain_name = f"{business_slug}.baxting.com"
             client.save()
 
