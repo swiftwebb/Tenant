@@ -1,0 +1,142 @@
+{% extends 'bigkiks/whiteecom/base.html' %}
+{% block content %}
+
+<main class="px-4 md:px-10 lg:px-20 xl:px-40 py-5">
+
+<div class="flex flex-wrap justify-between gap-3 p-4">
+<p class="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] min-w-72">Checkout</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="lg:col-span-2">
+<div class="bg-white dark:bg-background-dark rounded-xl shadow-sm p-6">
+
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-2">Shipping Address</h2>
+<form  method="POST" action="{% url 'checkout' %}" class="space-y-6">
+      {% csrf_token %}
+         <div class="flex items-center">
+             {% if default_address_s %}
+<input class=" h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" id="useDefaultAddress" name="use_default" type="checkbox"/>
+<label class="ml-2 block text-sm text-gray-800 dark:text-gray-300" for="save-address">use default address</label>
+  {% endif %}
+  </div>   
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+ 
+ 
+
+ 
+
+<div>
+<label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2" for="first-name">First Name</label>
+<input required id="first_name" name="first_name" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"  placeholder="Enter your first name" value=""/>
+</div>
+<div>
+<label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2" for="last-name">Last Name</label>
+<input required id="last_name" name="last_name" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"  placeholder="Enter your last name" value=""/>
+</div>
+</div>
+{% if request.user.is_authenticated %}
+{% else %}
+<div>
+<label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2" for="address">Email</label>
+<input required type="email" id="email" name="email"  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal" placeholder="example@gmail.com" value=""/>
+</div>
+{% endif %}
+<div>
+<label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2" for="address">Street Address</label>
+<input required id="street_address" name="street_address" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal" placeholder="123 Main St" value=""/>
+</div>
+<div>
+<label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2" for="apartment">Apartment, suite, etc. (optional)</label>
+<input  id="apartment" name="apartment" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"  placeholder="Apt #4B" value=""/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div>
+<label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2" for="city">City / local government</label>
+<input required  id="city" name="city" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"  placeholder="Ikeja" value=""/>
+</div>
+<div>
+<label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2" for="state">State / Province</label>
+<input required  id="state" name="state" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"  placeholder="Lagos" value=""/>
+
+</div>
+{% comment %} <div>
+<label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2" for="zip">Zip / Postal Code</label>
+<input  id="zip" name="zip" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"  placeholder="10001" value=""/>
+</div> {% endcomment %}
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+{% comment %} <label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2" for="country">Country</label>
+<input  id="country" name="country" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal" placeholder="10001" value=""/>
+
+</select> {% endcomment %}
+</div>
+{% comment %} <div>
+<label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2" for="phone">Phone Number</label>
+<input id="phone_number" name="phone_number" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"  placeholder="(234) 7041840768" type="tel" value=""/>
+</div> {% endcomment %}
+
+
+
+
+    
+  <div class="md:col-span-2 text-left w-full">
+      <label class="block text-gray-800 dark:text-gray-300 text-sm font-medium pb-2">
+          Phone Number
+      </label>
+
+      <input required 
+          id="phone_number" 
+          name="phone_number"
+          class="form-input w-full rounded-lg text-gray-800 dark:text-white
+                 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700
+                 bg-white dark:bg-gray-800 h-12 placeholder:text-gray-400 px-4"
+          placeholder="(+234) 7041840768"
+          type="tel"
+      />
+  </div>
+
+
+</div>
+
+
+
+<div class="flex items-center">
+<input class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"id="save-address" name="save_address" type="checkbox"/>
+<label class="ml-2 block text-sm text-gray-800 dark:text-gray-300" for="save-address">Save this address as default</label>
+</div>
+
+<div class="mt-8 flex justify-between items-center">
+<a  class="text-primary font-medium text-sm hover:underline" href="{% url 'cart_view' %}}">
+<span class="material-symbols-outlined align-middle text-base">arrow_back</span> Return to Cart
+                            </a>
+<button type="submit" class="flex min-w-[180px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="truncate">Continue to Payment</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+</main>
+
+{% if default_address_s %}
+<script>
+  const useDefault = document.getElementById('useDefaultAddress');
+  useDefault?.addEventListener('change', function () {
+    const use = this.checked;
+document.getElementById('first_name').value = use ? "{{ default_address_s.first_name }}" : "";
+document.getElementById('last_name').value = use ? "{{ default_address_s.last_name }}" : "";
+document.getElementById('street_address').value = use ? "{{ default_address_s.street_address }}" : "";
+document.getElementById('apartment').value = use ? "{{ default_address_s.apartment }}" : "";
+document.getElementById('city').value = use ? "{{ default_address_s.city }}" : "";
+document.getElementById('state').value = use ? "{{ default_address_s.state }}" : "";
+//document.getElementById('country').value = use ? "{{ default_address_s.country }}" : "";
+document.getElementById('phone_number').value = use ? "{{ default_address_s.phone_number }}" : "";
+
+  });
+</script>
+{% endif %}
+
+   {% endblock %}

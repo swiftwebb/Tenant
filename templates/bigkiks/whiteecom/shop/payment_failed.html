@@ -1,0 +1,53 @@
+{% extends 'bigkiks/whiteecom/base.html' %}
+{% block content %}
+<main class="flex flex-1 justify-center py-10 px-4 sm:px-6 lg:px-8">
+<div class="layout-content-container flex w-full flex-col items-center gap-6 max-w-2xl flex-1">
+<div class="flex flex-col items-center text-center">
+<div class="flex items-center justify-center size-16 bg-red-500/10 rounded-full mb-4">
+<span class="material-symbols-outlined text-red-500 text-4xl">error</span>
+</div>
+<h1 class="text-[#111418] dark:text-white tracking-tight text-3xl sm:text-4xl font-bold leading-tight pb-2">Payment Failed</h1>
+<p class="text-[#60758a] dark:text-gray-400 text-base font-normal leading-normal max-w-md">
+                            We were unable to process your payment. Don't worry, your order hasn't been placed.
+                        </p>
+</div>
+<div class="w-full bg-white dark:bg-background-dark dark:border dark:border-white/10 shadow-sm rounded-xl p-6 @container">
+<div class="flex flex-col items-stretch justify-start gap-4 sm:flex-row sm:items-center">
+<div class="flex items-center justify-center size-12 bg-amber-500/10 rounded-lg shrink-0">
+<span class="material-symbols-outlined text-amber-500 text-3xl">error</span>
+</div>
+<div class="flex w-full grow flex-col items-stretch justify-center">
+<p class="text-[#111418] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Transaction failed</p>
+<p class="text-[#60758a] dark:text-gray-400 text-sm font-normal leading-normal mt-1">
+                                     Please try another payment method or contact your bank for more information.{{message}}
+                                </p>
+</div>
+</div>
+</div>
+<div class="w-full flex flex-col items-center gap-4 py-3">
+<div class="flex w-full max-w-[480px] flex-col items-stretch gap-3">
+    <a href="{% url 'checkout' %}">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] w-full">
+<span class="truncate">Retry Payment</span>
+</button></a>
+
+<a href="{% url 'product_list' %}">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-[#f0f2f5] dark:bg-white/10 text-[#111418] dark:text-white text-base font-bold leading-normal tracking-[0.015em] w-full">
+<span class="truncate">Go back to shopping</span>
+</button></a>
+</div>
+</div>
+<div class="w-full border-t border-black/10 dark:border-white/10 pt-6">
+<div class="mt-4 space-y-3">
+
+</div>
+</div>
+<div class="text-center pt-4">
+<p class="text-sm text-[#60758a] dark:text-gray-400">
+                            Still having trouble? 
+                            <a class="font-bold text-primary hover:underline" href="https://wa.me/+2347041840867">Contact Support</a>
+</p>
+</div>
+</div>
+</main>
+   {% endblock %}
