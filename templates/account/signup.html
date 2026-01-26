@@ -2,6 +2,8 @@
 {% load widget_tweaks %}
 {% load i18n %}
 
+{% load socialaccount %}
+
 {% block title %}{% trans "Create your account" %}{% endblock %}
 
 {% block content %}
@@ -114,6 +116,13 @@
           {% trans "Log in" %}
         </a>
       </p>
+
+
+    <a href="{% provider_login_url 'google' %}"
+    class="flex items-center justify-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-100">
+    <img src="https://developers.google.com/identity/images/g-logo.png" class="w-5 h-5">
+    Continue with Google
+ </a>
     </form>
   </div>
 </div>

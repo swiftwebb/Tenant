@@ -147,3 +147,4 @@ zope.tales==7.0
 zope.testing==6.0
 zope.traversing==6.0
 zope.viewlet==6.0
+cryptography==46.0.3

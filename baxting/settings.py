@@ -22,9 +22,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # else:
 #     DEBUG = True
 
-DEBUG = False
+DEBUG = True
 
-RATELIMIT_IP_META_KEY = 'HTTP_X_FORWARDED_FOR'
+# RATELIMIT_IP_META_KEY = 'HTTP_X_FORWARDED_FOR'
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
 CSRF_TRUSTED_ORIGINS = [
@@ -48,6 +48,8 @@ SHARED_APPS = [
     'django_ratelimit',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'phonenumber_field',
     'django_twilio',
     'widget_tweaks',
@@ -228,6 +230,16 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE':[
+            'profile',
+            'email'
+        ],
+        "AUTH_PARAMS":{'access_type':'online'}
+    }
+}
+
 PAYSTACK_SECRET_KEY =os.getenv('PAYSTACK_SECRET_KEY')
 PAYSTACK_PUBLIC_KEY = os.getenv('PAYSTACK_PUBLIC_KEY')
 
@@ -283,6 +295,8 @@ else:
     pass
 
 
+LOGOUT_REDIRECT_URL = "/"
+
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 PAYSTACK_BASE_URL = os.getenv('PAYSTACK_BASE_URL')
@@ -320,7 +334,7 @@ EMAIL_USE_SSL = False
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
+SOCIALACCOUNT_QUERY_EMAIL = True
 
 ACCOUNT_LOGIN_METHODS = {"email"}
 
@@ -335,3 +349,6 @@ ACCOUNT_UNIQUE_EMAIL = True
 #
 
 SITE_ID = 1
+
+
+SOCIALACCOUNT_ADAPTER = "b_manager.adapter.MySocialAccountAdapter"

@@ -76,11 +76,21 @@
         {% trans "Log In" %}
       </button>
 
+      
+
       <!-- Cancel -->
       <a href="{% url 'home' %}"
         class="block w-full text-center rounded-lg bg-gray-400 py-3 text-sm font-bold text-white hover:opacity-90">
         {% trans "Cancel" %}
       </a>
+
+
+      <p class="text-center text-sm text-black/60 dark:text-white/60 mt-4">
+        {% trans "Don't have an account?" %}
+        <a href="{% url 'account_signup' %}" class="text-primary font-semibold hover:underline">
+          {% trans "Sign Up" %}
+        </a>
+      </p>
 
     </form>
   </div>
