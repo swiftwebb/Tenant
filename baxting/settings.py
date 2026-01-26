@@ -260,6 +260,7 @@ BASE_URL=os.getenv('BASE_URL')
 
 FLW_SECRET_KEY =os.getenv('FLW_SECRET_KEY')
 
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 
 
