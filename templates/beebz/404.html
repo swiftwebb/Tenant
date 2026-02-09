@@ -1,0 +1,59 @@
+{% extends 'beebz/whiteecom/base.html' %}
+{% block content %}
+
+
+
+
+
+
+
+
+<main class="flex flex-col flex-1 items-center justify-center px-4 py-12">
+    <div class="w-full max-w-lg text-center animate-fade-in-up">
+    <!-- 404 Graphic Element -->
+    <div class="relative mx-auto mb-8 flex h-64 w-full items-center justify-center rounded-xl bg-slate-200 dark:bg-surface-dark overflow-hidden border border-slate-300 dark:border-[#234832]">
+    <!-- Background abstract pattern -->
+    <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#2bee79 1px, transparent 1px); background-size: 24px 24px;"></div>
+    <div class="relative z-10 flex flex-col items-center">
+    <h1 class="text-[120px] font-bold leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-primary to-primary/40 select-none drop-shadow-lg">404</h1>
+    <div class="mt-[-20px] h-2 w-32 rounded-full bg-primary/20 blur-md"></div>
+    </div>
+    <!-- Decorative icons floating -->
+    <span class="material-symbols-outlined absolute top-10 left-10 rotate-12 text-4xl text-slate-400 dark:text-slate-600 opacity-50">search_off</span>
+    <span class="material-symbols-outlined absolute bottom-8 right-12 -rotate-12 text-3xl text-slate-400 dark:text-slate-600 opacity-50">satellite_alt</span>
+    </div>
+    <!-- Text Content -->
+    <h2 class="mb-3 text-3xl font-bold tracking-tight text-slate-900 dark:text-white md:text-4xl">
+                        Lost in space?
+                    </h2>
+    <p class="mb-8 text-base font-normal leading-relaxed text-slate-600 dark:text-text-secondary md:text-lg">
+                        Oops! The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+                    </p>
+    <!-- Actions -->
+    <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+    <a href="/" class="group flex h-12 min-w-[160px] cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-bold text-[#112218] transition-all hover:bg-[#1fd665] hover:shadow-[0_0_20px_rgba(43,238,121,0.4)]">
+    <span class="material-symbols-outlined text-lg transition-transform group-hover:-translate-x-1">arrow_back</span>
+    <span>Back to Home</span>
+    </a>
+    </div>
+    </div>
+    </main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

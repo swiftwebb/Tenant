@@ -1,0 +1,70 @@
+{% extends 'beebz/whiteecom/base.html' %}
+{% block content %}
+<main class="flex flex-1 justify-center py-5 sm:py-10 px-4">
+<div class="layout-content-container flex flex-col w-full max-w-4xl flex-1 gap-8">
+<!-- Confirmation Message Section -->
+<div class="flex flex-col items-center text-center gap-4">
+<div class="flex items-center justify-center size-16 bg-green-500/20 rounded-full">
+<span class="material-symbols-outlined text-green-500 !text-4xl">check_circle</span>
+</div>
+<!-- PageHeading Start -->
+<div class="flex flex-wrap justify-center gap-3">
+<div class="flex flex-col gap-2">
+<p class="text-[#111418] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Thank You for Your Order!</p>
+<p class="text-[#60758a] dark:text-gray-400 text-base font-normal leading-normal">Your order has been placed.</p>
+</div>
+</div>
+<!-- PageHeading End -->
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 flex flex-col gap-6">
+<!-- Order Details Card -->
+<div class="bg-white dark:bg-background-dark rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+<!-- SectionHeader Start -->
+<h2 class="text-[#111418] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-6 pb-3 pt-5 border-b border-gray-200 dark:border-gray-700">Order Details</h2>
+<!-- SectionHeader End -->
+<!-- DescriptionList Start -->
+<div class="p-6 grid grid-cols-1 sm:grid-cols-[25%_1fr] gap-x-6">
+<div class="col-span-1 sm:col-span-2 grid grid-cols-subgrid py-3">
+<p class="text-[#60758a] dark:text-gray-400 text-sm font-normal leading-normal">Order Number</p>
+<p class="text-[#111418] dark:text-gray-200 text-sm font-medium leading-normal">#{{ref}}</p>
+</div>
+<div class="col-span-1 sm:col-span-2 grid grid-cols-subgrid border-t border-t-[#dbe0e6] dark:border-t-gray-700 py-3">
+<p class="text-[#60758a] dark:text-gray-400 text-sm font-normal leading-normal">Total Amount To be paid</p>
+<p class="text-[#111418] dark:text-gray-200 text-sm font-bold leading-normal">{{amount}}</p>
+</div>
+
+<div class="col-span-1 sm:col-span-2 grid grid-cols-subgrid border-t border-t-[#dbe0e6] dark:border-t-gray-700 py-3">
+<p class="text-[#60758a] dark:text-gray-400 text-sm font-normal leading-normal">Date of Purchase</p>
+<p class="text-[#111418] dark:text-gray-200 text-sm font-medium leading-normal">{{otime}}</p>
+</div>
+</div>
+<!-- DescriptionList End -->
+<!-- Order Summary -->
+<div class="px-6 pb-6">
+<ul class="space-y-4">
+<!-- Item 1 -->
+
+<!-- Item 3 -->
+
+</ul>
+</div>
+</div>
+</div>
+<!-- Shipping & Payment Card -->
+
+</div>
+<!-- Actions Section -->
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
+<a href="{% url 'product_list' %}">
+    <button class="w-full sm:w-auto flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-primary text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 px-6">Continue Shopping</button>
+</a>
+    <a href="{% url 'ordderlist' %}">
+    <button class="w-full sm:w-auto flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-gray-100 dark:bg-gray-800 text-[#111418] dark:text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 px-6">Go to My Orders</button>
+</a>
+</div>
+
+</div>
+</main>
+
+   {% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'beebz/whiteecom/base.html' %}
+{% block content %}
+<div class="@container">
+<div class="@[480px]:p-4">
+<div class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-lg items-center justify-center p-4" data-alt="A stylish woman wearing a summer dress and sunglasses, posing in a sunny outdoor setting." style='background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://t-logo-business.s3.amazonaws.com/clients/bigkiks/logo/Black_White_Bold_Modern_Clothing_Brand_Logo.jpeg");'>
+<div class="flex flex-col gap-2 text-center">
+<h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]"></h1>
+<h2 class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal"></h2>
+</div>
+<a href="{% url 'product_list' %}">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
+<span class="truncate">Shop Now</span>
+</button>
+</a>
+</div>
+</div>
+</div>
+
+<div class="grid grid-cols-[repeat(auto-fill,220px)] justify-center gap-4 p-4">
+{% for product in products %}
+<a href="{{ product.get_absolute_url }}" class="flex flex-col gap-3 pb-3 group">
+  <div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-lg overflow-hidden relative">
+    {% if product.image %}
+    <div class="w-full h-full bg-cover bg-center" style="background-image: url('{{ product.image.url }}');"></div>
+  {% else %}
+  <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-400 text-xs">
+    No Image
+  </div>  {% endif %}
+      <button class="absolute bottom-3 right-3 flex items-center justify-center w-10 h-10 bg-primary text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+      <span class="material-symbols-outlined">add_shopping_cart</span>
+    </button>
+  </div>
+  <div>
+    <p class="text-gray-900 dark:text-white text-base font-medium leading-normal">{{ product.name }}</p>
+    <p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">₦{%if product.discount_price %}{{ product.discount_price }}{%else%}{{ product.price}}{%endif%}</p>
+  </div>
+</a>
+{% endfor %}
+ 
+
+
+</div>
+{% if products.has_other_pages %}
+<nav class="flex items-center justify-center gap-2 py-8">
+
+    {% if products.has_previous %}
+    <a href="?page={{ products.previous_page_number }}" class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
+        <span class="material-symbols-outlined">chevron_left</span>
+    </a>
+    {% else %}
+    <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed">
+        <span class="material-symbols-outlined">chevron_left</span>
+    </span>
+    {% endif %}
+{% for page_num in products.paginator.page_range %}
+    {% if page_num >= products.number|add:'-2' and page_num <= products.number|add:'2' %}
+        {% if products.number == page_num %}
+            <a href="?page={{ page_num }}" class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
+                {{ page_num }}
+            </a>
+        {% else %}
+            <a href="?page={{ page_num }}" class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
+                {{ page_num }}
+            </a>
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+    {% if products.has_next %}
+    <a href="?page={{ products.next_page_number }}" class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
+        <span class="material-symbols-outlined">chevron_right</span>
+    </a>
+    {% else %}
+    <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed">
+        <span class="material-symbols-outlined">chevron_right</span>
+    </span>
+    {% endif %}
+
+</nav>
+{% endif %}
+   {% endblock %}

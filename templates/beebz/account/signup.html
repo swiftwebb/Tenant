@@ -1,0 +1,138 @@
+{% extends "beebz/whiteecom/base.html" %}
+{% load widget_tweaks %}
+{% load i18n %}
+
+{% block title %}{% trans "Create your account" %}{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-gray-50 dark:bg-background-dark">
+  <div class="w-full max-w-md space-y-8 bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md">
+
+    <!-- Header -->
+    <div class="text-center">
+      <h2 class="text-3xl font-bold tracking-tight">
+        {% trans "Create your account" %}
+      </h2>
+      <p class="mt-2 text-sm text-black/60 dark:text-white/60">
+        {% trans "Welcome to our store (login)." %}
+      </p>
+    </div>
+
+    <!-- Form -->
+    <form method="post" action="{% url 'account_signup' %}" class="space-y-6">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <!-- Render non-password fields -->
+      {% for field in form %}
+        {% if field.name != "password1" and field.name != "password2" %}
+          <div>
+            {{ field.label_tag }}
+            {{ field|add_class:"block w-full rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-background-dark px-3 py-3 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm" }}
+            {{ field.errors }}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Password 1 -->
+      <div>
+        {{ form.password1.label_tag }}
+        <div class="relative">
+          {{ form.password1|add_class:"block w-full rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-background-dark px-3 py-3 pr-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm" }}
+
+          <button type="button"
+            onclick="togglePassword('id_password1','eye1-open','eye1-closed')"
+            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-primary">
+            
+            <svg id="eye1-open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5
+                   c4.478 0 8.268 2.943 9.542 7
+                   -1.274 4.057-5.064 7-9.542 7
+                   -4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+
+            <svg id="eye1-closed" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3l18 18" />
+            </svg>
+          </button>
+        </div>
+        {{ form.password1.errors }}
+      </div>
+
+      <!-- Password 2 -->
+      <div>
+        {{ form.password2.label_tag }}
+        <div class="relative">
+          {{ form.password2|add_class:"block w-full rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-background-dark px-3 py-3 pr-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm" }}
+
+          <button type="button"
+            onclick="togglePassword('id_password2','eye2-open','eye2-closed')"
+            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-primary">
+
+            <svg id="eye2-open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5
+                   c4.478 0 8.268 2.943 9.542 7
+                   -1.274 4.057-5.064 7-9.542 7
+                   -4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+
+            <svg id="eye2-closed" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3l18 18" />
+            </svg>
+          </button>
+        </div>
+        {{ form.password2.errors }}
+      </div>
+
+      <!-- Submit -->
+      <button type="submit"
+        class="w-full rounded-lg bg-primary py-3 text-sm font-bold text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary">
+        {% trans "Sign Up" %}
+      </button>
+
+      <!-- Cancel -->
+      <a href="{% url 'home' %}"
+        class="block w-full text-center rounded-lg bg-gray-400 py-3 text-sm font-bold text-white hover:opacity-90">
+        {% trans "Cancel" %}
+      </a>
+
+      <!-- Login link -->
+      <p class="text-center text-sm text-black/60 dark:text-white/60 mt-4">
+        {% trans "Already have an account?" %}
+        <a href="{% url 'account_login' %}" class="text-primary font-semibold hover:underline">
+          {% trans "Log in" %}
+        </a>
+      </p>
+
+    </form>
+  </div>
+</div>
+
+<script>
+  function togglePassword(inputId, openId, closedId) {
+    const input = document.getElementById(inputId);
+    const openEye = document.getElementById(openId);
+    const closedEye = document.getElementById(closedId);
+
+    if (!input) return;
+
+    if (input.type === "password") {
+      input.type = "text";
+      openEye.classList.add("hidden");
+      closedEye.classList.remove("hidden");
+    } else {
+      input.type = "password";
+      openEye.classList.remove("hidden");
+      closedEye.classList.add("hidden");
+    }
+  }
+</script>
+{% endblock %}
