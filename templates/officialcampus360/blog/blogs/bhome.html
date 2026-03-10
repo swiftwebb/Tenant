@@ -1,13 +1,13 @@
-{% extends 'blog/base.html' %}
+{% extends 'officialcampus360/blog/base.html' %}
 {% block content %}
     
     <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
       <!-- HERO -->
       <div class="text-center py-20">
-        <h1 class="text-5xl md:text-6xl font-black tracking-tight dark:text-white">A Space for Modern Ideas</h1>
+        <h1 class="text-5xl md:text-6xl font-black tracking-tight dark:text-white">Campus 360</h1>
         <p class="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-          Discover stories, design inspiration, and thoughtful articles in a clean, focused reading experience.
+          Discover investing,  financial literacy, and thoughtful articles in a clean, focused reading experience.
         </p>
         <a href="#recent-posts"
           class="mt-8 inline-block px-6 py-3 bg-primary text-white font-semibold rounded-xl shadow-lg hover:bg-primary/90 hover:scale-105 transition">
@@ -17,6 +17,8 @@
 
       <!-- FEATURED POSTS -->
       <div class="grid grid-cols-1 gap-10">
+        {% if blog.slug %}
+
         <a href="{% url 'det' blog.slug %}">
 
         <div
@@ -34,6 +36,7 @@
           </div>
         </div>
         </a>
+        {%endif%}
       
       </div>
       

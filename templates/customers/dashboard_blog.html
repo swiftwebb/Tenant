@@ -133,7 +133,7 @@
               Monetize Your Blog
             </p>
             <p class="text-white/80 text-base font-normal flex-grow">
-              Once your website total visits reach 5,000, you can monetize your blog by contacting our support team and start earning.
+              Once your website total visits reach 1,000,   you can monetize your blog by contacting our support team and start earning through ads.
             </p>
             <a href="mailto:info@baxting.com">
               <button
@@ -145,7 +145,35 @@
         </div>
 
       </div>
+      <div class="flex flex-col rounded-xl shadow-md bg-card-light dark:bg-card-dark overflow-hidden">
+        <div class="p-6 md:p-8 flex flex-col items-start gap-4 h-full">
+          
+          <div class="bg-primary/20 text-primary p-3 rounded-lg">
+            <span class="material-symbols-outlined !text-3xl">group</span>
+          </div>
+      
+          <p class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight">
+            My Subscribers
+          </p>
+      
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-base font-normal flex-grow">
+            View and manage people who subscribed to your blog updates.
+          </p>
+      
+          <a href="{% url 'customers:dashboard_sub_blog' %}">
+            <button
+              class="mt-2 flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto">
+              View Subscribers
+            </button>
+          </a>
+      
+        </div>
+      </div>
+
     </div>
+
+<!-- Subscribers -->
+
 </main>
 
 {% endblock %}

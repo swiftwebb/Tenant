@@ -4190,6 +4190,43 @@ def dashboard_Book_blog(request):
 
 @ratelimit(key='ip', rate='15/m', block=True)
 @login_required
+def dashboard_sub_blog(request):
+    tenant = request.user.tenant  # tenant link
+    products = []
+
+    from blog.models import Sub
+
+    import cloudinary
+    from django_tenants.utils import schema_context
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
+        products = list(Sub.objects.all().order_by('-id'))
+
+    return render(request, 'customers/blogsub.html', {
+        'tenant': tenant,
+        'products': products,
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@ratelimit(key='ip', rate='15/m', block=True)
+@login_required
 def book_detail_blog(request, pk):
     tenant = request.user.tenant
 
@@ -4227,6 +4264,18 @@ def dashboard_delete_book_blog(request, pk):
 
 
 
+@ratelimit(key='ip', rate='15/m', block=True)
+@login_required
+def dashboard_delete_book_blog_subscribers(request, pk):
+    tenant = request.user.tenant
+
+    with schema_context(tenant.schema_name):
+        cat = get_object_or_404(Sub, pk=pk)
+
+        cat.delete()
+    
+    return redirect('customers:dashboard_sub_blog')  
+    
 
 
 
