@@ -22,7 +22,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # else:
 #     DEBUG = True
 
-DEBUG = False
+DEBUG = True
 
 RATELIMIT_IP_META_KEY = 'HTTP_X_FORWARDED_FOR'
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
