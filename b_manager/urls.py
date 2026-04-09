@@ -183,6 +183,8 @@ path('websiteselection/', web_temp, name='web_sel'),
     path("submit-review/", submit_review, name="submit_review"),
  path("delete-review/", delete_review, name="delete_review"),
 
+    path('keep_alive/', keep_alive, name='keep_alive'),
+
 
 ]
 

@@ -5246,3 +5246,8 @@ def monthly_report_internal(tenant):
     return "📊 Total sales last month: ₦500,000."
 
 
+def keep_alive(request):
+    from django.db import connection
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT 1")
+    return JsonResponse({"status": "alive"})
