@@ -102,68 +102,68 @@ def track_visit(request):
 # tenant = request.tenant  # This works if django-tenants is set up
 # subaccount_id = tenant.flw_subaccount_id
 
-# def get_delivery_distance(origin, destination):
-#     api_key = settings.GOOGLE_API_KEY
-    
-#     url = (
-#         f"https://maps.googleapis.com/maps/api/distancematrix/json?"
-#         f"origins={origin}&destinations={destination}&key={api_key}"
-#     )
-    
-#     response = requests.get(url).json()
-#     print(response)
-
-#     element = response['rows'][0]['elements'][0]
-
-#     distance_km = element['distance']['value'] / 1000      # → KM
-#     duration_min = element['duration']['value'] / 60       # → Minutes
-
-
-#     return distance_km, duration_min
-
-
-import requests
-from django.conf import settings
-
-
 def get_delivery_distance(origin, destination):
-    url = "https://maps.googleapis.com/maps/api/distancematrix/json"
+    api_key = settings.GOOGLE_API_KEY
+    
+    url = (
+        f"https://maps.googleapis.com/maps/api/distancematrix/json?"
+        f"origins={origin}&destinations={destination}&key={api_key}"
+    )
+    
+    response = requests.get(url).json()
+    print(response)
 
-    params = {
-        "origins": origin,
-        "destinations": destination,
-        "key": settings.GOOGLE_API_KEY,
-    }
+    element = response['rows'][0]['elements'][0]
 
-    try:
-        response = requests.get(url, params=params, timeout=10)
-        data = response.json()
+    distance_km = element['distance']['value'] / 1000      # → KM
+    duration_min = element['duration']['value'] / 60       # → Minutes
 
-        print("FULL RESPONSE:", data)
 
-        rows = data.get("rows")
-        if not rows:
-            return None
+    return distance_km, duration_min
 
-        elements = rows[0].get("elements")
-        if not elements:
-            return None
 
-        element = elements[0]
+# import requests
+# from django.conf import settings
 
-        # 🔴 THIS IS THE MAIN FIX
-        if element.get("status") != "OK":
-            print("Distance API failed:", element)
-            return None
 
-        distance_km = element["distance"]["value"] / 1000
-        duration_min = element["duration"]["value"] / 60
+# def get_delivery_distance(origin, destination):
+#     url = "https://maps.googleapis.com/maps/api/distancematrix/json"
 
-        return distance_km, duration_min
+#     params = {
+#         "origins": origin,
+#         "destinations": destination,
+#         "key": settings.GOOGLE_API_KEY,
+#     }
 
-    except Exception as e:
-        print("Distance API ERROR:", str(e))
-        return None
+#     try:
+#         response = requests.get(url, params=params, timeout=10)
+#         data = response.json()
+
+#         print("FULL RESPONSE:", data)
+
+#         rows = data.get("rows")
+#         if not rows:
+#             return None
+
+#         elements = rows[0].get("elements")
+#         if not elements:
+#             return None
+
+#         element = elements[0]
+
+#         # 🔴 THIS IS THE MAIN FIX
+#         if element.get("status") != "OK":
+#             print("Distance API failed:", element)
+#             return None
+
+#         distance_km = element["distance"]["value"] / 1000
+#         duration_min = element["duration"]["value"] / 60
+
+#         return distance_km, duration_min
+
+#     except Exception as e:
+#         print("Distance API ERROR:", str(e))
+#         return None
 
 
 
