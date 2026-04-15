@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
 from django_tenants.utils import schema_context
-import threading
+
 from django.db.models import Q
 
 from django.http import JsonResponse
@@ -311,6 +311,7 @@ def send_contact_email(subject, message, from_email, recipient_list):
 @ratelimit(key='ip', rate='10/m', block=True)
 def contact(request):
     tenant = request.tenant
+    import cloudinary
 
     # Configure Cloudinary for this tenant
     with schema_context(tenant.schema_name):
