@@ -8,7 +8,6 @@ from django.contrib import messages
 from django_tenants.utils import schema_context
 
 from django.db.models import Q
-import threading
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -296,116 +295,52 @@ def blogall(request):
 
 
 
-def send_contact_email(subject, message, from_email, recipient_list):
-    """
-    Runs email sending in background thread to prevent request blocking.
-    """
-    send_mail(
-        subject=subject,
-        message=message,
-        from_email=from_email,
-        recipient_list=recipient_list,
-        fail_silently=False,
-    )
+
+
+
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def contact(request):
     tenant = request.tenant
+
     import cloudinary
 
-    # Configure Cloudinary for this tenant
     with schema_context(tenant.schema_name):
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-
     if request.method == 'POST':
         name = request.POST.get('name')
         message = request.POST.get('message')
         email = request.POST.get('email')
 
-        # Save message to DB
         Msg.objects.create(
             name=name,
             message=message,
             email=email,
         )
+        # send_mail(
+        #     subject="New Contact Form Message",
+        #     message=f"""
+        # A new message has been submitted through your blog contact form.
 
-        subject = "New Contact Form Message"
-        email_message = f"""
-A new message has been submitted through your blog contact form.
+        # Name: {name}
+        # Email: {email}
 
-Name: {name}
-Email: {email}
+        # Message:
+        # {message}
+        # """,
+        #     from_email=settings.EMAIL_HOST_USER,
+        #     recipient_list=[request.tenant.email],
+        #     fail_silently=False,
+        # )
 
-Message:
-{message}
-"""
-
-        # Send email in background (prevents Render crash)
-        threading.Thread(
-            target=send_contact_email,
-            args=(
-                subject,
-                email_message,
-                settings.EMAIL_HOST_USER,
-                [request.tenant.email],
-            ),
-            daemon=True
-        ).start()
-
-        messages.success(request, "Message received, we will get back to you shortly.")
+        messages.success(request, "Message recieved, We will get back to you shortly")
         return redirect('contact')
-
-    return render(request, "blog/blogs/contact.html")
-
-
-
-
-# @ratelimit(key='ip', rate='10/m', block=True)
-# def contact(request):
-#     tenant = request.tenant
-
-#     import cloudinary
-
-#     with schema_context(tenant.schema_name):
-#         cloudinary.config(
-#             cloud_name=tenant.cloud_name,
-#             api_key=tenant.api_key,
-#             api_secret=tenant.api_secret,
-#         )
-#     if request.method == 'POST':
-#         name = request.POST.get('name')
-#         message = request.POST.get('message')
-#         email = request.POST.get('email')
-
-#         Msg.objects.create(
-#             name=name,
-#             message=message,
-#             email=email,
-#         )
-#         send_mail(
-#             subject="New Contact Form Message",
-#             message=f"""
-#         A new message has been submitted through your blog contact form.
-
-#         Name: {name}
-#         Email: {email}
-
-#         Message:
-#         {message}
-#         """,
-#             from_email=settings.EMAIL_HOST_USER,
-#             recipient_list=[request.tenant.email],
-#             fail_silently=False,
-#         )
-
-#         messages.success(request, "Message recieved, We will get back to you shortly")
-#         return redirect('contact')
-#     return render(request, "blog/blogs/contact.html", {} )
+    return render(request, "blog/blogs/contact.html", {} )
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def search(request):

@@ -178,21 +178,21 @@ def contact(request):
             message=message,
             email=email,
         )
-        send_mail(
-            subject="Baxting's Website — New Client Message",
-            message=f"""
-        A potential client has just submitted a message on your website.
+        # send_mail(
+        #     subject="Baxting's Website — New Client Message",
+        #     message=f"""
+        # A potential client has just submitted a message on your website.
 
-        Name: {name}
-        Email: {email}
+        # Name: {name}
+        # Email: {email}
 
-        Message:
-        {message}
-        """,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[request.tenant.email],
-            fail_silently=False,
-        )
+        # Message:
+        # {message}
+        # """,
+        #     from_email=settings.EMAIL_HOST_USER,
+        #     recipient_list=[request.tenant.email],
+        #     fail_silently=False,
+        # )
 
         messages.success(request, "Message recieved, We will get back to you shortly")
         return redirect('about')

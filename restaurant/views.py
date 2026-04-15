@@ -130,27 +130,27 @@ def book(request):
             guests=guests,
             special_requests=special_requests
         )
-        send_mail(
-            subject="Restaurant Website — New Booking Received",
-            message=f"""
-        A customer has just made a booking on your website. Below are their details:
+        # send_mail(
+        #     subject="Restaurant Website — New Booking Received",
+        #     message=f"""
+        # A customer has just made a booking on your website. Below are their details:
 
-        Name: {name}
-        Email: {email}
-        Phone: {phone}
+        # Name: {name}
+        # Email: {email}
+        # Phone: {phone}
 
-        Date: {date_input}
-        Time: {time}
-        Number of Guests: {guests}
+        # Date: {date_input}
+        # Time: {time}
+        # Number of Guests: {guests}
 
-        Special Requests:
-        {special_requests}
+        # Special Requests:
+        # {special_requests}
 
-        """,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[request.tenant.email],
-            fail_silently=False,
-        )
+        # """,
+        #     from_email=settings.EMAIL_HOST_USER,
+        #     recipient_list=[request.tenant.email],
+        #     fail_silently=False,
+        # )
 
         messages.success(request, "Your reservation has been submitted!")
         return redirect("book")
