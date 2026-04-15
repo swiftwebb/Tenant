@@ -559,7 +559,7 @@ def remove_all(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def checkout(request):
     tenant = request.tenant
-    from ecom.models import *
+    from .models import Coupon, Category, Product, Cart, Address, DeliveryBase, DeliveryState, DeliveryCity, Order, Sale
 
     import cloudinary
 
