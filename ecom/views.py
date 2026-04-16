@@ -104,11 +104,6 @@ def track_visit(request):
 
 from urllib.parse import quote
 
-url = (
-    f"https://maps.googleapis.com/maps/api/distancematrix/json?"
-    f"origins={quote(origin)}&destinations={quote(destination)}"
-    f"&region=ng&key={api_key}"
-)
 
 
 # def get_delivery_distance(origin, destination):
@@ -160,33 +155,34 @@ def get_delivery_distance(origin, destination):
     return distance_km, duration_min
 
 
-@ratelimit(key='ip', rate='10/m', block=True)
-def removecoupon(request):
+from urllib.parse import quote
 
-    tenant = request.tenant
+def get_delivery_distance(origin, destination):
+    api_key = settings.GOOGLE_API_KEY
+    
+    url = (
+        f"https://maps.googleapis.com/maps/api/distancematrix/json?"
+        f"origins={quote(origin)}&destinations={quote(destination)}"
+        f"&region=ng&key={api_key}"
+    )
+    
+    response = requests.get(url).json()
+    print(response)
 
-    import cloudinary
+    if response.get('status') != 'OK':
+        print(f"Distance Matrix API error: {response.get('status')}")
+        return None
 
-    with schema_context(tenant.schema_name):
-        cloudinary.config(
-            cloud_name=tenant.cloud_name,
-            api_key=tenant.api_key,
-            api_secret=tenant.api_secret,
-        )
-    if request.user.is_authenticated:
-        order = Order.objects.filter(user=request.user, Paid=False).last()
-    else:
-        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
+    element = response['rows'][0]['elements'][0]
 
-    if order and order.coupon:
-        order.coupon = None
-        order.save()
-        messages.success(request, "Promo code removed successfully.")
-    else:
-        messages.info(request, "No promo code was applied.")
+    if element.get('status') != 'OK':
+        print(f"Element status: {element.get('status')} | origin={origin} | dest={destination}")
+        return None
 
-    return redirect('cart_view')
+    distance_km = element['distance']['value'] / 1000
+    duration_min = element['duration']['value'] / 60
 
+    return distance_km, duration_min
 
 
 
