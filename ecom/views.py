@@ -436,7 +436,6 @@ def cart_view(request):
 
 
 
-@ratelimit(key='ip', rate='10/m', block=True)
 def add_to(request, slug):
     tenant = request.tenant
 
@@ -447,57 +446,52 @@ def add_to(request, slug):
         api_secret=tenant.api_secret,
     )
 
-    # 🚨 ALWAYS ensure session exists first
+    # 🔥 ALWAYS guarantee session exists FIRST
     if not request.session.session_key:
         request.session.create()
     session_key = request.session.session_key
 
+    # 🔥 FORCE schema BEFORE ANY DB ACTION
     with schema_context(tenant.schema_name):
 
-        product = get_object_or_404(Product, slug=slug)
+        product = Product.objects.filter(slug=slug).first()
+
+        if not product:
+            messages.error(request, "Product not found.")
+            return redirect('cart_view')
 
         if product.quantity is None or product.quantity <= 0:
-            messages.warning(request, f"Sorry, {product.name} is out of stock.")
+            messages.warning(request, "Out of stock")
             return redirect('productdet', slug=slug)
 
-        # 🔑 unified cart filter (fixes inconsistency bug)
-        cart_filter = {
-            'ordered': False,
-            'product': product,
-        }
-
+        # 🔥 CONSISTENT CART FILTER
         if request.user.is_authenticated:
-            cart_filter['user'] = request.user
+            cart_item, created = Cart.objects.get_or_create(
+                user=request.user,
+                product=product,
+                ordered=False,
+                defaults={"quantity": 1}
+            )
         else:
-            cart_filter['session_key'] = session_key
+            cart_item, created = Cart.objects.get_or_create(
+                session_key=session_key,
+                product=product,
+                ordered=False,
+                defaults={"quantity": 1}
+            )
 
-        cart_item = Cart.objects.filter(**cart_filter).first()
-
-        if cart_item:
-            if product.quantity <= cart_item.quantity:
-                messages.warning(request, f"{product.name} is limited to {product.quantity} units.")
+        # 🔥 UPDATE QUANTITY PROPERLY
+        if not created:
+            if cart_item.quantity >= product.quantity:
+                messages.warning(request, "Max stock reached")
                 return redirect('cart_view')
 
             cart_item.quantity += 1
             cart_item.save()
-            messages.success(request, f"{product.name} quantity updated in your cart.")
 
-        else:
-            Cart.objects.create(
-                user=request.user if request.user.is_authenticated else None,
-                product=product,
-                ordered=False,
-                session_key=session_key,
-                quantity=1
-            )
-            messages.success(request, f"{product.name} added to cart.")
-
-        # 🧠 FIX cache key consistency
-        user_id = request.user.id if request.user.is_authenticated else session_key
-        cache.delete(f"cart_full_data_{tenant.schema_name}_{user_id}")
+        cache.delete(f"cart_full_data_{tenant.schema_name}_{session_key}")
 
     return redirect('cart_view')
-
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove(request, slug):
     tenant = request.tenant
