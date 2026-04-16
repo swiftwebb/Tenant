@@ -15,12 +15,12 @@ class Comm(models.Model):
 
 
 class Blog(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=250)
     slug = models.SlugField(unique=True,null=True, blank=True)
     overview = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     thumbnail = CloudinaryField(folder='thub/',null=True, blank=True)
-    cataegory = models.CharField(max_length=100,null=True, blank=True)
+    cataegory = models.CharField(max_length=250,null=True, blank=True)
     featured = models.BooleanField(default=False)
     comment = models.ManyToManyField(Comm, blank=True)
 
@@ -56,7 +56,7 @@ class Abbb(models.Model):
     why = models.TextField()
 
 class Msg(models.Model):
-    name = models.CharField(blank=True, null=True)
+    name = models.CharField(max_length=250, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     message = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
