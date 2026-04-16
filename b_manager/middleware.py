@@ -16,9 +16,6 @@
 from django.shortcuts import render
 
 
-from django.db import connection
-from django.shortcuts import render
-from django_tenants.utils import get_public_schema_name
 
 class TenantStatusMiddleware:
     def __init__(self, get_response):
@@ -27,32 +24,25 @@ class TenantStatusMiddleware:
     def __call__(self, request):
         tenant = getattr(request, 'tenant', None)
 
-        # ❗ ALWAYS ensure schema is set
-        if tenant:
-            connection.set_schema(tenant.schema_name)
-        else:
-            connection.set_schema(get_public_schema_name())
 
-        # 🚨 tenant checks AFTER schema is set
-        if tenant:
+   
 
+        if tenant:
+            # Dynamically assign URLconf based on tenant
             if not getattr(tenant, "live", False):
                 return render(request, "under_construction.html", status=503)
-
-            # URLCONF switching (safe AFTER schema is set)
             if hasattr(tenant, 'urlconf') and tenant.urlconf:
                 request.urlconf = tenant.urlconf
+                print(request.urlconf)  # use tenant's custom URLconf
             else:
-                request.urlconf = 'ecom.urls'
+                request.urlconf = 'ecom.urls'  # fallback default
 
-            tenant.update_status()
+            tenant.update_status()  # your existing logic
 
-        response = self.get_response(request)
+        return self.get_response(request)
 
-        # 🔥 VERY IMPORTANT RESET
-        connection.set_schema(get_public_schema_name())
 
-        return response
+
 
 
 
