@@ -1365,7 +1365,7 @@ def verify_payment(request):
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
-def order_list(request):
+def ordderlist(request):
     from ecom.models import Order
 
     tenant = request.tenant
