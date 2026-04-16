@@ -168,6 +168,15 @@ def removecoupon(request):
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
+        )
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=False).last()
     else:
@@ -200,6 +209,15 @@ def get_coupon(request, code):
 
     from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
 
+
+    querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
+        )
     try:
         return Coupon.objects.get(code=code)
     except Coupon.DoesNotExist:
@@ -223,6 +241,15 @@ def home(request):
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
+        )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
         )
 
 
@@ -255,6 +282,15 @@ def product_list(request):
             api_secret=tenant.api_secret,
         )
 
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
+        )
+
     items = True
     product_list = Product.objects.filter(best_sellers=items,image__isnull=False).order_by('-id')  # newest first
     paginator = Paginator(product_list, 12)  # 👈 8 products per page (adjust as you like)
@@ -280,6 +316,15 @@ def product_detail(request, slug):
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
+        )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
         )
     product = get_object_or_404(Product, slug=slug)
     category = product.category
@@ -314,6 +359,15 @@ def remove_from(request, slug):
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
+        )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
         )
     product = get_object_or_404(Product, slug=slug)
 
@@ -354,6 +408,15 @@ def cart_view(request):
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
+        )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
         )
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user, ordered=False)
@@ -416,6 +479,15 @@ def add_to(request, slug):
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
+        )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
         )
     # Get the product
     product = get_object_or_404(Product, slug=slug)
@@ -484,6 +556,15 @@ def remove(request, slug):
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
+        )
     product = get_object_or_404(Product, slug=slug)
 
 
@@ -534,6 +615,15 @@ def remove_item(request, slug):
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
+        )
     product = get_object_or_404(Product, slug=slug)
 
     if request.user.is_authenticated:
@@ -573,6 +663,15 @@ def remove_all(request):
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
+        )
     if request.user.is_authenticated:
         Cart.objects.filter(user=request.user, ordered=False).delete()
     else:
@@ -609,6 +708,15 @@ def checkout(request):
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
+        )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
         )
 
     default_address_s = None
@@ -1109,6 +1217,15 @@ def addcoupon(request):
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
+        )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
         )
     if request.method == 'POST':
         code = request.POST.get('promo')
@@ -1644,6 +1761,17 @@ def ordderlist(request):
 
     from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
 
+
+
+    querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
+        )
+
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=True).order_by('-ordered_date')
     else:
@@ -1672,6 +1800,15 @@ def orderdet(request, id):
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
+        )
+
+        querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
         )
     order = get_object_or_404(Order, id=id)
     cart_items = order.cart.all()
@@ -1714,6 +1851,18 @@ def search(request):
 
 
     from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+
+
+    querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
+        )
+
 
     queryset = Product.objects.all()
     query = request.GET.get('q')
@@ -1797,6 +1946,18 @@ def paydelivery(request):
 
 
     from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+
+
+
+    querysetssss = (
+            Order.objects
+            .select_related('address', 'user', 'coupon')
+            .prefetch_related(
+                'cart__product',
+                'cart__product__category'
+            )
+        )
 
 
     # Ensure session exists for guest users
