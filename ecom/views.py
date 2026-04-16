@@ -122,53 +122,36 @@ def get_delivery_distance(origin, destination):
     return distance_km, duration_min
 
 
-
-
-
-
-
-from django_tenants.utils import schema_context
-from django.core.cache import cache
-
 @ratelimit(key='ip', rate='10/m', block=True)
 def removecoupon(request):
+
     tenant = request.tenant
-    
-    # Use schema_context for ALL database and config operations
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
+    import cloudinary
+
     with schema_context(tenant.schema_name):
-        # 1. Cloudinary Config
-        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    if request.user.is_authenticated:
+        order = Order.objects.filter(user=request.user, Paid=False).last()
+    else:
+        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
 
-        # 2. Database Queries (Must be inside the block)
-        if request.user.is_authenticated:
-            order = Order.objects.filter(user=request.user, Paid=False).last()
-        else:
-            # Ensure session is created if it doesn't exist
-            if not request.session.session_key:
-                request.session.create()
-            order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
-
-        if order and order.coupon:
-            order.coupon = None
-            order.save()
-            
-            # 3. Cache Invalidation
-            # If you implemented caching in cart_view, clear it here so 
-            # the user sees the new price immediately.
-            user_id = request.user.id if request.user.is_authenticated else request.session.session_key
-            cache_key = f"cart_total_{tenant.schema_name}_{user_id}"
-            cache.delete(cache_key)
-            
-            messages.success(request, "Promo code removed successfully.")
-        else:
-            messages.info(request, "No promo code was applied.")
+    if order and order.coupon:
+        order.coupon = None
+        order.save()
+        messages.success(request, "Promo code removed successfully.")
+    else:
+        messages.info(request, "No promo code was applied.")
 
     return redirect('cart_view')
+
+
+
 
 
 
@@ -178,294 +161,256 @@ def create_ref_code():
 
 
 
-from django_tenants.utils import schema_context
-
 @ratelimit(key='ip', rate='10/m', block=True)
 def get_coupon(request, code):
-    # Retrieve the tenant from the request
-    tenant = request.tenant
-    
-    # Force the query to run within the tenant's specific schema
-    with schema_context(tenant.schema_name):
-        try:
-            return Coupon.objects.get(code=code)
-        except Coupon.DoesNotExist:
-            return None
 
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
 
+    try:
+        return Coupon.objects.get(code=code)
+    except Coupon.DoesNotExist:
+        return None
 
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def home(request):
     tenant = request.tenant
-    page_number = request.GET.get('page', 1)
-    
-    # Define a cache key specific to the tenant and the page
-    cache_key = f"home_products_{tenant.schema_name}_page_{page_number}"
-    cached_data = cache.get(cache_key)
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
 
-    if cached_data:
-        return render(request, 'whiteecom/shop/home.html', cached_data)
 
     import cloudinary
 
     with schema_context(tenant.schema_name):
-        # 1. Configure Cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
 
-        # 2. Database queries MUST be inside this block
-        product_list = Product.objects.filter(image__isnull=False).order_by('-id')
-        paginator = Paginator(product_list, 12)
-        products = paginator.get_page(page_number)
-        
-        context = {
-            'products': products,
-            'items': True # Keeping your variable
-        }
-        
-        # 3. Cache the context to prevent future "relation does not exist" errors
-        # This way, next time it loads from Redis instead of hitting Postgres
-        cache.set(cache_key, context, 600) # Cache for 10 minutes
 
-    return render(request, 'whiteecom/shop/home.html', context)
+    items = True
+    product_list = Product.objects.filter(image__isnull=False).order_by('-id')  # newest first
+    paginator = Paginator(product_list, 12)  # 👈 8 products per page (adjust as you like)
 
-
-
+    page_number = request.GET.get('page')  # ?page=2
+    products = paginator.get_page(page_number)
+    
+    return render(request, 'whiteecom/shop/home.html', {'products': products})
 
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_list(request):
     tenant = request.tenant
-    page_number = request.GET.get('page', 1)
-    
-    # 1. Check Cache First (This stops the database from even needing to load)
-    cache_key = f"product_list_{tenant.schema_name}_p{page_number}"
-    cached_content = cache.get(cache_key)
-    if cached_content:
-        return render(request, 'whiteecom/shop/shop.html', cached_content)
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
 
     import cloudinary
 
-    # 2. Everything involving the database MUST be inside this block
     with schema_context(tenant.schema_name):
-        # Cloudinary Config
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
 
-        items = True
-        # Query and Paginator inside the context
-        product_queryset = Product.objects.filter(
-            best_sellers=items, 
-            image__isnull=False
-        ).order_by('-id')
-        
-        paginator = Paginator(product_queryset, 12)
-        products = paginator.get_page(page_number)
-        
-        context = {'products': products}
-        
-        # 3. Store in Cache (e.g., for 5 minutes)
-        # This prevents the "ProgrammingError" on subsequent hits
-        cache.set(cache_key, context, 300)
+    items = True
+    product_list = Product.objects.filter(best_sellers=items,image__isnull=False).order_by('-id')  # newest first
+    paginator = Paginator(product_list, 12)  # 👈 8 products per page (adjust as you like)
 
+    page_number = request.GET.get('page')  # ?page=2
+    products = paginator.get_page(page_number)  # handles invalid or empty pages automatically
 
-
-
-
-
+    return render(request, 'whiteecom/shop/shop.html', {'products': products})
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_detail(request, slug):
     tenant = request.tenant
-    
-    # 1. Try to load from Cache first to avoid DB hits entirely
-    cache_key = f"product_detail_{tenant.schema_name}_{slug}"
-    cached_data = cache.get(cache_key)
-    if cached_data:
-        return render(request, 'whiteecom/shop/productdet.html', cached_data)
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
 
     import cloudinary
 
-    # 2. Wrap all database logic inside the schema context
     with schema_context(tenant.schema_name):
-        # Configure Cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    product = get_object_or_404(Product, slug=slug)
+    category = product.category
 
-        # Move the queries INSIDE the block
-        product = get_object_or_404(Product, slug=slug)
-        category = product.category
+    # Get only the latest 4 products in the same category (excluding the current one)
+    related_products = (
+        Product.objects.filter(category=category, image__isnull=False)
+        .exclude(id=product.id)
+        .order_by('-created_at')[:4]  # assuming your model has a created_at field
+    )
 
-        # Get latest 4 related products
-        related_products = (
-            Product.objects.filter(category=category, image__isnull=False)
-            .exclude(id=product.id)
-            .order_by('-created_at')[:4]
-        )
-
-        context = {
-            'product': product, 
-            'dud': related_products,
-        }
-        
-        # 3. Cache the context (e.g., for 15 minutes)
-        # This solves the "refresh to fix" bug by bypassing the DB next time
-        cache.set(cache_key, context, 900)
-
-    return render(request, 'whiteecom/shop/productdet.html', context)
-
-
+    return render(
+        request,
+        'whiteecom/shop/productdet.html',
+        {'product': product, 'dud': related_products, }
+    )
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_from(request, slug):
     tenant = request.tenant
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
 
-    # 1. Everything database-related starts here
+
+    import cloudinary
+
     with schema_context(tenant.schema_name):
-        # Cloudinary Config (Optional here since you aren't uploading, but safe to keep)
-        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    product = get_object_or_404(Product, slug=slug)
 
-        # 2. Query product inside context
-        product = get_object_or_404(Product, slug=slug)
 
-        if request.user.is_authenticated:
-            cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False).first()
-        else:
-            # Ensure session exists
-            if not request.session.session_key:
-                request.session.create()
-            session_key = request.session.session_key
-            cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
-
-        # 3. Perform the deletion inside context
+    if request.user.is_authenticated:
+        cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False).first()
         if cart_item:
             cart_item.delete()
-            
-            # 4. Clear the Cache
-            # Since the cart content changed, we must clear the cached total/list
-            # so the user sees the updated cart immediately in cart_view.
-            user_id = request.user.id if request.user.is_authenticated else request.session.session_key
-            cache.delete(f"cart_total_{tenant.schema_name}_{user_id}")
-            
             messages.success(request, f"{product.name} removed from your cart.")
         else:
             messages.warning(request, f"{product.name} was not found in your cart.")
+    else:
+        session_key = request.session.session_key or request.session.create()
+        cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
+        if cart_item:
+            cart_item.delete()
+            messages.success(request, f"{product.name} removed from your cart.")
+        else:
+            messages.warning(request, f"{product.name} was not in your cart.")
 
-    # 5. Redirect happens outside the block
-    return redirect('productdet', slug=slug)
-
+    # Redirect back to the cart page
+    return redirect('productdet', slug=slug)  # or the URL name of your cart page
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def cart_view(request):
     tenant = request.tenant
-    
-    # 1. Setup session for anonymous users
-    if not request.user.is_authenticated and not request.session.session_key:
-        request.session.create()
-    
-    session_key = request.session.session_key
-    user_id = request.user.id if request.user.is_authenticated else session_key
-    
-    # 2. Check Cache to skip DB processing if nothing has changed
-    cache_key = f"cart_full_data_{tenant.schema_name}_{user_id}"
-    cached_response = cache.get(cache_key)
-    # Note: Only return cache if you aren't worried about mid-session coupon changes
-    # if cached_response:
-    #     return render(request, 'whiteecom/shop/cart.html', cached_response)
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
+
+    import cloudinary
 
     with schema_context(tenant.schema_name):
-        # 3. Cloudinary Config (Inside Context)
-        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user, ordered=False)
+    else:
+        cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
 
-        # 4. Use select_related to prevent the "relation does not exist" error 
-        # during the sum() loop. This fetches product data in ONE join query.
-        if request.user.is_authenticated:
-            cart_items = Cart.objects.filter(user=request.user, ordered=False).select_related('product').order_by('-id')
-            order = Order.objects.filter(user=request.user, Paid=False).last()
-        else:
-            cart_items = Cart.objects.filter(session_key=session_key, ordered=False).select_related('product').order_by('-id')
-            order = Order.objects.filter(session_key=session_key, Paid=False).last()
+    if request.user.is_authenticated:
+        order = Order.objects.filter(user=request.user, Paid=False).last()
+    else:
+        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
 
-        # 5. Calculations (Now safe because we are inside schema_context)
+    if order and order.coupon:
         total_amount = sum(item.get_final_price() for item in cart_items)
-        
-        if order and order.coupon:
-            tt = order.coupon.amount
-            total_amountss = max(0, total_amount - tt) # cleaner way to prevent negative
+        tt = order.coupon.amount
+
+        if total_amount <= tt:
+            total_amountss = 0  # prevent negative totals
         else:
-            tt = None
-            total_amountss = total_amount
+            total_amountss = total_amount - tt
+    else:
+        tt = None
+        total_amount = sum(item.get_final_price() for item in cart_items)
+        total_amountss = total_amount
 
-        context = {
-            'cart_items': cart_items,
-            'total': total_amount, # total before discount
-            'total_amount': total_amount,
-            'tt': tt,
-            'total_amountss': total_amountss
-        }
+    # Re-fetch cart items in proper order
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user, ordered=False).order_by('-id')
+    else:
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+        cart_items = Cart.objects.filter(session_key=session_key, ordered=False).order_by('-id')
 
-        # 6. Cache the context for 1 minute (short duration for carts)
-        cache.set(cache_key, context, 60)
+    total = sum(item.get_final_price() for item in cart_items)
 
-    return render(request, 'whiteecom/shop/cart.html', context)
+    return render(request, 'whiteecom/shop/cart.html', {
+        'cart_items': cart_items,
+        'total': total,
+        'total_amount': total_amount,
+        'tt': tt,
+        'total_amountss': total_amountss
+    })
 
 
 
-
+@ratelimit(key='ip', rate='10/m', block=True)
 def add_to(request, slug):
     tenant = request.tenant
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
 
-    if not request.session.session_key:
-        request.session.create()
 
-    session_key = request.session.session_key
+    import cloudinary
 
     with schema_context(tenant.schema_name):
-
-        product = get_object_or_404(Product, slug=slug)
-
-        # ALWAYS stay inside schema for ALL DB actions
-        cart_item, created = Cart.objects.get_or_create(
-            user=request.user if request.user.is_authenticated else None,
-            session_key=None if request.user.is_authenticated else session_key,
-            product=product,
-            ordered=False,
-            defaults={"quantity": 1}
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
         )
+    # Get the product
+    product = get_object_or_404(Product, slug=slug)
 
-        if not created:
-            if cart_item.quantity >= product.quantity:
-                messages.warning(request, "Max stock reached")
-                return redirect('cart_view')
+    if product.quantity <= 0:
+        messages.warning(request, f"Sorry, {product.name} is out of stock.")
+        return redirect('productdet', slug=slug)
+    
 
+    # Determine cart owner
+    if request.user.is_authenticated:
+        cart_filter = {'user': request.user, 'ordered': False, 'product': product}
+    else:
+        # For guest users, we use session key
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+        cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
+
+    # Check if item exists
+    cart_item = Cart.objects.filter(**cart_filter).first()
+
+    if cart_item:
+
+        if product.quantity <= cart_item.quantity:
+            messages.warning(request, f"{product.name} for that size  is only {product.quantity} we have left ")
+            return redirect('cart_view')
+            
+        else:
             cart_item.quantity += 1
             cart_item.save()
+            messages.success(request, f"{product.name} quantity updated in your cart.")
+    else:
+        # Create new cart item
+        
+        cart_item = Cart.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            product=product,
+            ordered=False,
+            session_key=request.session.session_key,
+            quantity = 1)
 
-    return redirect('cart_view')
+        
+
+    
+    return redirect('cart_view')  # Replace with your cart page URL
 
 
 
@@ -473,126 +418,110 @@ def add_to(request, slug):
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove(request, slug):
     tenant = request.tenant
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
 
-    # Wrap ALL database operations in the schema context
+
+    import cloudinary
+
     with schema_context(tenant.schema_name):
-        # 1. Cloudinary Config (Inside Context)
-        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    product = get_object_or_404(Product, slug=slug)
 
-        # 2. Get product inside the block
-        product = get_object_or_404(Product, slug=slug)
 
-        # 3. Determine cart owner
-        if request.user.is_authenticated:
-            cart_filter = {'user': request.user, 'ordered': False, 'product': product}
-        else:
-            if not request.session.session_key:
-                request.session.create()
+    if request.user.is_authenticated:
+        cart_filter = {'user': request.user, 'ordered': False, 'product': product}
+    else:
+        # For guest users, we use session key
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
             session_key = request.session.session_key
-            cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
+        cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
 
-        # 4. Fetch and modify cart item inside the block
-        cart_item = Cart.objects.filter(**cart_filter).first()
-        
-        if cart_item:
-            if cart_item.quantity <= 1:
+
+
+
+    cart_item = Cart.objects.filter(**cart_filter).first()
+    if cart_item:
+        if cart_item.quantity <= 1 :
                 cart_item.delete()
-                messages.warning(request, "Item removed from cart.")
-            else:
+                messages.warning(request, f"cartitem is empyty")
+                
+                return redirect('cart_view')
+                
+        else:
                 cart_item.quantity -= 1
                 cart_item.save()
-                messages.success(request, f"{product.name} quantity decreased.")
+                messages.success(request, f"{product.name} quantity updated in your cart.")
 
-            # 5. Clear Cache
-            # This ensures the cart_view reflects the new quantity immediately
-            user_id = request.user.id if request.user.is_authenticated else request.session.session_key
-            cache.delete(f"cart_full_data_{tenant.schema_name}_{user_id}")
-        else:
-            messages.info(request, "Item not found in cart.")
-
+        
     return redirect('cart_view')
-
-
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_item(request, slug):
     tenant = request.tenant
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
 
-    # 1. Start the context before ANY database hits
+
+    import cloudinary
+
     with schema_context(tenant.schema_name):
-        # Cloudinary Config
-        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    product = get_object_or_404(Product, slug=slug)
 
-        # 2. These queries MUST be inside the with block
-        product = get_object_or_404(Product, slug=slug)
-
-        if request.user.is_authenticated:
-            cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False).first()
-        else:
-            # For guest users, ensure the session exists
-            if not request.session.session_key:
-                request.session.create()
-            session_key = request.session.session_key
-            cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
-
-        # 3. Perform deletion within the same context
+    if request.user.is_authenticated:
+        cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False,).first()
         if cart_item:
             cart_item.delete()
-            
-            # 4. Clear the Cache (Essential for the 'cart_view' to update)
-            user_id = request.user.id if request.user.is_authenticated else request.session.session_key
-            cache.delete(f"cart_full_data_{tenant.schema_name}_{user_id}")
-            
             messages.success(request, f"{product.name} removed from your cart.")
         else:
             messages.warning(request, f"{product.name} was not found in your cart.")
+    else:
+        session_key = request.session.session_key or request.session.create()
+        cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
+        if cart_item:
+            cart_item.delete()
+            messages.success(request, f"{product.name} removed from your cart.")
+        else:
+            messages.warning(request, f"{product.name} was not in your cart.")
+  
 
-    # 5. Redirect after the context is safely closed
-    return redirect('cart_view')
-
-
+    # Redirect back to the cart page
+    return redirect('cart_view')  # or the URL name of your cart page
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_all(request):
     tenant = request.tenant
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
 
-    # Wrap all database interactions in the schema context
+
+    import cloudinary
+
     with schema_context(tenant.schema_name):
-        # 1. Cloudinary Config (Inside)
-        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-
-        # 2. Perform the deletions inside the block
-        if request.user.is_authenticated:
-            Cart.objects.filter(user=request.user, ordered=False).delete()
-        else:
-            session_key = request.session.session_key
-            if session_key:
-                Cart.objects.filter(session_key=session_key, ordered=False).delete()
-
-        # 3. Cache Invalidation
-        # Clear the cached cart view so it shows an empty cart immediately
-        user_id = request.user.id if request.user.is_authenticated else request.session.session_key
-        cache.delete(f"cart_full_data_{tenant.schema_name}_{user_id}")
-
-    # 4. Success messages and redirect can stay outside
+    if request.user.is_authenticated:
+        Cart.objects.filter(user=request.user, ordered=False).delete()
+    else:
+        session_key = request.session.session_key
+        if session_key:
+            Cart.objects.filter(session_key=session_key, ordered=False).delete()
     messages.success(request, "All items removed from your cart.")
     return redirect('cart_view')
+
+
 
 
 
@@ -606,6 +535,8 @@ def remove_all(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def checkout(request):
     tenant = request.tenant
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
 
     import cloudinary
 
@@ -616,24 +547,55 @@ def checkout(request):
             api_secret=tenant.api_secret,
         )
 
-        default_address_s = None
-        if request.user.is_authenticated:
-            default_address_s = Address.objects.filter(user=request.user,default=True).first()
-            
-        else:
-            default_address_s = Address.objects.filter(session_key=request.session.session_key,default=True).first()
-
-
+    default_address_s = None
+    if request.user.is_authenticated:
+        default_address_s = Address.objects.filter(user=request.user,default=True).first()
         
+    else:
+         default_address_s = Address.objects.filter(session_key=request.session.session_key,default=True).first()
+
+
+    
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user, ordered=False)
+    else:
+        cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
+        
+    if not cart_items:
+        return redirect('cart_view')
+
+   
+    if request.user.is_authenticated:
+        order = Order.objects.filter(user=request.user, Paid=False).last()
+    else:
+        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
+
+    if order and order.coupon:
+        total_amount = sum(item.get_final_price() for item in cart_items)
+       
+        tt= order.coupon.amount
+        if total_amount <= tt:
+            messages.error(request, f"You can't order anything below the promo or equal to the promo, amount: {order.coupon.amount}")
+            return redirect('cart_view')
+        total_amountss= total_amount-tt
+    else:
+        tt=None   
+
+        # ✅ Calculate total amount
+        total_amount = sum(item.get_final_price() for item in cart_items)
+        total_amountss= sum(item.get_final_price() for item in cart_items)
+
+    
+    if request.method == 'POST':
+        # Checkbox values
+        save_address = request.POST.get('save_address') == 'on'
+        use_default = request.POST.get('use_default') == 'on'
         if request.user.is_authenticated:
             cart_items = Cart.objects.filter(user=request.user, ordered=False)
         else:
             cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
-            
-        if not cart_items:
-            return redirect('cart_view')
 
-    
+   
         if request.user.is_authenticated:
             order = Order.objects.filter(user=request.user, Paid=False).last()
         else:
@@ -654,309 +616,278 @@ def checkout(request):
             total_amount = sum(item.get_final_price() for item in cart_items)
             total_amountss= sum(item.get_final_price() for item in cart_items)
 
-        
-        if request.method == 'POST':
-            # Checkbox values
-            save_address = request.POST.get('save_address') == 'on'
-            use_default = request.POST.get('use_default') == 'on'
-            if request.user.is_authenticated:
-                cart_items = Cart.objects.filter(user=request.user, ordered=False)
-            else:
-                cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
 
-    
-            if request.user.is_authenticated:
-                order = Order.objects.filter(user=request.user, Paid=False).last()
-            else:
-                order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
+        # ✅ Calculate total amount
+        total_amount = sum(item.get_final_price() for item in cart_items)
 
-            if order and order.coupon:
-                total_amount = sum(item.get_final_price() for item in cart_items)
-            
-                tt= order.coupon.amount
-                if total_amount <= tt:
-                    messages.error(request, f"You can't order anything below the promo or equal to the promo, amount: {order.coupon.amount}")
-                    return redirect('cart_view')
-                total_amountss= total_amount-tt
-            else:
-                tt=None   
+        # If user has a default address and wants to use it
+        if use_default and request.user.is_authenticated:
+            try:
+                default_address = Address.objects.get(user=request.user, default=True)
+                request.session['address_id'] = default_address.id
 
-                # ✅ Calculate total amount
-                total_amount = sum(item.get_final_price() for item in cart_items)
-                total_amountss= sum(item.get_final_price() for item in cart_items)
-
-
-            # ✅ Calculate total amount
-            total_amount = sum(item.get_final_price() for item in cart_items)
-
-            # If user has a default address and wants to use it
-            if use_default and request.user.is_authenticated:
-                try:
-                    default_address = Address.objects.get(user=request.user, default=True)
-                    request.session['address_id'] = default_address.id
-
-                    if order:
-                        order.address = default_address
-                        order.email = request.user.email if request.user.is_authenticated else email
-                        order.ref_code = create_ref_code()
-                        order.ordered_date = timezone.now()
-                        order.amount = total_amountss
-                        order.save()
-
-                    else:
-                        order = Order.objects.create(
-                            user=request.user if request.user.is_authenticated else None,
-                            session_key=request.session.session_key,
-                            Paid=False,
-                            address=default_address,
-                            email= request.user.email if request.user.is_authenticated else email,
-                            ref_code=create_ref_code(),
-                            ordered_date=timezone.now(),
-                            amount=total_amountss,
-
-
-                        )
-                    has_base_delivery = DeliveryBase.objects.exists()
-
-                    if has_base_delivery:
-                        base = DeliveryBase.objects.first()
-                        base_price = base.price or 0
-                    else:
-                        base_price = 3000
-
-                    city = default_address.city.strip().title()
-                    state = default_address.state.strip().title()
-
-                    tenant = Client.objects.get(schema_name=request.tenant.schema_name)
-                    street_ad = tenant.street_address
-                    statedd = tenant.state
-                    citydd = tenant.city
-                    saaa = default_address.street_address
-                    cii = default_address.city
-                    vvvv = default_address.state
-
-                    if state.lower() == 'lagos':
-                        origin = f"{street_ad} {citydd} {statedd}"
-                        destination = f"{saaa} {cii} {vvvv}"
-
-                        distance_result = get_delivery_distance(origin, destination)
-
-                        if distance_result:
-                            distance_km, duration_min = distance_result
-                            order.delivery_fee = round(base_price + (distance_km * 50) + (duration_min * 20), 0)
-                        else:
-                            
-                            messages.error(request, "we don't deliver to that location")
-                            return redirect("checkout")
-
-                                        
-
-
-
-
-
-                        # delivery = DeliveryCity.objects.filter(name__icontains=city).first()
-                        # if delivery:
-                        #     order.delivery_fee = delivery.delivery_fee
-                        # else:
-                        #     order.delivery_fee = 10000  # default Lagos fee
-                    else:
-                        delivery = DeliveryState.objects.filter(name__icontains=state).first()
-                        if delivery:
-                            order.delivery_fee = delivery.fixed_price
-                        else:
-                            messages.error(request, "We do not deliver to that state")
-                            return redirect('checkout')
-
-
-                    
-                    
-                    order.amount = total_amountss+order.delivery_fee
-
-
-                    order.save()
-
-
-
-
-
-
-
-                
-                    order.cart.set(cart_items)
-                    order.save()
-
-
-
-
-                    messages.success(request, "Default address selected successfully.")
-                    return redirect('paym')  # change to your next step
-                except Address.DoesNotExist:
-                    messages.warning(request, "You don’t have a default address yet.")
-                    return redirect('checkout')
-
-            # Otherwise, collect form input
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
-            email = request.POST.get('email')
-            street_address = request.POST.get('street_address')
-            apartment = request.POST.get('apartment')
-            city = request.POST.get('city')
-            state = request.POST.get('state')
-            country = request.POST.get('country')
-            phone_number = request.POST.get('phone_number')
-
-
-            # ✅ Create address
-            if request.user.is_authenticated:
-                address = Address.objects.create(
-                    user=request.user,
-                    first_name=first_name,
-                    last_name=last_name,
-                    email=request.user.email,
-                    street_address=street_address,
-                    apartment=apartment,
-                    city=city,
-                    state=state,
-                    country=country,
-                    phone_number=phone_number,
-                    default=False
-                )
-            else:
-                address = Address.objects.create(
-                    first_name=first_name,
-                    last_name=last_name,
-                    email=email,
-                    session_key=request.session.session_key,
-                    street_address=street_address,
-                    apartment=apartment,
-                    city=city,
-                    state=state,
-                    country=country,
-                    phone_number=phone_number,
-                    default=False
-                )
-
-
-            # if state.lower() == 'lagos':
-            #     if
-
-
-                
-
-            # ✅ Create order and set amount
-        
-            if order:
-                    order.address = address
+                if order:
+                    order.address = default_address
                     order.email = request.user.email if request.user.is_authenticated else email
                     order.ref_code = create_ref_code()
                     order.ordered_date = timezone.now()
                     order.amount = total_amountss
                     order.save()
 
-            else:
-                    order = Order.objects.create(
-                            user=request.user if request.user.is_authenticated else None,
-                            session_key=request.session.session_key,
-                            Paid=False,
-                            address=address,
-                            email= request.user.email if request.user.is_authenticated else email,
-                            ref_code=create_ref_code(),
-                            ordered_date=timezone.now(),
-                            amount=total_amountss,
-
-
-                        )
-            
-            has_base_delivery = DeliveryBase.objects.exists()
-
-            if has_base_delivery:
-                base = DeliveryBase.objects.first()
-                base_price = base.price or 0
-            else:
-                base_price = 3000
-
-        
-            city = city.strip().title()
-            state = state.strip().title()
-
-            tenant = Client.objects.get(schema_name=request.tenant.schema_name)
-            street_ad = tenant.street_address
-            statedd = tenant.state
-            citydd = tenant.city
-            saaa = street_address
-            cii = city
-            vvvv = state
-
-            if state.lower() == 'lagos':
-                origin = f"{street_ad} {citydd} {statedd}"
-                destination = f"{saaa} {cii} {vvvv}"
-
-        
-                distance_result = get_delivery_distance(origin, destination)
-
-                if distance_result:
-                    distance_km, duration_min = distance_result
-                    order.delivery_fee = round(base_price + (distance_km * 50) + (duration_min * 20), 0)
-                
                 else:
-                    messages.error(request, "we don't deliver to that location")
-                    return redirect("checkout")
+                    order = Order.objects.create(
+                         user=request.user if request.user.is_authenticated else None,
+                         session_key=request.session.session_key,
+                          Paid=False,
+                          address=default_address,
+                          email= request.user.email if request.user.is_authenticated else email,
+                          ref_code=create_ref_code(),
+                          ordered_date=timezone.now(),
+                          amount=total_amountss,
+
+
+                    )
+                has_base_delivery = DeliveryBase.objects.exists()
+
+                if has_base_delivery:
+                    base = DeliveryBase.objects.first()
+                    base_price = base.price or 0
+                else:
+                    base_price = 3000
+
+                city = default_address.city.strip().title()
+                state = default_address.state.strip().title()
+
+                tenant = Client.objects.get(schema_name=request.tenant.schema_name)
+                street_ad = tenant.street_address
+                statedd = tenant.state
+                citydd = tenant.city
+                saaa = default_address.street_address
+                cii = default_address.city
+                vvvv = default_address.state
+
+                if state.lower() == 'lagos':
+                    origin = f"{street_ad} {citydd} {statedd}"
+                    destination = f"{saaa} {cii} {vvvv}"
+
+                    distance_result = get_delivery_distance(origin, destination)
+
+                    if distance_result:
+                        distance_km, duration_min = distance_result
+                        order.delivery_fee = round(base_price + (distance_km * 50) + (duration_min * 20), 0)
+                    else:
+                        
+                        messages.error(request, "we don't deliver to that location")
+                        return redirect("checkout")
 
                                     
 
-                
-                
 
-                # delivery = DeliveryCity.objects.filter(name__icontains=city).first()
-                # if delivery:
-                #     order.delivery_fee = delivery.delivery_fee
-                # else:
-                #     order.delivery_fee = 10000  # default Lagos fee
-            else:
-                delivery = DeliveryState.objects.filter(name__icontains=state).first()
-                if delivery:
-                    order.delivery_fee = delivery.fixed_price
+
+
+
+                    # delivery = DeliveryCity.objects.filter(name__icontains=city).first()
+                    # if delivery:
+                    #     order.delivery_fee = delivery.delivery_fee
+                    # else:
+                    #     order.delivery_fee = 10000  # default Lagos fee
                 else:
-                    messages.error(request, "We do not deliver to that state")
-                    return redirect('checkout')
-            
-            order.amount = total_amountss+order.delivery_fee
+                    delivery = DeliveryState.objects.filter(name__icontains=state).first()
+                    if delivery:
+                        order.delivery_fee = delivery.fixed_price
+                    else:
+                        messages.error(request, "We do not deliver to that state")
+                        return redirect('checkout')
 
-            order.save()
 
-
-
-                    
                 
                 
+                order.amount = total_amountss+order.delivery_fee
 
+
+                order.save()
+
+
+
+
+
+
+
+              
+                order.cart.set(cart_items)
+                order.save()
+
+
+
+
+                messages.success(request, "Default address selected successfully.")
+                return redirect('paym')  # change to your next step
+            except Address.DoesNotExist:
+                messages.warning(request, "You don’t have a default address yet.")
+                return redirect('checkout')
+
+        # Otherwise, collect form input
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        street_address = request.POST.get('street_address')
+        apartment = request.POST.get('apartment')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        country = request.POST.get('country')
+        phone_number = request.POST.get('phone_number')
+
+
+        # ✅ Create address
+        if request.user.is_authenticated:
+            address = Address.objects.create(
+                user=request.user,
+                first_name=first_name,
+                last_name=last_name,
+                email=request.user.email,
+                street_address=street_address,
+                apartment=apartment,
+                city=city,
+                state=state,
+                country=country,
+                phone_number=phone_number,
+                default=False
+            )
+        else:
+            address = Address.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                session_key=request.session.session_key,
+                street_address=street_address,
+                apartment=apartment,
+                city=city,
+                state=state,
+                country=country,
+                phone_number=phone_number,
+                default=False
+            )
+
+
+        # if state.lower() == 'lagos':
+        #     if
 
 
             
-            # ✅ Attach cart items to order
-            order.cart.set(cart_items)
-            order.save()
+
+        # ✅ Create order and set amount
+      
+        if order:
+                order.address = address
+                order.email = request.user.email if request.user.is_authenticated else email
+                order.ref_code = create_ref_code()
+                order.ordered_date = timezone.now()
+                order.amount = total_amountss
+                order.save()
+
+        else:
+                order = Order.objects.create(
+                         user=request.user if request.user.is_authenticated else None,
+                         session_key=request.session.session_key,
+                          Paid=False,
+                          address=address,
+                          email= request.user.email if request.user.is_authenticated else email,
+                          ref_code=create_ref_code(),
+                          ordered_date=timezone.now(),
+                          amount=total_amountss,
+
+
+                    )
         
+        has_base_delivery = DeliveryBase.objects.exists()
+
+        if has_base_delivery:
+            base = DeliveryBase.objects.first()
+            base_price = base.price or 0
+        else:
+            base_price = 3000
+
+    
+        city = city.strip().title()
+        state = state.strip().title()
+
+        tenant = Client.objects.get(schema_name=request.tenant.schema_name)
+        street_ad = tenant.street_address
+        statedd = tenant.state
+        citydd = tenant.city
+        saaa = street_address
+        cii = city
+        vvvv = state
+
+        if state.lower() == 'lagos':
+            origin = f"{street_ad} {citydd} {statedd}"
+            destination = f"{saaa} {cii} {vvvv}"
+
+     
+            distance_result = get_delivery_distance(origin, destination)
+
+            if distance_result:
+                distance_km, duration_min = distance_result
+                order.delivery_fee = round(base_price + (distance_km * 50) + (duration_min * 20), 0)
+            
+            else:
+                messages.error(request, "we don't deliver to that location")
+                return redirect("checkout")
+
+                                  
+
+            
             
 
-            # Save this address as default if checked
-            if save_address and request.user.is_authenticated:
-                # unset any previous default
-                Address.objects.filter(user=request.user, default=True).update(default=False)
-                address.default = True
-                address.save()
-                messages.success(request, "Address saved as your default address.")
-            elif save_address and not request.user.is_authenticated:
-                messages.info(request, "Address saved to that order .")
+            # delivery = DeliveryCity.objects.filter(name__icontains=city).first()
+            # if delivery:
+            #     order.delivery_fee = delivery.delivery_fee
+            # else:
+            #     order.delivery_fee = 10000  # default Lagos fee
+        else:
+            delivery = DeliveryState.objects.filter(name__icontains=state).first()
+            if delivery:
+                order.delivery_fee = delivery.fixed_price
+            else:
+                messages.error(request, "We do not deliver to that state")
+                return redirect('checkout')
+        
+        order.amount = total_amountss+order.delivery_fee
 
-            # Save address id in session (for order/payment)
-            request.session['address_id'] = address.id
+        order.save()
 
-            messages.success(request, "Address confirmed. Proceed to payment.")
-            return redirect('paym')  # change as needed
 
-        return render(request, 'whiteecom/shop/checkoutpage.html', {'default_address_s':default_address_s, 'total_amount':total_amount,'tt':tt,'total_amountss':total_amountss})
+
+                
+            
+            
+
+
+
+        
+        # ✅ Attach cart items to order
+        order.cart.set(cart_items)
+        order.save()
+    
+        
+
+        # Save this address as default if checked
+        if save_address and request.user.is_authenticated:
+            # unset any previous default
+            Address.objects.filter(user=request.user, default=True).update(default=False)
+            address.default = True
+            address.save()
+            messages.success(request, "Address saved as your default address.")
+        elif save_address and not request.user.is_authenticated:
+            messages.info(request, "Address saved to that order .")
+
+        # Save address id in session (for order/payment)
+        request.session['address_id'] = address.id
+
+        messages.success(request, "Address confirmed. Proceed to payment.")
+        return redirect('paym')  # change as needed
+
+    return render(request, 'whiteecom/shop/checkoutpage.html', {'default_address_s':default_address_s, 'total_amount':total_amount,'tt':tt,'total_amountss':total_amountss})
 
 
 
@@ -1101,6 +1032,8 @@ def checkout(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def addcoupon(request):
     tenant = request.tenant
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
 
     import cloudinary
 
@@ -1639,6 +1572,8 @@ def verify_payment(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def ordderlist(request):
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=True).order_by('-ordered_date')
     else:
@@ -1654,6 +1589,8 @@ def ordderlist(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def orderdet(request, id):
     tenant = request.tenant
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
 
     import cloudinary
 
@@ -1700,6 +1637,8 @@ def orderdet(request, id):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def search(request):
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
     queryset = Product.objects.all()
     query = request.GET.get('q')
     if query:
@@ -1778,6 +1717,8 @@ def paym(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def paydelivery(request):
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
 
     # Ensure session exists for guest users
     if not request.session.session_key:
@@ -1881,6 +1822,8 @@ Ref: {order.ref_code}
     return redirect("paysuc")
 
 def paysuc(request):
+    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
+
 
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=True).last()
