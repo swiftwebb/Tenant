@@ -155,21 +155,7 @@ def get_delivery_distance(origin, destination):
 @ratelimit(key='ip', rate='10/m', block=True)
 def removecoupon(request):
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
 
 
     tenant = request.tenant
@@ -211,7 +197,9 @@ def create_ref_code():
 def get_coupon(request, code):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     try:
         return Coupon.objects.get(code=code)
     except Coupon.DoesNotExist:
@@ -223,7 +211,9 @@ def get_coupon(request, code):
 def home(request):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     tenant = request.tenant
 
     import cloudinary
@@ -251,7 +241,9 @@ def home(request):
 def product_list(request):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     tenant = request.tenant
 
     import cloudinary
@@ -276,7 +268,9 @@ def product_list(request):
 def product_detail(request, slug):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     tenant = request.tenant
 
     import cloudinary
@@ -308,7 +302,9 @@ def product_detail(request, slug):
 def remove_from(request, slug):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     tenant = request.tenant
 
     import cloudinary
@@ -346,7 +342,9 @@ def remove_from(request, slug):
 def cart_view(request):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     tenant = request.tenant
 
     import cloudinary
@@ -406,7 +404,9 @@ def cart_view(request):
 def add_to(request, slug):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     tenant = request.tenant
 
     import cloudinary
@@ -471,7 +471,9 @@ def add_to(request, slug):
 def remove(request, slug):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     tenant = request.tenant
 
     import cloudinary
@@ -519,7 +521,9 @@ def remove(request, slug):
 def remove_item(request, slug):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     tenant = request.tenant
 
     import cloudinary
@@ -556,7 +560,9 @@ def remove_item(request, slug):
 def remove_all(request):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     tenant = request.tenant
 
     import cloudinary
@@ -591,7 +597,9 @@ def remove_all(request):
 def checkout(request):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     tenant = request.tenant
 
     import cloudinary
@@ -1090,7 +1098,9 @@ def addcoupon(request):
     tenant = request.tenant
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
 
     import cloudinary
 
@@ -1631,7 +1641,9 @@ def verify_payment(request):
 def ordderlist(request):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=True).order_by('-ordered_date')
     else:
@@ -1649,7 +1661,9 @@ def orderdet(request, id):
     tenant = request.tenant
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
 
     import cloudinary
 
@@ -1698,7 +1712,9 @@ def orderdet(request, id):
 def search(request):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
     queryset = Product.objects.all()
     query = request.GET.get('q')
     if query:
@@ -1779,7 +1795,9 @@ def paym(request):
 def paydelivery(request):
 
 
-    from .models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
+    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+
 
     # Ensure session exists for guest users
     if not request.session.session_key:
