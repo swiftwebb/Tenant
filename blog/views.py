@@ -322,21 +322,21 @@ def contact(request):
             message=message,
             email=email,
         )
-        # send_mail(
-        #     subject="New Contact Form Message",
-        #     message=f"""
-        # A new message has been submitted through your blog contact form.
+        send_mail(
+            subject="New Contact Form Message",
+            message=f"""
+        A new message has been submitted through your blog contact form.
 
-        # Name: {name}
-        # Email: {email}
+        Name: {name}
+        Email: {email}
 
-        # Message:
-        # {message}
-        # """,
-        #     from_email=settings.EMAIL_HOST_USER,
-        #     recipient_list=[request.tenant.email],
-        #     fail_silently=False,
-        # )
+        Message:
+        {message}
+        """,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[request.tenant.email],
+            fail_silently=False,
+        )
 
         messages.success(request, "Message recieved, We will get back to you shortly")
         return redirect('contact')
