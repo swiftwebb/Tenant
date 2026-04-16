@@ -25,8 +25,8 @@ class Catgg(models.Model):
 
     ]
 
-    name = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
-    slug = models.SlugField(unique=True, blank=True)
+    name = models.CharField(max_length=250, choices=CATEGORY_CHOICES)
+    slug = models.SlugField(unique=True, blank=True, max_length=250)
 
 
        
@@ -48,8 +48,8 @@ class Catgg(models.Model):
 
 
 class Menu(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True,null=True, blank=True)
+    name = models.CharField(max_length=250)
+    slug = models.SlugField(unique=True,null=True, blank=True,max_length=250)
     category = models.ForeignKey(Catgg, on_delete=models.CASCADE,null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     price = models.FloatField()

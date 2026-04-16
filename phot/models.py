@@ -6,9 +6,9 @@ from django.utils.text import slugify
 
 
 class Photo(models.Model):
-    title= models.CharField(max_length=1000)
+    title= models.CharField(max_length=500)
     description = models.TextField()
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=500)
 
     image = CloudinaryField(folder='photo')
     featured = models.BooleanField(default=False,)

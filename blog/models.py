@@ -16,7 +16,7 @@ class Comm(models.Model):
 
 class Blog(models.Model):
     title = models.CharField(max_length=250)
-    slug = models.SlugField(unique=True,null=True, blank=True)
+    slug = models.SlugField(unique=True,null=True, blank=True, max_length=250)
     overview = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     thumbnail = CloudinaryField(folder='thub/',null=True, blank=True)

@@ -60,14 +60,6 @@ SHARED_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
      'corsheaders', 
-    'ecom.apps.EcomConfig',
-    'content.apps.ContentConfig',
-    'phot.apps.PhotConfig',
-    # 'landing.apps.LandingConfig',
-    'blog.apps.BlogConfig',
-    
-    'company.apps.CompanyConfig',
-    'restaurant.apps.RestaurantConfig',
 ]
 TENANT_APPS = (
     # your tenant-specific apps

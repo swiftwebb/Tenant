@@ -5,8 +5,8 @@ from cloudinary.models import CloudinaryField
 
 from django.utils.text import slugify 
 class Categorysss(models.Model):
-    name = models.CharField()
-    slug = models.SlugField(unique=True, blank=True)
+    name = models.CharField(max_length=250)
+    slug = models.SlugField(unique=True, blank=True, max_length=250)
 
     def __str__(self):
         return self.name
