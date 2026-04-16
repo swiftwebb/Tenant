@@ -15,7 +15,8 @@
 
 from django.shortcuts import render
 
-
+from django_tenants.utils import schema_context
+from django.shortcuts import render
 
 class TenantStatusMiddleware:
     def __init__(self, get_response):
@@ -24,25 +25,25 @@ class TenantStatusMiddleware:
     def __call__(self, request):
         tenant = getattr(request, 'tenant', None)
 
-
-   
-
         if tenant:
-            # Dynamically assign URLconf based on tenant
-            if not getattr(tenant, "live", False):
-                return render(request, "under_construction.html", status=503)
-            if hasattr(tenant, 'urlconf') and tenant.urlconf:
-                request.urlconf = tenant.urlconf
-                print(request.urlconf)  # use tenant's custom URLconf
-            else:
-                request.urlconf = 'ecom.urls'  # fallback default
+            # Wrap everything in schema_context to prevent "relation does not exist"
+            with schema_context(tenant.schema_name):
+                # 1. Check if the site is live
+                if not getattr(tenant, "live", False):
+                    # We render inside the context so any template tags 
+                    # hitting the DB look in the right schema
+                    return render(request, "under_construction.html", status=503)
 
-            tenant.update_status()  # your existing logic
+                # 2. Update status (This hits the DB)
+                tenant.update_status()
+
+                # 3. Handle URLconf
+                if hasattr(tenant, 'urlconf') and tenant.urlconf:
+                    request.urlconf = tenant.urlconf
+                else:
+                    request.urlconf = 'ecom.urls'
 
         return self.get_response(request)
-
-
-
 
 
 
