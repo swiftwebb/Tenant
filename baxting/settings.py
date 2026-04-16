@@ -86,9 +86,9 @@ TENANT_APPS = (
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
 
 MIDDLEWARE = [
+    'b_manager.middleware.TenantStatusMiddleware', 
     'django_tenants.middleware.main.TenantMainMiddleware',
     "b_manager.middleware.CloudinaryTenantMiddleware", 
-    'b_manager.middleware.TenantStatusMiddleware', 
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
