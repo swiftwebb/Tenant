@@ -154,6 +154,7 @@ def get_delivery_distance(origin, destination):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def removecoupon(request):
+    from .models import Coupon, Category, Product
 
     tenant = request.tenant
 
@@ -192,6 +193,7 @@ def create_ref_code():
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def get_coupon(request, code):
+    from .models import Coupon, Category, Product
     try:
         return Coupon.objects.get(code=code)
     except Coupon.DoesNotExist:
@@ -201,6 +203,7 @@ def get_coupon(request, code):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def home(request):
+    from .models import Coupon, Category, Product
     tenant = request.tenant
 
     import cloudinary
@@ -226,6 +229,7 @@ def home(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_list(request):
+    from .models import Coupon, Category, Product
     tenant = request.tenant
 
     import cloudinary
@@ -248,6 +252,7 @@ def product_list(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_detail(request, slug):
+    from .models import Coupon, Category, Product
     tenant = request.tenant
 
     import cloudinary
@@ -277,6 +282,7 @@ def product_detail(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_from(request, slug):
+    from .models import Coupon, Category, Product
     tenant = request.tenant
 
     import cloudinary
@@ -312,6 +318,7 @@ def remove_from(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def cart_view(request):
+    from .models import Coupon, Category, Product
     tenant = request.tenant
 
     import cloudinary
@@ -369,6 +376,7 @@ def cart_view(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def add_to(request, slug):
+    from .models import Coupon, Category, Product
     tenant = request.tenant
 
     import cloudinary
@@ -431,6 +439,7 @@ def add_to(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove(request, slug):
+    from .models import Coupon, Category, Product
     tenant = request.tenant
 
     import cloudinary
@@ -476,6 +485,7 @@ def remove(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_item(request, slug):
+    from .models import Coupon, Category, Product
     tenant = request.tenant
 
     import cloudinary
@@ -510,6 +520,7 @@ def remove_item(request, slug):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_all(request):
+    from .models import Coupon, Category, Product
     tenant = request.tenant
 
     import cloudinary
@@ -542,6 +553,7 @@ def remove_all(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def checkout(request):
+    from .models import Coupon, Category, Product
     tenant = request.tenant
     from .models import Coupon, Category, Product
 
@@ -1039,6 +1051,7 @@ def checkout(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def addcoupon(request):
     tenant = request.tenant
+    from .models import Coupon, Category, Product
 
     import cloudinary
 
@@ -1577,6 +1590,7 @@ def verify_payment(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def ordderlist(request):
+    from .models import Coupon, Category, Product
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=True).order_by('-ordered_date')
     else:
@@ -1592,6 +1606,7 @@ def ordderlist(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def orderdet(request, id):
     tenant = request.tenant
+    from .models import Coupon, Category, Product
 
     import cloudinary
 
@@ -1638,6 +1653,7 @@ def orderdet(request, id):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def search(request):
+    from .models import Coupon, Category, Product
     queryset = Product.objects.all()
     query = request.GET.get('q')
     if query:
@@ -1716,6 +1732,7 @@ def paym(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def paydelivery(request):
+    from .models import Coupon, Category, Product
 
     # Ensure session exists for guest users
     if not request.session.session_key:
