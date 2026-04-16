@@ -122,35 +122,53 @@ def get_delivery_distance(origin, destination):
     return distance_km, duration_min
 
 
+
+
+
+
+
+from django_tenants.utils import schema_context
+from django.core.cache import cache
+
 @ratelimit(key='ip', rate='10/m', block=True)
 def removecoupon(request):
-
     tenant = request.tenant
-
-    import cloudinary
-
+    
+    # Use schema_context for ALL database and config operations
     with schema_context(tenant.schema_name):
+        # 1. Cloudinary Config
+        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-    if request.user.is_authenticated:
-        order = Order.objects.filter(user=request.user, Paid=False).last()
-    else:
-        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
 
-    if order and order.coupon:
-        order.coupon = None
-        order.save()
-        messages.success(request, "Promo code removed successfully.")
-    else:
-        messages.info(request, "No promo code was applied.")
+        # 2. Database Queries (Must be inside the block)
+        if request.user.is_authenticated:
+            order = Order.objects.filter(user=request.user, Paid=False).last()
+        else:
+            # Ensure session is created if it doesn't exist
+            if not request.session.session_key:
+                request.session.create()
+            order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
+
+        if order and order.coupon:
+            order.coupon = None
+            order.save()
+            
+            # 3. Cache Invalidation
+            # If you implemented caching in cart_view, clear it here so 
+            # the user sees the new price immediately.
+            user_id = request.user.id if request.user.is_authenticated else request.session.session_key
+            cache_key = f"cart_total_{tenant.schema_name}_{user_id}"
+            cache.delete(cache_key)
+            
+            messages.success(request, "Promo code removed successfully.")
+        else:
+            messages.info(request, "No promo code was applied.")
 
     return redirect('cart_view')
-
-
-
 
 
 
@@ -160,180 +178,262 @@ def create_ref_code():
 
 
 
+from django_tenants.utils import schema_context
+
 @ratelimit(key='ip', rate='10/m', block=True)
 def get_coupon(request, code):
-    try:
-        return Coupon.objects.get(code=code)
-    except Coupon.DoesNotExist:
-        return None
+    # Retrieve the tenant from the request
+    tenant = request.tenant
+    
+    # Force the query to run within the tenant's specific schema
+    with schema_context(tenant.schema_name):
+        try:
+            return Coupon.objects.get(code=code)
+        except Coupon.DoesNotExist:
+            return None
+
+
 
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def home(request):
     tenant = request.tenant
+    page_number = request.GET.get('page', 1)
+    
+    # Define a cache key specific to the tenant and the page
+    cache_key = f"home_products_{tenant.schema_name}_page_{page_number}"
+    cached_data = cache.get(cache_key)
+
+    if cached_data:
+        return render(request, 'whiteecom/shop/home.html', cached_data)
 
     import cloudinary
 
     with schema_context(tenant.schema_name):
+        # 1. Configure Cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
 
+        # 2. Database queries MUST be inside this block
+        product_list = Product.objects.filter(image__isnull=False).order_by('-id')
+        paginator = Paginator(product_list, 12)
+        products = paginator.get_page(page_number)
+        
+        context = {
+            'products': products,
+            'items': True # Keeping your variable
+        }
+        
+        # 3. Cache the context to prevent future "relation does not exist" errors
+        # This way, next time it loads from Redis instead of hitting Postgres
+        cache.set(cache_key, context, 600) # Cache for 10 minutes
 
-    items = True
-    product_list = Product.objects.filter(image__isnull=False).order_by('-id')  # newest first
-    paginator = Paginator(product_list, 12)  # 👈 8 products per page (adjust as you like)
+    return render(request, 'whiteecom/shop/home.html', context)
 
-    page_number = request.GET.get('page')  # ?page=2
-    products = paginator.get_page(page_number)
-    
-    return render(request, 'whiteecom/shop/home.html', {'products': products})
+
+
 
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_list(request):
     tenant = request.tenant
+    page_number = request.GET.get('page', 1)
+    
+    # 1. Check Cache First (This stops the database from even needing to load)
+    cache_key = f"product_list_{tenant.schema_name}_p{page_number}"
+    cached_content = cache.get(cache_key)
+    if cached_content:
+        return render(request, 'whiteecom/shop/shop.html', cached_content)
 
     import cloudinary
 
+    # 2. Everything involving the database MUST be inside this block
     with schema_context(tenant.schema_name):
+        # Cloudinary Config
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
 
-    items = True
-    product_list = Product.objects.filter(best_sellers=items,image__isnull=False).order_by('-id')  # newest first
-    paginator = Paginator(product_list, 12)  # 👈 8 products per page (adjust as you like)
+        items = True
+        # Query and Paginator inside the context
+        product_queryset = Product.objects.filter(
+            best_sellers=items, 
+            image__isnull=False
+        ).order_by('-id')
+        
+        paginator = Paginator(product_queryset, 12)
+        products = paginator.get_page(page_number)
+        
+        context = {'products': products}
+        
+        # 3. Store in Cache (e.g., for 5 minutes)
+        # This prevents the "ProgrammingError" on subsequent hits
+        cache.set(cache_key, context, 300)
 
-    page_number = request.GET.get('page')  # ?page=2
-    products = paginator.get_page(page_number)  # handles invalid or empty pages automatically
 
-    return render(request, 'whiteecom/shop/shop.html', {'products': products})
+
+
+
+
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_detail(request, slug):
     tenant = request.tenant
+    
+    # 1. Try to load from Cache first to avoid DB hits entirely
+    cache_key = f"product_detail_{tenant.schema_name}_{slug}"
+    cached_data = cache.get(cache_key)
+    if cached_data:
+        return render(request, 'whiteecom/shop/productdet.html', cached_data)
 
     import cloudinary
 
+    # 2. Wrap all database logic inside the schema context
     with schema_context(tenant.schema_name):
+        # Configure Cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-    product = get_object_or_404(Product, slug=slug)
-    category = product.category
 
-    # Get only the latest 4 products in the same category (excluding the current one)
-    related_products = (
-        Product.objects.filter(category=category, image__isnull=False)
-        .exclude(id=product.id)
-        .order_by('-created_at')[:4]  # assuming your model has a created_at field
-    )
+        # Move the queries INSIDE the block
+        product = get_object_or_404(Product, slug=slug)
+        category = product.category
 
-    return render(
-        request,
-        'whiteecom/shop/productdet.html',
-        {'product': product, 'dud': related_products, }
-    )
+        # Get latest 4 related products
+        related_products = (
+            Product.objects.filter(category=category, image__isnull=False)
+            .exclude(id=product.id)
+            .order_by('-created_at')[:4]
+        )
+
+        context = {
+            'product': product, 
+            'dud': related_products,
+        }
+        
+        # 3. Cache the context (e.g., for 15 minutes)
+        # This solves the "refresh to fix" bug by bypassing the DB next time
+        cache.set(cache_key, context, 900)
+
+    return render(request, 'whiteecom/shop/productdet.html', context)
+
+
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_from(request, slug):
     tenant = request.tenant
 
-    import cloudinary
-
+    # 1. Everything database-related starts here
     with schema_context(tenant.schema_name):
+        # Cloudinary Config (Optional here since you aren't uploading, but safe to keep)
+        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-    product = get_object_or_404(Product, slug=slug)
 
+        # 2. Query product inside context
+        product = get_object_or_404(Product, slug=slug)
 
-    if request.user.is_authenticated:
-        cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False).first()
+        if request.user.is_authenticated:
+            cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False).first()
+        else:
+            # Ensure session exists
+            if not request.session.session_key:
+                request.session.create()
+            session_key = request.session.session_key
+            cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
+
+        # 3. Perform the deletion inside context
         if cart_item:
             cart_item.delete()
+            
+            # 4. Clear the Cache
+            # Since the cart content changed, we must clear the cached total/list
+            # so the user sees the updated cart immediately in cart_view.
+            user_id = request.user.id if request.user.is_authenticated else request.session.session_key
+            cache.delete(f"cart_total_{tenant.schema_name}_{user_id}")
+            
             messages.success(request, f"{product.name} removed from your cart.")
         else:
             messages.warning(request, f"{product.name} was not found in your cart.")
-    else:
-        session_key = request.session.session_key or request.session.create()
-        cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
-        if cart_item:
-            cart_item.delete()
-            messages.success(request, f"{product.name} removed from your cart.")
-        else:
-            messages.warning(request, f"{product.name} was not in your cart.")
 
-    # Redirect back to the cart page
-    return redirect('productdet', slug=slug)  # or the URL name of your cart page
+    # 5. Redirect happens outside the block
+    return redirect('productdet', slug=slug)
+
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def cart_view(request):
     tenant = request.tenant
-
-    import cloudinary
+    
+    # 1. Setup session for anonymous users
+    if not request.user.is_authenticated and not request.session.session_key:
+        request.session.create()
+    
+    session_key = request.session.session_key
+    user_id = request.user.id if request.user.is_authenticated else session_key
+    
+    # 2. Check Cache to skip DB processing if nothing has changed
+    cache_key = f"cart_full_data_{tenant.schema_name}_{user_id}"
+    cached_response = cache.get(cache_key)
+    # Note: Only return cache if you aren't worried about mid-session coupon changes
+    # if cached_response:
+    #     return render(request, 'whiteecom/shop/cart.html', cached_response)
 
     with schema_context(tenant.schema_name):
+        # 3. Cloudinary Config (Inside Context)
+        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-    if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user, ordered=False)
-    else:
-        cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
 
-    if request.user.is_authenticated:
-        order = Order.objects.filter(user=request.user, Paid=False).last()
-    else:
-        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
-
-    if order and order.coupon:
-        total_amount = sum(item.get_final_price() for item in cart_items)
-        tt = order.coupon.amount
-
-        if total_amount <= tt:
-            total_amountss = 0  # prevent negative totals
+        # 4. Use select_related to prevent the "relation does not exist" error 
+        # during the sum() loop. This fetches product data in ONE join query.
+        if request.user.is_authenticated:
+            cart_items = Cart.objects.filter(user=request.user, ordered=False).select_related('product').order_by('-id')
+            order = Order.objects.filter(user=request.user, Paid=False).last()
         else:
-            total_amountss = total_amount - tt
-    else:
-        tt = None
+            cart_items = Cart.objects.filter(session_key=session_key, ordered=False).select_related('product').order_by('-id')
+            order = Order.objects.filter(session_key=session_key, Paid=False).last()
+
+        # 5. Calculations (Now safe because we are inside schema_context)
         total_amount = sum(item.get_final_price() for item in cart_items)
-        total_amountss = total_amount
+        
+        if order and order.coupon:
+            tt = order.coupon.amount
+            total_amountss = max(0, total_amount - tt) # cleaner way to prevent negative
+        else:
+            tt = None
+            total_amountss = total_amount
 
-    # Re-fetch cart items in proper order
-    if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user, ordered=False).order_by('-id')
-    else:
-        session_key = request.session.session_key
-        if not session_key:
-            request.session.create()
-            session_key = request.session.session_key
-        cart_items = Cart.objects.filter(session_key=session_key, ordered=False).order_by('-id')
+        context = {
+            'cart_items': cart_items,
+            'total': total_amount, # total before discount
+            'total_amount': total_amount,
+            'tt': tt,
+            'total_amountss': total_amountss
+        }
 
-    total = sum(item.get_final_price() for item in cart_items)
+        # 6. Cache the context for 1 minute (short duration for carts)
+        cache.set(cache_key, context, 60)
 
-    return render(request, 'whiteecom/shop/cart.html', {
-        'cart_items': cart_items,
-        'total': total,
-        'total_amount': total_amount,
-        'tt': tt,
-        'total_amountss': total_amountss
-    })
+    return render(request, 'whiteecom/shop/cart.html', context)
+
+
 
 
 
@@ -341,61 +441,61 @@ def cart_view(request):
 def add_to(request, slug):
     tenant = request.tenant
 
-    import cloudinary
-
+    # Wrap everything that touches the DB in schema_context
     with schema_context(tenant.schema_name):
+        # 1. Cloudinary Config (Inside)
+        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-    # Get the product
-    product = get_object_or_404(Product, slug=slug)
 
-    if product.quantity <= 0:
-        messages.warning(request, f"Sorry, {product.name} is out of stock.")
-        return redirect('productdet', slug=slug)
-    
+        # 2. Get the product (Must be inside the block)
+        product = get_object_or_404(Product, slug=slug)
 
-    # Determine cart owner
-    if request.user.is_authenticated:
-        cart_filter = {'user': request.user, 'ordered': False, 'product': product}
-    else:
-        # For guest users, we use session key
-        session_key = request.session.session_key
-        if not session_key:
-            request.session.create()
-            session_key = request.session.session_key
-        cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
+        if product.quantity <= 0:
+            messages.warning(request, f"Sorry, {product.name} is out of stock.")
+            return redirect('productdet', slug=slug)
 
-    # Check if item exists
-    cart_item = Cart.objects.filter(**cart_filter).first()
-
-    if cart_item:
-
-        if product.quantity <= cart_item.quantity:
-            messages.warning(request, f"{product.name} for that size  is only {product.quantity} we have left ")
-            return redirect('cart_view')
-            
+        # 3. Determine cart owner logic
+        if request.user.is_authenticated:
+            cart_filter = {'user': request.user, 'ordered': False, 'product': product}
         else:
-            cart_item.quantity += 1
-            cart_item.save()
-            messages.success(request, f"{product.name} quantity updated in your cart.")
-    else:
-        # Create new cart item
-        
-        cart_item = Cart.objects.create(
-            user=request.user if request.user.is_authenticated else None,
-            product=product,
-            ordered=False,
-            session_key=request.session.session_key,
-            quantity = 1)
+            if not request.session.session_key:
+                request.session.create()
+            session_key = request.session.session_key
+            cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
 
-        
+        # 4. Database operations (Filter, Save, Create)
+        cart_item = Cart.objects.filter(**cart_filter).first()
 
-    
-    return redirect('cart_view')  # Replace with your cart page URL
+        if cart_item:
+            if product.quantity <= cart_item.quantity:
+                messages.warning(request, f"{product.name} is limited to {product.quantity} units.")
+                return redirect('cart_view')
+            else:
+                cart_item.quantity += 1
+                cart_item.save()
+                messages.success(request, f"{product.name} quantity updated in your cart.")
+        else:
+            # Create new cart item
+            Cart.objects.create(
+                user=request.user if request.user.is_authenticated else None,
+                product=product,
+                ordered=False,
+                session_key=request.session.session_key,
+                quantity=1
+            )
+            messages.success(request, f"{product.name} added to cart.")
 
+        # 5. Clear the Cache
+        # Crucial for Baxting: Delete the cached cart total so the user sees 
+        # the new item immediately in the cart_view.
+        user_id = request.user.id if request.user.is_authenticated else request.session.session_key
+        cache.delete(f"cart_full_data_{tenant.schema_name}_{user_id}")
+
+    return redirect('cart_view')
 
 
 
@@ -403,103 +503,125 @@ def add_to(request, slug):
 def remove(request, slug):
     tenant = request.tenant
 
-    import cloudinary
-
+    # Wrap ALL database operations in the schema context
     with schema_context(tenant.schema_name):
+        # 1. Cloudinary Config (Inside Context)
+        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-    product = get_object_or_404(Product, slug=slug)
 
+        # 2. Get product inside the block
+        product = get_object_or_404(Product, slug=slug)
 
-    if request.user.is_authenticated:
-        cart_filter = {'user': request.user, 'ordered': False, 'product': product}
-    else:
-        # For guest users, we use session key
-        session_key = request.session.session_key
-        if not session_key:
-            request.session.create()
-            session_key = request.session.session_key
-        cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
-
-
-
-
-    cart_item = Cart.objects.filter(**cart_filter).first()
-    if cart_item:
-        if cart_item.quantity <= 1 :
-                cart_item.delete()
-                messages.warning(request, f"cartitem is empyty")
-                
-                return redirect('cart_view')
-                
+        # 3. Determine cart owner
+        if request.user.is_authenticated:
+            cart_filter = {'user': request.user, 'ordered': False, 'product': product}
         else:
+            if not request.session.session_key:
+                request.session.create()
+            session_key = request.session.session_key
+            cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
+
+        # 4. Fetch and modify cart item inside the block
+        cart_item = Cart.objects.filter(**cart_filter).first()
+        
+        if cart_item:
+            if cart_item.quantity <= 1:
+                cart_item.delete()
+                messages.warning(request, "Item removed from cart.")
+            else:
                 cart_item.quantity -= 1
                 cart_item.save()
-                messages.success(request, f"{product.name} quantity updated in your cart.")
+                messages.success(request, f"{product.name} quantity decreased.")
 
-        
+            # 5. Clear Cache
+            # This ensures the cart_view reflects the new quantity immediately
+            user_id = request.user.id if request.user.is_authenticated else request.session.session_key
+            cache.delete(f"cart_full_data_{tenant.schema_name}_{user_id}")
+        else:
+            messages.info(request, "Item not found in cart.")
+
     return redirect('cart_view')
+
+
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_item(request, slug):
     tenant = request.tenant
 
-    import cloudinary
-
+    # 1. Start the context before ANY database hits
     with schema_context(tenant.schema_name):
+        # Cloudinary Config
+        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-    product = get_object_or_404(Product, slug=slug)
 
-    if request.user.is_authenticated:
-        cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False,).first()
+        # 2. These queries MUST be inside the with block
+        product = get_object_or_404(Product, slug=slug)
+
+        if request.user.is_authenticated:
+            cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False).first()
+        else:
+            # For guest users, ensure the session exists
+            if not request.session.session_key:
+                request.session.create()
+            session_key = request.session.session_key
+            cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
+
+        # 3. Perform deletion within the same context
         if cart_item:
             cart_item.delete()
+            
+            # 4. Clear the Cache (Essential for the 'cart_view' to update)
+            user_id = request.user.id if request.user.is_authenticated else request.session.session_key
+            cache.delete(f"cart_full_data_{tenant.schema_name}_{user_id}")
+            
             messages.success(request, f"{product.name} removed from your cart.")
         else:
             messages.warning(request, f"{product.name} was not found in your cart.")
-    else:
-        session_key = request.session.session_key or request.session.create()
-        cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
-        if cart_item:
-            cart_item.delete()
-            messages.success(request, f"{product.name} removed from your cart.")
-        else:
-            messages.warning(request, f"{product.name} was not in your cart.")
-  
 
-    # Redirect back to the cart page
-    return redirect('cart_view')  # or the URL name of your cart page
+    # 5. Redirect after the context is safely closed
+    return redirect('cart_view')
+
+
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_all(request):
     tenant = request.tenant
 
-    import cloudinary
-
+    # Wrap all database interactions in the schema context
     with schema_context(tenant.schema_name):
+        # 1. Cloudinary Config (Inside)
+        import cloudinary
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-    if request.user.is_authenticated:
-        Cart.objects.filter(user=request.user, ordered=False).delete()
-    else:
-        session_key = request.session.session_key
-        if session_key:
-            Cart.objects.filter(session_key=session_key, ordered=False).delete()
+
+        # 2. Perform the deletions inside the block
+        if request.user.is_authenticated:
+            Cart.objects.filter(user=request.user, ordered=False).delete()
+        else:
+            session_key = request.session.session_key
+            if session_key:
+                Cart.objects.filter(session_key=session_key, ordered=False).delete()
+
+        # 3. Cache Invalidation
+        # Clear the cached cart view so it shows an empty cart immediately
+        user_id = request.user.id if request.user.is_authenticated else request.session.session_key
+        cache.delete(f"cart_full_data_{tenant.schema_name}_{user_id}")
+
+    # 4. Success messages and redirect can stay outside
     messages.success(request, "All items removed from your cart.")
     return redirect('cart_view')
-
-
 
 
 
