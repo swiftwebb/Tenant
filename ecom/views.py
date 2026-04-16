@@ -543,7 +543,7 @@ def remove_all(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def checkout(request):
     tenant = request.tenant
-    from .models import Coupon, Category, Product,
+    from .models import Coupon, Category, Product
 
     import cloudinary
 
