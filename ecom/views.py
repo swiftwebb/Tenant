@@ -439,48 +439,24 @@ def cart_view(request):
 def add_to(request, slug):
     tenant = request.tenant
 
-    import cloudinary
-    cloudinary.config(
-        cloud_name=tenant.cloud_name,
-        api_key=tenant.api_key,
-        api_secret=tenant.api_secret,
-    )
-
-    # 🔥 ALWAYS guarantee session exists FIRST
     if not request.session.session_key:
         request.session.create()
+
     session_key = request.session.session_key
 
-    # 🔥 FORCE schema BEFORE ANY DB ACTION
     with schema_context(tenant.schema_name):
 
-        product = Product.objects.filter(slug=slug).first()
+        product = get_object_or_404(Product, slug=slug)
 
-        if not product:
-            messages.error(request, "Product not found.")
-            return redirect('cart_view')
+        # ALWAYS stay inside schema for ALL DB actions
+        cart_item, created = Cart.objects.get_or_create(
+            user=request.user if request.user.is_authenticated else None,
+            session_key=None if request.user.is_authenticated else session_key,
+            product=product,
+            ordered=False,
+            defaults={"quantity": 1}
+        )
 
-        if product.quantity is None or product.quantity <= 0:
-            messages.warning(request, "Out of stock")
-            return redirect('productdet', slug=slug)
-
-        # 🔥 CONSISTENT CART FILTER
-        if request.user.is_authenticated:
-            cart_item, created = Cart.objects.get_or_create(
-                user=request.user,
-                product=product,
-                ordered=False,
-                defaults={"quantity": 1}
-            )
-        else:
-            cart_item, created = Cart.objects.get_or_create(
-                session_key=session_key,
-                product=product,
-                ordered=False,
-                defaults={"quantity": 1}
-            )
-
-        # 🔥 UPDATE QUANTITY PROPERLY
         if not created:
             if cart_item.quantity >= product.quantity:
                 messages.warning(request, "Max stock reached")
@@ -489,9 +465,11 @@ def add_to(request, slug):
             cart_item.quantity += 1
             cart_item.save()
 
-        cache.delete(f"cart_full_data_{tenant.schema_name}_{session_key}")
-
     return redirect('cart_view')
+
+
+
+
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove(request, slug):
     tenant = request.tenant
