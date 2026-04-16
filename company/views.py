@@ -210,22 +210,22 @@ def contact(request):
             email=email,
             phone=phone,
         )
-        # send_mail(
-        #     subject="New Message from Your Website",
-        #     message=f"""
-        # You have received a new message from a potential client.
+        send_mail(
+            subject="New Message from Your Website",
+            message=f"""
+        You have received a new message from a potential client.
 
-        # Name: {name}
-        # Email: {email}
-        # Phone: {phone}
+        Name: {name}
+        Email: {email}
+        Phone: {phone}
 
-        # Message:
-        # {message}
-        # """,
-        #     from_email=settings.EMAIL_HOST_USER,
-        #     recipient_list=[request.tenant.email],
-        #     fail_silently=False,
-        # )
+        Message:
+        {message}
+        """,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[request.tenant.email],
+            fail_silently=False,
+        )
 
 
         messages.success(request, "Message recieved, We will get back to you shortly")
