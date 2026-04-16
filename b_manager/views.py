@@ -4139,7 +4139,7 @@ def home_create_blog(request):
         else:
             form = BlyForm(tenant=tenant)
 
-        return render(request, 'customers/com_se.html', {'form': form})
+        return render(request, 'customers/blogf.html', {'form': form})
 
 
 
