@@ -691,16 +691,11 @@ def remove_all(request):
 
 
 
-
 @ratelimit(key='ip', rate='10/m', block=True)
 def checkout(request):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+    from ecom.models import Coupon, Category, Product, Cart, Address, DeliveryBase, DeliveryState, DeliveryCity, Order, Sale, Trans
 
     tenant = request.tenant
-
     import cloudinary
 
     with schema_context(tenant.schema_name):
@@ -710,64 +705,20 @@ def checkout(request):
             api_secret=tenant.api_secret,
         )
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
-        )
+        default_address_s = None
+        if request.user.is_authenticated:
+            default_address_s = Address.objects.filter(user=request.user, default=True).first()
+        else:
+            default_address_s = Address.objects.filter(session_key=request.session.session_key, default=True).first()
 
-    default_address_s = None
-    if request.user.is_authenticated:
-        default_address_s = Address.objects.filter(user=request.user,default=True).first()
-        
-    else:
-         default_address_s = Address.objects.filter(session_key=request.session.session_key,default=True).first()
-
-
-    
-    if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user, ordered=False)
-    else:
-        cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
-        
-    if not cart_items:
-        return redirect('cart_view')
-
-   
-    if request.user.is_authenticated:
-        order = Order.objects.filter(user=request.user, Paid=False).last()
-    else:
-        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
-
-    if order and order.coupon:
-        total_amount = sum(item.get_final_price() for item in cart_items)
-       
-        tt= order.coupon.amount
-        if total_amount <= tt:
-            messages.error(request, f"You can't order anything below the promo or equal to the promo, amount: {order.coupon.amount}")
-            return redirect('cart_view')
-        total_amountss= total_amount-tt
-    else:
-        tt=None   
-
-        # ✅ Calculate total amount
-        total_amount = sum(item.get_final_price() for item in cart_items)
-        total_amountss= sum(item.get_final_price() for item in cart_items)
-
-    
-    if request.method == 'POST':
-        # Checkbox values
-        save_address = request.POST.get('save_address') == 'on'
-        use_default = request.POST.get('use_default') == 'on'
         if request.user.is_authenticated:
             cart_items = Cart.objects.filter(user=request.user, ordered=False)
         else:
             cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
 
-   
+        if not cart_items:
+            return redirect('cart_view')
+
         if request.user.is_authenticated:
             order = Order.objects.filter(user=request.user, Paid=False).last()
         else:
@@ -775,292 +726,198 @@ def checkout(request):
 
         if order and order.coupon:
             total_amount = sum(item.get_final_price() for item in cart_items)
-        
-            tt= order.coupon.amount
+            tt = order.coupon.amount
             if total_amount <= tt:
                 messages.error(request, f"You can't order anything below the promo or equal to the promo, amount: {order.coupon.amount}")
                 return redirect('cart_view')
-            total_amountss= total_amount-tt
+            total_amountss = total_amount - tt
         else:
-            tt=None   
-
-            # ✅ Calculate total amount
+            tt = None
             total_amount = sum(item.get_final_price() for item in cart_items)
-            total_amountss= sum(item.get_final_price() for item in cart_items)
+            total_amountss = sum(item.get_final_price() for item in cart_items)
 
+        if request.method == 'POST':
+            save_address = request.POST.get('save_address') == 'on'
+            use_default = request.POST.get('use_default') == 'on'
 
-        # ✅ Calculate total amount
-        total_amount = sum(item.get_final_price() for item in cart_items)
+            if request.user.is_authenticated:
+                cart_items = Cart.objects.filter(user=request.user, ordered=False)
+            else:
+                cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
 
-        # If user has a default address and wants to use it
-        if use_default and request.user.is_authenticated:
-            try:
-                default_address = Address.objects.get(user=request.user, default=True)
-                request.session['address_id'] = default_address.id
+            if request.user.is_authenticated:
+                order = Order.objects.filter(user=request.user, Paid=False).last()
+            else:
+                order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
 
-                if order:
-                    order.address = default_address
-                    order.email = request.user.email if request.user.is_authenticated else email
-                    order.ref_code = create_ref_code()
-                    order.ordered_date = timezone.now()
-                    order.amount = total_amountss
+            if order and order.coupon:
+                total_amount = sum(item.get_final_price() for item in cart_items)
+                tt = order.coupon.amount
+                if total_amount <= tt:
+                    messages.error(request, f"You can't order anything below the promo or equal to the promo, amount: {order.coupon.amount}")
+                    return redirect('cart_view')
+                total_amountss = total_amount - tt
+            else:
+                tt = None
+                total_amount = sum(item.get_final_price() for item in cart_items)
+                total_amountss = sum(item.get_final_price() for item in cart_items)
+
+            total_amount = sum(item.get_final_price() for item in cart_items)
+
+            if use_default and request.user.is_authenticated:
+                try:
+                    default_address = Address.objects.get(user=request.user, default=True)
+                    request.session['address_id'] = default_address.id
+
+                    if order:
+                        order.address = default_address
+                        order.email = request.user.email
+                        order.ref_code = create_ref_code()
+                        order.ordered_date = timezone.now()
+                        order.amount = total_amountss
+                        order.save()
+                    else:
+                        order = Order.objects.create(
+                            user=request.user,
+                            session_key=request.session.session_key,
+                            Paid=False,
+                            address=default_address,
+                            email=request.user.email,
+                            ref_code=create_ref_code(),
+                            ordered_date=timezone.now(),
+                            amount=total_amountss,
+                        )
+
+                    has_base_delivery = DeliveryBase.objects.exists()
+                    base_price = DeliveryBase.objects.first().price or 0 if has_base_delivery else 3000
+
+                    city = default_address.city.strip().title()
+                    state = default_address.state.strip().title()
+
+                    tenant_obj = Client.objects.get(schema_name=request.tenant.schema_name)
+                    origin = f"{tenant_obj.street_address} {tenant_obj.city} {tenant_obj.state}"
+                    destination = f"{default_address.street_address} {default_address.city} {default_address.state}"
+
+                    if state.lower() == 'lagos':
+                        distance_result = get_delivery_distance(origin, destination)
+                        if distance_result:
+                            distance_km, duration_min = distance_result
+                            order.delivery_fee = round(base_price + (distance_km * 50) + (duration_min * 20), 0)
+                        else:
+                            messages.error(request, "We don't deliver to that location")
+                            return redirect("checkout")
+                    else:
+                        delivery = DeliveryState.objects.filter(name__icontains=state).first()
+                        if delivery:
+                            order.delivery_fee = delivery.fixed_price
+                        else:
+                            messages.error(request, "We do not deliver to that state")
+                            return redirect('checkout')
+
+                    order.amount = total_amountss + order.delivery_fee
+                    order.cart.set(cart_items)
                     order.save()
 
-                else:
-                    order = Order.objects.create(
-                         user=request.user if request.user.is_authenticated else None,
-                         session_key=request.session.session_key,
-                          Paid=False,
-                          address=default_address,
-                          email= request.user.email if request.user.is_authenticated else email,
-                          ref_code=create_ref_code(),
-                          ordered_date=timezone.now(),
-                          amount=total_amountss,
+                    messages.success(request, "Default address selected successfully.")
+                    return redirect('paym')
+                except Address.DoesNotExist:
+                    messages.warning(request, "You don't have a default address yet.")
+                    return redirect('checkout')
 
+            # Form input path
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+            street_address = request.POST.get('street_address')
+            apartment = request.POST.get('apartment')
+            city = request.POST.get('city')
+            state = request.POST.get('state')
+            country = request.POST.get('country')
+            phone_number = request.POST.get('phone_number')
 
-                    )
-                has_base_delivery = DeliveryBase.objects.exists()
+            if request.user.is_authenticated:
+                address = Address.objects.create(
+                    user=request.user,
+                    first_name=first_name, last_name=last_name,
+                    email=request.user.email, street_address=street_address,
+                    apartment=apartment, city=city, state=state,
+                    country=country, phone_number=phone_number, default=False
+                )
+            else:
+                address = Address.objects.create(
+                    first_name=first_name, last_name=last_name,
+                    email=email, session_key=request.session.session_key,
+                    street_address=street_address, apartment=apartment,
+                    city=city, state=state, country=country,
+                    phone_number=phone_number, default=False
+                )
 
-                if has_base_delivery:
-                    base = DeliveryBase.objects.first()
-                    base_price = base.price or 0
-                else:
-                    base_price = 3000
-
-                city = default_address.city.strip().title()
-                state = default_address.state.strip().title()
-
-                tenant = Client.objects.get(schema_name=request.tenant.schema_name)
-                street_ad = tenant.street_address
-                statedd = tenant.state
-                citydd = tenant.city
-                saaa = default_address.street_address
-                cii = default_address.city
-                vvvv = default_address.state
-
-                if state.lower() == 'lagos':
-                    origin = f"{street_ad} {citydd} {statedd}"
-                    destination = f"{saaa} {cii} {vvvv}"
-
-                    distance_result = get_delivery_distance(origin, destination)
-
-                    if distance_result:
-                        distance_km, duration_min = distance_result
-                        order.delivery_fee = round(base_price + (distance_km * 50) + (duration_min * 20), 0)
-                    else:
-                        
-                        messages.error(request, "we don't deliver to that location")
-                        return redirect("checkout")
-
-                                    
-
-
-
-
-
-                    # delivery = DeliveryCity.objects.filter(name__icontains=city).first()
-                    # if delivery:
-                    #     order.delivery_fee = delivery.delivery_fee
-                    # else:
-                    #     order.delivery_fee = 10000  # default Lagos fee
-                else:
-                    delivery = DeliveryState.objects.filter(name__icontains=state).first()
-                    if delivery:
-                        order.delivery_fee = delivery.fixed_price
-                    else:
-                        messages.error(request, "We do not deliver to that state")
-                        return redirect('checkout')
-
-
-                
-                
-                order.amount = total_amountss+order.delivery_fee
-
-
-                order.save()
-
-
-
-
-
-
-
-              
-                order.cart.set(cart_items)
-                order.save()
-
-
-
-
-                messages.success(request, "Default address selected successfully.")
-                return redirect('paym')  # change to your next step
-            except Address.DoesNotExist:
-                messages.warning(request, "You don’t have a default address yet.")
-                return redirect('checkout')
-
-        # Otherwise, collect form input
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        street_address = request.POST.get('street_address')
-        apartment = request.POST.get('apartment')
-        city = request.POST.get('city')
-        state = request.POST.get('state')
-        country = request.POST.get('country')
-        phone_number = request.POST.get('phone_number')
-
-
-        # ✅ Create address
-        if request.user.is_authenticated:
-            address = Address.objects.create(
-                user=request.user,
-                first_name=first_name,
-                last_name=last_name,
-                email=request.user.email,
-                street_address=street_address,
-                apartment=apartment,
-                city=city,
-                state=state,
-                country=country,
-                phone_number=phone_number,
-                default=False
-            )
-        else:
-            address = Address.objects.create(
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-                session_key=request.session.session_key,
-                street_address=street_address,
-                apartment=apartment,
-                city=city,
-                state=state,
-                country=country,
-                phone_number=phone_number,
-                default=False
-            )
-
-
-        # if state.lower() == 'lagos':
-        #     if
-
-
-            
-
-        # ✅ Create order and set amount
-      
-        if order:
+            if order:
                 order.address = address
                 order.email = request.user.email if request.user.is_authenticated else email
                 order.ref_code = create_ref_code()
                 order.ordered_date = timezone.now()
                 order.amount = total_amountss
                 order.save()
-
-        else:
+            else:
                 order = Order.objects.create(
-                         user=request.user if request.user.is_authenticated else None,
-                         session_key=request.session.session_key,
-                          Paid=False,
-                          address=address,
-                          email= request.user.email if request.user.is_authenticated else email,
-                          ref_code=create_ref_code(),
-                          ordered_date=timezone.now(),
-                          amount=total_amountss,
+                    user=request.user if request.user.is_authenticated else None,
+                    session_key=request.session.session_key,
+                    Paid=False, address=address,
+                    email=request.user.email if request.user.is_authenticated else email,
+                    ref_code=create_ref_code(),
+                    ordered_date=timezone.now(),
+                    amount=total_amountss,
+                )
 
+            has_base_delivery = DeliveryBase.objects.exists()
+            base_price = DeliveryBase.objects.first().price or 0 if has_base_delivery else 3000
 
-                    )
-        
-        has_base_delivery = DeliveryBase.objects.exists()
+            city = city.strip().title()
+            state = state.strip().title()
 
-        if has_base_delivery:
-            base = DeliveryBase.objects.first()
-            base_price = base.price or 0
-        else:
-            base_price = 3000
+            tenant_obj = Client.objects.get(schema_name=request.tenant.schema_name)
+            origin = f"{tenant_obj.street_address} {tenant_obj.city} {tenant_obj.state}"
+            destination = f"{street_address} {city} {state}"
 
-    
-        city = city.strip().title()
-        state = state.strip().title()
-
-        tenant = Client.objects.get(schema_name=request.tenant.schema_name)
-        street_ad = tenant.street_address
-        statedd = tenant.state
-        citydd = tenant.city
-        saaa = street_address
-        cii = city
-        vvvv = state
-
-        if state.lower() == 'lagos':
-            origin = f"{street_ad} {citydd} {statedd}"
-            destination = f"{saaa} {cii} {vvvv}"
-
-     
-            distance_result = get_delivery_distance(origin, destination)
-
-            if distance_result:
-                distance_km, duration_min = distance_result
-                order.delivery_fee = round(base_price + (distance_km * 50) + (duration_min * 20), 0)
-            
+            if state.lower() == 'lagos':
+                distance_result = get_delivery_distance(origin, destination)
+                if distance_result:
+                    distance_km, duration_min = distance_result
+                    order.delivery_fee = round(base_price + (distance_km * 50) + (duration_min * 20), 0)
+                else:
+                    messages.error(request, "We don't deliver to that location")
+                    return redirect("checkout")
             else:
-                messages.error(request, "we don't deliver to that location")
-                return redirect("checkout")
+                delivery = DeliveryState.objects.filter(name__icontains=state).first()
+                if delivery:
+                    order.delivery_fee = delivery.fixed_price
+                else:
+                    messages.error(request, "We do not deliver to that state")
+                    return redirect('checkout')
 
-                                  
+            order.amount = total_amountss + order.delivery_fee
+            order.cart.set(cart_items)
+            order.save()
 
-            
-            
+            if save_address and request.user.is_authenticated:
+                Address.objects.filter(user=request.user, default=True).update(default=False)
+                address.default = True
+                address.save()
+                messages.success(request, "Address saved as your default address.")
+            elif save_address:
+                messages.info(request, "Address saved to that order.")
 
-            # delivery = DeliveryCity.objects.filter(name__icontains=city).first()
-            # if delivery:
-            #     order.delivery_fee = delivery.delivery_fee
-            # else:
-            #     order.delivery_fee = 10000  # default Lagos fee
-        else:
-            delivery = DeliveryState.objects.filter(name__icontains=state).first()
-            if delivery:
-                order.delivery_fee = delivery.fixed_price
-            else:
-                messages.error(request, "We do not deliver to that state")
-                return redirect('checkout')
-        
-        order.amount = total_amountss+order.delivery_fee
+            request.session['address_id'] = address.id
+            messages.success(request, "Address confirmed. Proceed to payment.")
+            return redirect('paym')
 
-        order.save()
-
-
-
-                
-            
-            
-
-
-
-        
-        # ✅ Attach cart items to order
-        order.cart.set(cart_items)
-        order.save()
-    
-        
-
-        # Save this address as default if checked
-        if save_address and request.user.is_authenticated:
-            # unset any previous default
-            Address.objects.filter(user=request.user, default=True).update(default=False)
-            address.default = True
-            address.save()
-            messages.success(request, "Address saved as your default address.")
-        elif save_address and not request.user.is_authenticated:
-            messages.info(request, "Address saved to that order .")
-
-        # Save address id in session (for order/payment)
-        request.session['address_id'] = address.id
-
-        messages.success(request, "Address confirmed. Proceed to payment.")
-        return redirect('paym')  # change as needed
-
-    return render(request, 'whiteecom/shop/checkoutpage.html', {'default_address_s':default_address_s, 'total_amount':total_amount,'tt':tt,'total_amountss':total_amountss})
-
+        return render(request, 'whiteecom/shop/checkoutpage.html', {
+            'default_address_s': default_address_s,
+            'total_amount': total_amount,
+            'tt': tt,
+            'total_amountss': total_amountss
+        })
 
 
 
