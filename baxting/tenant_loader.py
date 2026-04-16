@@ -77,30 +77,30 @@ class TenantTemplateLoader(BaseLoader):
 
 
 # class TenantTemplateLoader(BaseLoader):
-    def __init__(self, engine):
-        super().__init__(engine)
-        self.loaders = [
-            FilesystemLoader(engine),
-            AppDirectoriesLoader(engine),
-        ]
+    # def __init__(self, engine):
+    #     super().__init__(engine)
+    #     self.loaders = [
+    #         FilesystemLoader(engine),
+    #         AppDirectoriesLoader(engine),
+    #     ]
 
-    def get_template_sources(self, template_name):
-        tenant_schema = getattr(connection, "schema_name", get_public_schema_name())
+    # def get_template_sources(self, template_name):
+    #     tenant_schema = getattr(connection, "schema_name", get_public_schema_name())
 
-        tenant_template_path = f"{tenant_schema}/{template_name}"
+    #     tenant_template_path = f"{tenant_schema}/{template_name}"
 
-        # Try tenant templates first
-        for loader in self.loaders:
-            yield from loader.get_template_sources(tenant_template_path)
+    #     # Try tenant templates first
+    #     for loader in self.loaders:
+    #         yield from loader.get_template_sources(tenant_template_path)
 
-        # Then fallback
-        for loader in self.loaders:
-            yield from loader.get_template_sources(template_name)
+    #     # Then fallback
+    #     for loader in self.loaders:
+    #         yield from loader.get_template_sources(template_name)
 
-    def get_contents(self, origin):
-        for loader in self.loaders:
-            try:
-                return loader.get_contents(origin)
-            except Exception:
-                continue
-        raise TemplateDoesNotExist(origin)
+    # def get_contents(self, origin):
+    #     for loader in self.loaders:
+    #         try:
+    #             return loader.get_contents(origin)
+    #         except Exception:
+    #             continue
+    #     raise TemplateDoesNotExist(origin)

@@ -122,38 +122,34 @@ def get_delivery_distance(origin, destination):
     return distance_km, duration_min
 
 
-from django.contrib import messages
-from django.shortcuts import redirect
-from django_tenants.utils import schema_context
-
+@ratelimit(key='ip', rate='10/m', block=True)
 def removecoupon(request):
+
     tenant = request.tenant
 
-    if not request.session.session_key:
-        request.session.create()
-    session_key = request.session.session_key
+    import cloudinary
 
     with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
+        )
+    if request.user.is_authenticated:
+        order = Order.objects.filter(user=request.user, Paid=False).last()
+    else:
+        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
 
-        if request.user.is_authenticated:
-            order = Order.objects.filter(
-                user=request.user,
-                Paid=False
-            ).last()
-        else:
-            order = Order.objects.filter(
-                session_key=session_key,
-                Paid=False
-            ).last()
-
-        if order and order.coupon:
-            order.coupon = None
-            order.save()
-            messages.success(request, "Promo code removed successfully.")
-        else:
-            messages.info(request, "No promo code was applied.")
+    if order and order.coupon:
+        order.coupon = None
+        order.save()
+        messages.success(request, "Promo code removed successfully.")
+    else:
+        messages.info(request, "No promo code was applied.")
 
     return redirect('cart_view')
+
+
 
 
 
@@ -163,11 +159,15 @@ def create_ref_code():
 
 
 
-def get_coupon(request, code):
-    tenant = request.tenant
 
-    with schema_context(tenant.schema_name):
-        return Coupon.objects.filter(code=code).first()
+@ratelimit(key='ip', rate='10/m', block=True)
+def get_coupon(request, code):
+    try:
+        return Coupon.objects.get(code=code)
+    except Coupon.DoesNotExist:
+        return None
+
+
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def home(request):
@@ -176,29 +176,22 @@ def home(request):
     import cloudinary
 
     with schema_context(tenant.schema_name):
-
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
 
-        # 🔥 MOVE QUERY INSIDE schema_context
-        product_list = Product.objects.filter(
-            image__isnull=False
-        ).order_by('-id')
 
-        # 🔥 OPTIMIZE (if you later add category, etc.)
-        product_list = product_list.select_related('category')
+    items = True
+    product_list = Product.objects.filter(image__isnull=False).order_by('-id')  # newest first
+    paginator = Paginator(product_list, 12)  # 👈 8 products per page (adjust as you like)
 
-        paginator = Paginator(product_list, 12)
+    page_number = request.GET.get('page')  # ?page=2
+    products = paginator.get_page(page_number)
+    
+    return render(request, 'whiteecom/shop/home.html', {'products': products})
 
-        page_number = request.GET.get('page')
-        products = paginator.get_page(page_number)
-
-    return render(request, 'whiteecom/shop/home.html', {
-        'products': products
-    })
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
@@ -208,34 +201,20 @@ def product_list(request):
     import cloudinary
 
     with schema_context(tenant.schema_name):
-
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
 
-        # 🔥 MOVE QUERY INSIDE schema_context
-        product_qs = Product.objects.filter(
-            best_sellers=True,
-            image__isnull=False
-        ).order_by('-id')
+    items = True
+    product_list = Product.objects.filter(best_sellers=items,image__isnull=False).order_by('-id')  # newest first
+    paginator = Paginator(product_list, 12)  # 👈 8 products per page (adjust as you like)
 
-        # ⚡ PERFORMANCE BOOST
-        product_qs = product_qs.select_related('category').only(
-            'id', 'name', 'price', 'image', 'slug', 'category'
-        )
+    page_number = request.GET.get('page')  # ?page=2
+    products = paginator.get_page(page_number)  # handles invalid or empty pages automatically
 
-        paginator = Paginator(product_qs, 12)
-
-        page_number = request.GET.get('page')
-        products = paginator.get_page(page_number)
-
-    return render(request, 'whiteecom/shop/shop.html', {
-        'products': products
-    })
-
-
+    return render(request, 'whiteecom/shop/shop.html', {'products': products})
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_detail(request, slug):
@@ -244,37 +223,26 @@ def product_detail(request, slug):
     import cloudinary
 
     with schema_context(tenant.schema_name):
-
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    product = get_object_or_404(Product, slug=slug)
+    category = product.category
 
-        # 🔥 ALWAYS query inside schema_context
-        product = get_object_or_404(
-            Product.objects.select_related('category'),
-            slug=slug
-        )
-
-        # 🔥 optimized related products
-        related_products = (
-            Product.objects.select_related('category')
-            .filter(category=product.category, image__isnull=False)
-            .exclude(id=product.id)
-            .order_by('-created_at')[:4]
-        )
+    # Get only the latest 4 products in the same category (excluding the current one)
+    related_products = (
+        Product.objects.filter(category=category, image__isnull=False)
+        .exclude(id=product.id)
+        .order_by('-created_at')[:4]  # assuming your model has a created_at field
+    )
 
     return render(
         request,
         'whiteecom/shop/productdet.html',
-        {
-            'product': product,
-            'dud': related_products,
-        }
+        {'product': product, 'dud': related_products, }
     )
-
-
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
@@ -283,49 +251,34 @@ def remove_from(request, slug):
 
     import cloudinary
 
-    # 🔥 ALWAYS ensure session exists
-    if not request.session.session_key:
-        request.session.create()
-    session_key = request.session.session_key
-
     with schema_context(tenant.schema_name):
-
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    product = get_object_or_404(Product, slug=slug)
 
-        # 🔥 MUST be inside schema_context
-        product = get_object_or_404(Product, slug=slug)
 
-        if request.user.is_authenticated:
-            cart_item = Cart.objects.filter(
-                product=product,
-                user=request.user,
-                ordered=False
-            ).first()
+    if request.user.is_authenticated:
+        cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False).first()
+        if cart_item:
+            cart_item.delete()
+            messages.success(request, f"{product.name} removed from your cart.")
         else:
-            cart_item = Cart.objects.filter(
-                product=product,
-                session_key=session_key,
-                ordered=False
-            ).first()
-
+            messages.warning(request, f"{product.name} was not found in your cart.")
+    else:
+        session_key = request.session.session_key or request.session.create()
+        cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
         if cart_item:
             cart_item.delete()
             messages.success(request, f"{product.name} removed from your cart.")
         else:
             messages.warning(request, f"{product.name} was not in your cart.")
 
-    return redirect('productdet', slug=slug)
+    # Redirect back to the cart page
+    return redirect('productdet', slug=slug)  # or the URL name of your cart page
 
-
-
-
-from django.shortcuts import render
-from django_tenants.utils import schema_context
-from django_ratelimit.decorators import ratelimit
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def cart_view(request):
@@ -333,68 +286,56 @@ def cart_view(request):
 
     import cloudinary
 
-    # 🔥 ensure session always exists
-    if not request.session.session_key:
-        request.session.create()
-    session_key = request.session.session_key
-
     with schema_context(tenant.schema_name):
-
-        # Cloudinary config (safe inside schema context)
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user, ordered=False)
+    else:
+        cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
 
-        # 🛒 CART ITEMS (OPTIMIZED)
-        if request.user.is_authenticated:
-            cart_items = Cart.objects.select_related('product', 'user').filter(
-                user=request.user,
-                ordered=False
-            ).order_by('-id')
+    if request.user.is_authenticated:
+        order = Order.objects.filter(user=request.user, Paid=False).last()
+    else:
+        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
+
+    if order and order.coupon:
+        total_amount = sum(item.get_final_price() for item in cart_items)
+        tt = order.coupon.amount
+
+        if total_amount <= tt:
+            total_amountss = 0  # prevent negative totals
         else:
-            cart_items = Cart.objects.select_related('product').filter(
-                session_key=session_key,
-                ordered=False
-            ).order_by('-id')
+            total_amountss = total_amount - tt
+    else:
+        tt = None
+        total_amount = sum(item.get_final_price() for item in cart_items)
+        total_amountss = total_amount
 
-        # 📦 ORDER (for coupon logic)
-        if request.user.is_authenticated:
-            order = Order.objects.filter(
-                user=request.user,
-                Paid=False
-            ).last()
-        else:
-            order = Order.objects.filter(
-                session_key=session_key,
-                Paid=False
-            ).last()
+    # Re-fetch cart items in proper order
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user, ordered=False).order_by('-id')
+    else:
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+        cart_items = Cart.objects.filter(session_key=session_key, ordered=False).order_by('-id')
 
-        # 💰 TOTAL CALCULATION
-        total = sum(item.get_final_price() for item in cart_items)
-
-        # 🎟️ COUPON LOGIC
-        if order and order.coupon:
-            discount = order.coupon.amount
-
-            final_total = max(total - discount, 0)
-        else:
-            discount = 0
-            final_total = total
+    total = sum(item.get_final_price() for item in cart_items)
 
     return render(request, 'whiteecom/shop/cart.html', {
         'cart_items': cart_items,
         'total': total,
-        'discount': discount,
-        'final_total': final_total
+        'total_amount': total_amount,
+        'tt': tt,
+        'total_amountss': total_amountss
     })
 
 
-from django.shortcuts import redirect, get_object_or_404
-from django.contrib import messages
-from django_tenants.utils import schema_context
-from django_ratelimit.decorators import ratelimit
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def add_to(request, slug):
@@ -402,64 +343,61 @@ def add_to(request, slug):
 
     import cloudinary
 
-    # 🔥 ALWAYS ensure session exists FIRST
-    if not request.session.session_key:
-        request.session.create()
-    session_key = request.session.session_key
-
     with schema_context(tenant.schema_name):
-
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    # Get the product
+    product = get_object_or_404(Product, slug=slug)
 
-        # 🔥 MUST be inside schema_context
-        product = get_object_or_404(Product, slug=slug)
+    if product.quantity <= 0:
+        messages.warning(request, f"Sorry, {product.name} is out of stock.")
+        return redirect('productdet', slug=slug)
+    
 
-        if product.quantity is None or product.quantity <= 0:
-            messages.warning(request, f"{product.name} is out of stock.")
-            return redirect('productdet', slug=slug)
+    # Determine cart owner
+    if request.user.is_authenticated:
+        cart_filter = {'user': request.user, 'ordered': False, 'product': product}
+    else:
+        # For guest users, we use session key
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+        cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
 
-        # 🔥 USE get_or_create (cleaner + safer)
-        if request.user.is_authenticated:
-            cart_item, created = Cart.objects.get_or_create(
-                user=request.user,
-                product=product,
-                ordered=False,
-                defaults={"quantity": 1}
-            )
+    # Check if item exists
+    cart_item = Cart.objects.filter(**cart_filter).first()
+
+    if cart_item:
+
+        if product.quantity <= cart_item.quantity:
+            messages.warning(request, f"{product.name} for that size  is only {product.quantity} we have left ")
+            return redirect('cart_view')
+            
         else:
-            cart_item, created = Cart.objects.get_or_create(
-                session_key=session_key,
-                product=product,
-                ordered=False,
-                defaults={"quantity": 1}
-            )
-
-        # 🔥 HANDLE EXISTING ITEM
-        if not created:
-            if cart_item.quantity >= product.quantity:
-                messages.warning(
-                    request,
-                    f"{product.name} is limited to {product.quantity} units."
-                )
-                return redirect('cart_view')
-
             cart_item.quantity += 1
             cart_item.save()
-            messages.success(request, f"{product.name} quantity updated.")
-        else:
-            messages.success(request, f"{product.name} added to cart.")
+            messages.success(request, f"{product.name} quantity updated in your cart.")
+    else:
+        # Create new cart item
+        
+        cart_item = Cart.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            product=product,
+            ordered=False,
+            session_key=request.session.session_key,
+            quantity = 1)
 
-    return redirect('cart_view')
+        
+
+    
+    return redirect('cart_view')  # Replace with your cart page URL
 
 
-from django.shortcuts import redirect, get_object_or_404
-from django.contrib import messages
-from django_tenants.utils import schema_context
-from django_ratelimit.decorators import ratelimit
+
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove(request, slug):
@@ -467,56 +405,44 @@ def remove(request, slug):
 
     import cloudinary
 
-    # 🔥 ensure session exists
-    if not request.session.session_key:
-        request.session.create()
-    session_key = request.session.session_key
-
     with schema_context(tenant.schema_name):
-
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    product = get_object_or_404(Product, slug=slug)
 
-        # 🔥 MUST be inside schema context
-        product = get_object_or_404(Product, slug=slug)
 
-        # 🔥 consistent cart lookup
-        if request.user.is_authenticated:
-            cart_filter = {
-                'user': request.user,
-                'ordered': False,
-                'product': product
-            }
+    if request.user.is_authenticated:
+        cart_filter = {'user': request.user, 'ordered': False, 'product': product}
+    else:
+        # For guest users, we use session key
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+        cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
+
+
+
+
+    cart_item = Cart.objects.filter(**cart_filter).first()
+    if cart_item:
+        if cart_item.quantity <= 1 :
+                cart_item.delete()
+                messages.warning(request, f"cartitem is empyty")
+                
+                return redirect('cart_view')
+                
         else:
-            cart_filter = {
-                'session_key': session_key,
-                'ordered': False,
-                'product': product
-            }
+                cart_item.quantity -= 1
+                cart_item.save()
+                messages.success(request, f"{product.name} quantity updated in your cart.")
 
-        cart_item = Cart.objects.filter(**cart_filter).first()
-
-        if not cart_item:
-            messages.warning(request, "Item not found in cart.")
-            return redirect('cart_view')
-
-        # 🔥 decrease logic
-        if cart_item.quantity <= 1:
-            cart_item.delete()
-            messages.success(request, f"{product.name} removed from cart.")
-        else:
-            cart_item.quantity -= 1
-            cart_item.save()
-            messages.success(request, f"{product.name} quantity updated.")
-
+        
     return redirect('cart_view')
-from django.shortcuts import redirect, get_object_or_404
-from django.contrib import messages
-from django_tenants.utils import schema_context
-from django_ratelimit.decorators import ratelimit
+
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_item(request, slug):
@@ -524,49 +450,33 @@ def remove_item(request, slug):
 
     import cloudinary
 
-    # 🔥 ALWAYS ensure session exists first
-    if not request.session.session_key:
-        request.session.create()
-    session_key = request.session.session_key
-
     with schema_context(tenant.schema_name):
-
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
+    product = get_object_or_404(Product, slug=slug)
 
-        # 🔥 MUST be inside schema context
-        product = get_object_or_404(Product, slug=slug)
-
-        # 🔥 consistent lookup
-        if request.user.is_authenticated:
-            cart_item = Cart.objects.filter(
-                product=product,
-                user=request.user,
-                ordered=False
-            ).first()
-        else:
-            cart_item = Cart.objects.filter(
-                product=product,
-                session_key=session_key,
-                ordered=False
-            ).first()
-
+    if request.user.is_authenticated:
+        cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False,).first()
         if cart_item:
             cart_item.delete()
             messages.success(request, f"{product.name} removed from your cart.")
         else:
             messages.warning(request, f"{product.name} was not found in your cart.")
+    else:
+        session_key = request.session.session_key or request.session.create()
+        cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
+        if cart_item:
+            cart_item.delete()
+            messages.success(request, f"{product.name} removed from your cart.")
+        else:
+            messages.warning(request, f"{product.name} was not in your cart.")
+  
 
-    return redirect('cart_view')
-
-
-    from django.shortcuts import redirect
-from django.contrib import messages
-from django_tenants.utils import schema_context
-from django_ratelimit.decorators import ratelimit
+    # Redirect back to the cart page
+    return redirect('cart_view')  # or the URL name of your cart page
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_all(request):
@@ -574,33 +484,21 @@ def remove_all(request):
 
     import cloudinary
 
-    # 🔥 ensure session exists
-    if not request.session.session_key:
-        request.session.create()
-    session_key = request.session.session_key
-
     with schema_context(tenant.schema_name):
-
         cloudinary.config(
             cloud_name=tenant.cloud_name,
             api_key=tenant.api_key,
             api_secret=tenant.api_secret,
         )
-
-        # 🔥 ALL DB OPS inside schema_context
-        if request.user.is_authenticated:
-            deleted_count, _ = Cart.objects.filter(
-                user=request.user,
-                ordered=False
-            ).delete()
-        else:
-            deleted_count, _ = Cart.objects.filter(
-                session_key=session_key,
-                ordered=False
-            ).delete()
-
+    if request.user.is_authenticated:
+        Cart.objects.filter(user=request.user, ordered=False).delete()
+    else:
+        session_key = request.session.session_key
+        if session_key:
+            Cart.objects.filter(session_key=session_key, ordered=False).delete()
     messages.success(request, "All items removed from your cart.")
     return redirect('cart_view')
+
 
 
 
