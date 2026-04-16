@@ -126,7 +126,6 @@ def get_delivery_distance(origin, destination):
 def removecoupon(request):
 
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
 
     import cloudinary
 
@@ -163,9 +162,6 @@ def create_ref_code():
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def get_coupon(request, code):
-
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
     try:
         return Coupon.objects.get(code=code)
     except Coupon.DoesNotExist:
@@ -176,8 +172,6 @@ def get_coupon(request, code):
 @ratelimit(key='ip', rate='10/m', block=True)
 def home(request):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -203,8 +197,6 @@ def home(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_list(request):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -227,8 +219,6 @@ def product_list(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_detail(request, slug):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -258,8 +248,6 @@ def product_detail(request, slug):
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_from(request, slug):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -295,8 +283,6 @@ def remove_from(request, slug):
 @ratelimit(key='ip', rate='10/m', block=True)
 def cart_view(request):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -354,8 +340,6 @@ def cart_view(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def add_to(request, slug):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -418,8 +402,6 @@ def add_to(request, slug):
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove(request, slug):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -465,8 +447,6 @@ def remove(request, slug):
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_item(request, slug):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -501,8 +481,6 @@ def remove_item(request, slug):
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_all(request):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -535,8 +513,6 @@ def remove_all(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def checkout(request):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -1032,8 +1008,6 @@ def checkout(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def addcoupon(request):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -1572,8 +1546,6 @@ def verify_payment(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def ordderlist(request):
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=True).order_by('-ordered_date')
     else:
@@ -1589,8 +1561,6 @@ def ordderlist(request):
 @ratelimit(key='ip', rate='10/m', block=True)
 def orderdet(request, id):
     tenant = request.tenant
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     import cloudinary
 
@@ -1637,8 +1607,6 @@ def orderdet(request, id):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def search(request):
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
     queryset = Product.objects.all()
     query = request.GET.get('q')
     if query:
@@ -1717,8 +1685,6 @@ def paym(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def paydelivery(request):
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     # Ensure session exists for guest users
     if not request.session.session_key:
@@ -1822,8 +1788,6 @@ Ref: {order.ref_code}
     return redirect("paysuc")
 
 def paysuc(request):
-    from ecom.models import Product,Category, DeliveryBase, DeliveryCity, DeliveryState, Address, Order,Sale, Coupon, Cart, Trans
-
 
     if request.user.is_authenticated:
         order = Order.objects.filter(user=request.user, Paid=True).last()
