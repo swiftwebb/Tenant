@@ -154,12 +154,9 @@ def get_delivery_distance(origin, destination):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def removecoupon(request):
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
-
+    from ecom.models import Coupon, Category, Product, Cart, Address, DeliveryBase, DeliveryState, DeliveryCity, Order, Sale, Trans
 
     tenant = request.tenant
-
     import cloudinary
 
     with schema_context(tenant.schema_name):
@@ -169,28 +166,19 @@ def removecoupon(request):
             api_secret=tenant.api_secret,
         )
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
-        )
-    if request.user.is_authenticated:
-        order = Order.objects.filter(user=request.user, Paid=False).last()
-    else:
-        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
+        if request.user.is_authenticated:
+            order = Order.objects.filter(user=request.user, Paid=False).last()
+        else:
+            order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
 
-    if order and order.coupon:
-        order.coupon = None
-        order.save()
-        messages.success(request, "Promo code removed successfully.")
-    else:
-        messages.info(request, "No promo code was applied.")
+        if order and order.coupon:
+            order.coupon = None
+            order.save()
+            messages.success(request, "Promo code removed successfully.")
+        else:
+            messages.info(request, "No promo code was applied.")
 
     return redirect('cart_view')
-
 
 
 
@@ -201,39 +189,11 @@ def create_ref_code():
 
 
 
-
 @ratelimit(key='ip', rate='10/m', block=True)
 def get_coupon(request, code):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
-
-
-    querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
-        )
-    try:
-        return Coupon.objects.get(code=code)
-    except Coupon.DoesNotExist:
-        return None
-
-
-
-@ratelimit(key='ip', rate='10/m', block=True)
-def home(request):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+    from ecom.models import Coupon, Category, Product, Cart, Address, DeliveryBase, DeliveryState, DeliveryCity, Order, Sale, Trans
 
     tenant = request.tenant
-
     import cloudinary
 
     with schema_context(tenant.schema_name):
@@ -243,36 +203,38 @@ def home(request):
             api_secret=tenant.api_secret,
         )
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
+        try:
+            return Coupon.objects.get(code=code)
+        except Coupon.DoesNotExist:
+            return None
+
+@ratelimit(key='ip', rate='10/m', block=True)
+def home(request):
+    from ecom.models import Coupon, Category, Product, Cart, Address, DeliveryBase, DeliveryState, DeliveryCity, Order, Sale, Trans
+
+    tenant = request.tenant
+    import cloudinary
+
+    with schema_context(tenant.schema_name):
+        cloudinary.config(
+            cloud_name=tenant.cloud_name,
+            api_key=tenant.api_key,
+            api_secret=tenant.api_secret,
         )
 
+        product_list = Product.objects.filter(image__isnull=False).order_by('-id')
+        paginator = Paginator(product_list, 12)
+        page_number = request.GET.get('page')
+        products = paginator.get_page(page_number)
 
-    items = True
-    product_list = Product.objects.filter(image__isnull=False).order_by('-id')  # newest first
-    paginator = Paginator(product_list, 12)  # 👈 8 products per page (adjust as you like)
-
-    page_number = request.GET.get('page')  # ?page=2
-    products = paginator.get_page(page_number)
-    
     return render(request, 'whiteecom/shop/home.html', {'products': products})
-
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_list(request):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+    from ecom.models import Coupon, Category, Product, Cart, Address, DeliveryBase, DeliveryState, DeliveryCity, Order, Sale, Trans
 
     tenant = request.tenant
-
     import cloudinary
 
     with schema_context(tenant.schema_name):
@@ -282,33 +244,24 @@ def product_list(request):
             api_secret=tenant.api_secret,
         )
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
-        )
-
-    items = True
-    product_list = Product.objects.filter(best_sellers=items,image__isnull=False).order_by('-id')  # newest first
-    paginator = Paginator(product_list, 12)  # 👈 8 products per page (adjust as you like)
-
-    page_number = request.GET.get('page')  # ?page=2
-    products = paginator.get_page(page_number)  # handles invalid or empty pages automatically
+        product_list = Product.objects.filter(best_sellers=True, image__isnull=False).order_by('-id')
+        paginator = Paginator(product_list, 12)
+        page_number = request.GET.get('page')
+        products = paginator.get_page(page_number)
 
     return render(request, 'whiteecom/shop/shop.html', {'products': products})
 
+
+
+
+
+
+
 @ratelimit(key='ip', rate='10/m', block=True)
 def product_detail(request, slug):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+    from ecom.models import Coupon, Category, Product, Cart, Address, DeliveryBase, DeliveryState, DeliveryCity, Order, Sale, Trans
 
     tenant = request.tenant
-
     import cloudinary
 
     with schema_context(tenant.schema_name):
@@ -318,369 +271,254 @@ def product_detail(request, slug):
             api_secret=tenant.api_secret,
         )
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
+        product = get_object_or_404(Product, slug=slug)
+        category = product.category
+        related_products = (
+            Product.objects.filter(category=category, image__isnull=False)
+            .exclude(id=product.id)
+            .order_by('-created_at')[:4]
         )
-    product = get_object_or_404(Product, slug=slug)
-    category = product.category
 
-    # Get only the latest 4 products in the same category (excluding the current one)
-    related_products = (
-        Product.objects.filter(category=category, image__isnull=False)
-        .exclude(id=product.id)
-        .order_by('-created_at')[:4]  # assuming your model has a created_at field
-    )
-
-    return render(
-        request,
-        'whiteecom/shop/productdet.html',
-        {'product': product, 'dud': related_products, }
-    )
-
+    return render(request, 'whiteecom/shop/productdet.html', {
+        'product': product,
+        'dud': related_products,
+    })
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_from(request, slug):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+    from ecom.models import Cart, Product
 
     tenant = request.tenant
 
-    import cloudinary
-
     with schema_context(tenant.schema_name):
-        cloudinary.config(
-            cloud_name=tenant.cloud_name,
-            api_key=tenant.api_key,
-            api_secret=tenant.api_secret,
-        )
+        product = get_object_or_404(Product, slug=slug)
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
+        if request.user.is_authenticated:
+            cart_item = (
+                Cart.objects
+                .filter(product=product, user=request.user, ordered=False)
+                .first()
             )
-        )
-    product = get_object_or_404(Product, slug=slug)
+        else:
+            if not request.session.session_key:
+                request.session.create()          # creates & saves the session
+            session_key = request.session.session_key
+            cart_item = (
+                Cart.objects
+                .filter(product=product, session_key=session_key, ordered=False)
+                .first()
+            )
 
-
-    if request.user.is_authenticated:
-        cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False).first()
         if cart_item:
             cart_item.delete()
             messages.success(request, f"{product.name} removed from your cart.")
         else:
             messages.warning(request, f"{product.name} was not found in your cart.")
-    else:
-        session_key = request.session.session_key or request.session.create()
-        cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
-        if cart_item:
-            cart_item.delete()
-            messages.success(request, f"{product.name} removed from your cart.")
-        else:
-            messages.warning(request, f"{product.name} was not in your cart.")
 
-    # Redirect back to the cart page
-    return redirect('productdet', slug=slug)  # or the URL name of your cart page
+    return redirect('productdet', slug=slug)
+
+
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def cart_view(request):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+    from ecom.models import Cart, Order
 
     tenant = request.tenant
 
-    import cloudinary
-
     with schema_context(tenant.schema_name):
-        cloudinary.config(
-            cloud_name=tenant.cloud_name,
-            api_key=tenant.api_key,
-            api_secret=tenant.api_secret,
-        )
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
-        )
-    if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user, ordered=False)
-    else:
-        cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
-
-    if request.user.is_authenticated:
-        order = Order.objects.filter(user=request.user, Paid=False).last()
-    else:
-        order = Order.objects.filter(session_key=request.session.session_key, Paid=False).last()
-
-    if order and order.coupon:
-        total_amount = sum(item.get_final_price() for item in cart_items)
-        tt = order.coupon.amount
-
-        if total_amount <= tt:
-            total_amountss = 0  # prevent negative totals
-        else:
-            total_amountss = total_amount - tt
-    else:
-        tt = None
-        total_amount = sum(item.get_final_price() for item in cart_items)
-        total_amountss = total_amount
-
-    # Re-fetch cart items in proper order
-    if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user, ordered=False).order_by('-id')
-    else:
-        session_key = request.session.session_key
-        if not session_key:
-            request.session.create()
+        # Resolve session key once, safely
+        if not request.user.is_authenticated:
+            if not request.session.session_key:
+                request.session.create()
             session_key = request.session.session_key
-        cart_items = Cart.objects.filter(session_key=session_key, ordered=False).order_by('-id')
 
-    total = sum(item.get_final_price() for item in cart_items)
+        # Single cart fetch, ordered correctly
+        if request.user.is_authenticated:
+            cart_items = Cart.objects.filter(
+                user=request.user, ordered=False
+            ).order_by('-id').select_related('product')
+        else:
+            cart_items = Cart.objects.filter(
+                session_key=session_key, ordered=False
+            ).order_by('-id').select_related('product')
+
+        # Evaluate once to avoid repeated queries
+        cart_items = list(cart_items)
+
+        # Fetch unpaid order
+        if request.user.is_authenticated:
+            order = Order.objects.filter(user=request.user, Paid=False).last()
+        else:
+            order = Order.objects.filter(session_key=session_key, Paid=False).last()
+
+        # Calculate totals once
+        subtotal = sum(item.get_final_price() for item in cart_items)
+
+        coupon_amount = None
+        if order and order.coupon:
+            coupon_amount = order.coupon.amount
+            discounted_total = max(subtotal - coupon_amount, 0)
+        else:
+            discounted_total = subtotal
 
     return render(request, 'whiteecom/shop/cart.html', {
         'cart_items': cart_items,
-        'total': total,
-        'total_amount': total_amount,
-        'tt': tt,
-        'total_amountss': total_amountss
+        'subtotal': subtotal,
+        'coupon_amount': coupon_amount,
+        'total': discounted_total,
     })
+
+
+
 
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def add_to(request, slug):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+    from ecom.models import Cart, Product
 
     tenant = request.tenant
 
-    import cloudinary
-
     with schema_context(tenant.schema_name):
-        cloudinary.config(
-            cloud_name=tenant.cloud_name,
-            api_key=tenant.api_key,
-            api_secret=tenant.api_secret,
-        )
+        product = get_object_or_404(Product, slug=slug)
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
-        )
-    # Get the product
-    product = get_object_or_404(Product, slug=slug)
+        if product.quantity <= 0:
+            messages.warning(request, f"Sorry, {product.name} is out of stock.")
+            return redirect('productdet', slug=slug)
 
-    if product.quantity <= 0:
-        messages.warning(request, f"Sorry, {product.name} is out of stock.")
-        return redirect('productdet', slug=slug)
-    
-
-    # Determine cart owner
-    if request.user.is_authenticated:
-        cart_filter = {'user': request.user, 'ordered': False, 'product': product}
-    else:
-        # For guest users, we use session key
-        session_key = request.session.session_key
-        if not session_key:
-            request.session.create()
-            session_key = request.session.session_key
-        cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
-
-    # Check if item exists
-    cart_item = Cart.objects.filter(**cart_filter).first()
-
-    if cart_item:
-
-        if product.quantity <= cart_item.quantity:
-            messages.warning(request, f"{product.name} for that size  is only {product.quantity} we have left ")
-            return redirect('cart_view')
-            
+        # Resolve identity once
+        if request.user.is_authenticated:
+            cart_filter = {'user': request.user, 'ordered': False, 'product': product}
+            create_kwargs = {'user': request.user, 'session_key': None}
         else:
+            if not request.session.session_key:
+                request.session.create()
+            session_key = request.session.session_key
+            cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
+            create_kwargs = {'user': None, 'session_key': session_key}
+
+        # Lock the row to prevent race conditions on quantity
+        cart_item = Cart.objects.select_for_update().filter(**cart_filter).first()
+
+        if cart_item:
+            if cart_item.quantity >= product.quantity:
+                messages.warning(
+                    request,
+                    f"Only {product.quantity} of {product.name} left in stock."
+                )
+                return redirect('cart_view')
+
             cart_item.quantity += 1
             cart_item.save()
             messages.success(request, f"{product.name} quantity updated in your cart.")
-    else:
-        # Create new cart item
-        
-        cart_item = Cart.objects.create(
-            user=request.user if request.user.is_authenticated else None,
-            product=product,
-            ordered=False,
-            session_key=request.session.session_key,
-            quantity = 1)
 
-        
+        else:
+            Cart.objects.create(
+                product=product,
+                ordered=False,
+                quantity=1,
+                **create_kwargs        # cleanly sets user/session_key, never both
+            )
+            messages.success(request, f"{product.name} added to your cart.")
 
-    
-    return redirect('cart_view')  # Replace with your cart page URL
-
+    return redirect('cart_view')
 
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove(request, slug):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+    from ecom.models import Cart, Product
 
     tenant = request.tenant
 
-    import cloudinary
-
     with schema_context(tenant.schema_name):
-        cloudinary.config(
-            cloud_name=tenant.cloud_name,
-            api_key=tenant.api_key,
-            api_secret=tenant.api_secret,
-        )
+        product = get_object_or_404(Product, slug=slug)
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
-        )
-    product = get_object_or_404(Product, slug=slug)
-
-
-    if request.user.is_authenticated:
-        cart_filter = {'user': request.user, 'ordered': False, 'product': product}
-    else:
-        # For guest users, we use session key
-        session_key = request.session.session_key
-        if not session_key:
-            request.session.create()
-            session_key = request.session.session_key
-        cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
-
-
-
-
-    cart_item = Cart.objects.filter(**cart_filter).first()
-    if cart_item:
-        if cart_item.quantity <= 1 :
-                cart_item.delete()
-                messages.warning(request, f"cartitem is empyty")
-                
-                return redirect('cart_view')
-                
+        # Resolve identity once
+        if request.user.is_authenticated:
+            cart_filter = {'user': request.user, 'ordered': False, 'product': product}
         else:
+            if not request.session.session_key:
+                request.session.create()
+            session_key = request.session.session_key
+            cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
+
+        cart_item = Cart.objects.filter(**cart_filter).first()
+
+        if cart_item:
+            if cart_item.quantity <= 1:
+                cart_item.delete()
+                messages.success(request, f"{product.name} removed from your cart.")
+            else:
                 cart_item.quantity -= 1
                 cart_item.save()
-                messages.success(request, f"{product.name} quantity updated in your cart.")
+                messages.success(request, f"{product.name} quantity reduced.")
+        else:
+            messages.warning(request, f"{product.name} was not found in your cart.")
 
-        
     return redirect('cart_view')
+
+
+
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_item(request, slug):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+    from ecom.models import Cart, Product
 
     tenant = request.tenant
 
-    import cloudinary
-
     with schema_context(tenant.schema_name):
-        cloudinary.config(
-            cloud_name=tenant.cloud_name,
-            api_key=tenant.api_key,
-            api_secret=tenant.api_secret,
-        )
+        product = get_object_or_404(Product, slug=slug)
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
-        )
-    product = get_object_or_404(Product, slug=slug)
+        # Resolve identity once
+        if request.user.is_authenticated:
+            cart_filter = {'user': request.user, 'ordered': False, 'product': product}
+        else:
+            if not request.session.session_key:
+                request.session.create()
+            session_key = request.session.session_key
+            cart_filter = {'session_key': session_key, 'ordered': False, 'product': product}
 
-    if request.user.is_authenticated:
-        cart_item = Cart.objects.filter(product=product, user=request.user, ordered=False,).first()
+        # Shared delete logic — no duplication
+        cart_item = Cart.objects.filter(**cart_filter).first()
         if cart_item:
             cart_item.delete()
             messages.success(request, f"{product.name} removed from your cart.")
         else:
             messages.warning(request, f"{product.name} was not found in your cart.")
-    else:
-        session_key = request.session.session_key or request.session.create()
-        cart_item = Cart.objects.filter(product=product, session_key=session_key, ordered=False).first()
-        if cart_item:
-            cart_item.delete()
-            messages.success(request, f"{product.name} removed from your cart.")
-        else:
-            messages.warning(request, f"{product.name} was not in your cart.")
-  
 
-    # Redirect back to the cart page
-    return redirect('cart_view')  # or the URL name of your cart page
+    return redirect('cart_view')
+
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def remove_all(request):
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
+    from ecom.models import Cart
 
     tenant = request.tenant
 
-    import cloudinary
-
     with schema_context(tenant.schema_name):
-        cloudinary.config(
-            cloud_name=tenant.cloud_name,
-            api_key=tenant.api_key,
-            api_secret=tenant.api_secret,
-        )
+        if request.user.is_authenticated:
+            deleted_count, _ = Cart.objects.filter(
+                user=request.user, ordered=False
+            ).delete()
+        else:
+            session_key = request.session.session_key
+            if session_key:
+                deleted_count, _ = Cart.objects.filter(
+                    session_key=session_key, ordered=False
+                ).delete()
+            else:
+                deleted_count = 0
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
-        )
-    if request.user.is_authenticated:
-        Cart.objects.filter(user=request.user, ordered=False).delete()
-    else:
-        session_key = request.session.session_key
-        if session_key:
-            Cart.objects.filter(session_key=session_key, ordered=False).delete()
-    messages.success(request, "All items removed from your cart.")
+        if deleted_count:
+            messages.success(request, "All items removed from your cart.")
+        else:
+            messages.warning(request, "Your cart is already empty.")
+
     return redirect('cart_view')
-
 
 
 
@@ -1060,63 +898,43 @@ def checkout(request):
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def addcoupon(request):
+    from ecom.models import Order, Coupon
+
+    if request.method != 'POST':
+        return redirect('cart_view')
+
     tenant = request.tenant
-
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
-
-
-    import cloudinary
+    code = request.POST.get('promo')
 
     with schema_context(tenant.schema_name):
-        cloudinary.config(
-            cloud_name=tenant.cloud_name,
-            api_key=tenant.api_key,
-            api_secret=tenant.api_secret,
-        )
+        coupon = get_coupon(request, code)  # must also run inside schema_context
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
-        )
-    if request.method == 'POST':
-        code = request.POST.get('promo')
-        coupon = get_coupon(request, code)
-        
         if not coupon:
-            messages.info(request, "This coupon does not exist")
+            messages.info(request, "This coupon does not exist.")
             return redirect('cart_view')
 
+        # Build lookup filter — authenticated users never match on session_key
         if request.user.is_authenticated:
-            order, created = Order.objects.get_or_create(
-                user=request.user,
-                session_key=request.session.session_key,
-                Paid=False,
-                defaults={'coupon': coupon}
-            )
+            order_filter = {'user': request.user, 'Paid': False}
         else:
-            order, created = Order.objects.get_or_create(
-                user=None,
-                session_key=request.session.session_key,
-                Paid=False,
-                defaults={'coupon': coupon}
-            )
+            if not request.session.session_key:
+                request.session.create()
+            session_key = request.session.session_key
+            order_filter = {'user': None, 'session_key': session_key, 'Paid': False}
 
-        # If order exists but no coupon yet, assign it
+        order, created = Order.objects.get_or_create(
+            **order_filter,
+            defaults={'coupon': coupon}
+        )
+
+        # Order already existed — update coupon if different
         if not created and order.coupon != coupon:
             order.coupon = coupon
             order.save()
 
         messages.success(request, "Coupon applied successfully!")
-        return redirect('cart_view')
 
-    return redirect('cart_views')
-
+    return redirect('cart_view')
 
 # === FLUTTERWAVE CONFIG ===
 FLW_SECRET_KEY = settings.FLW_SECRET_KEY  # Replace with your own
@@ -1612,84 +1430,71 @@ def verify_payment(request):
 
 
 @ratelimit(key='ip', rate='10/m', block=True)
-def ordderlist(request):
+def order_list(request):
+    from ecom.models import Order
 
+    tenant = request.tenant
 
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
-
-
-
-    querysetssss = (
+    with schema_context(tenant.schema_name):
+        base_qs = (
             Order.objects
             .select_related('address', 'user', 'coupon')
             .prefetch_related(
                 'cart__product',
                 'cart__product__category'
             )
+            .order_by('-ordered_date')
         )
 
-    if request.user.is_authenticated:
-        order = Order.objects.filter(user=request.user, Paid=True).order_by('-ordered_date')
-    else:
-        order = Order.objects.filter(session_key=request.session.session_key, Paid=True)
+        if request.user.is_authenticated:
+            orders = base_qs.filter(user=request.user, Paid=True)
+        else:
+            session_key = request.session.session_key
+            if not session_key:
+                orders = Order.objects.none()
+            else:
+                orders = base_qs.filter(session_key=session_key, Paid=True)
 
-    context={
-        'order':order,
-    }
-    return render(request, 'whiteecom/shop/orderlist.html',context)
-
-
+    return render(request, 'whiteecom/shop/orderlist.html', {'orders': orders})
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def orderdet(request, id):
+    from ecom.models import Order
+
     tenant = request.tenant
 
-
-
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
-
-
-    import cloudinary
-
     with schema_context(tenant.schema_name):
-        cloudinary.config(
-            cloud_name=tenant.cloud_name,
-            api_key=tenant.api_key,
-            api_secret=tenant.api_secret,
+        order = get_object_or_404(Order, id=id)
+
+        # Ownership check — users can only view their own orders
+        if request.user.is_authenticated:
+            if order.user != request.user:
+                messages.warning(request, "You do not have permission to view this order.")
+                return redirect('order_list')
+        else:
+            session_key = request.session.session_key
+            if not session_key or order.session_key != session_key:
+                messages.warning(request, "You do not have permission to view this order.")
+                return redirect('order_list')
+
+        # Evaluate once to avoid repeated DB hits
+        cart_items = list(
+            order.cart.select_related('product').all()
         )
 
-        querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
-            )
+        # Use discount_price where available, fall back to full price
+        total_price = sum(
+            (item.product.discount_price or item.product.price) * item.quantity
+            for item in cart_items
         )
-    order = get_object_or_404(Order, id=id)
-    cart_items = order.cart.all()
 
-    # 🧮 Calculate totals
-    total_price = sum(item.product.price * item.quantity for item in cart_items)
-    total_discount = sum(
-        (item.product.price - (item.product.discount_price or item.product.price)) * item.quantity
-        for item in cart_items
-    )
-
-    # 🏷️ Promo / coupon discount
-    promo_discount = order.coupon.amount if order.coupon else 0
-
-    # 💰 Grand total = total - discounts - promo
-    grand_total = total_price - total_discount - promo_discount
-    if grand_total < 0:
-        grand_total = 0  # prevent negative totals if promo is larger
+        promo_discount = order.coupon.amount if order.coupon else 0
+        grand_total = max(total_price - promo_discount, 0)
 
     context = {
         'order': order,
         'cart_items': cart_items,
         'total_price': total_price,
-        'total_discount': total_discount,
         'promo_discount': promo_discount,
         'grand_total': grand_total,
     }
@@ -1699,40 +1504,36 @@ def orderdet(request, id):
 
 
 
-
-
-
 @ratelimit(key='ip', rate='10/m', block=True)
 def search(request):
+    from ecom.models import Product
 
+    tenant = request.tenant
 
+    query = request.GET.get('q', '').strip()
 
-    from ecom.models import Coupon, Category, Product,Cart, Address, DeliveryBase, DeliveryState,DeliveryCity,Order,Sale,Trans
-
-
-
-    querysetssss = (
-            Order.objects
-            .select_related('address', 'user', 'coupon')
-            .prefetch_related(
-                'cart__product',
-                'cart__product__category'
+    with schema_context(tenant.schema_name):
+        if query:
+            products = (
+                Product.objects
+                .select_related('category')
+                .filter(
+                    Q(name__icontains=query) |
+                    Q(description__icontains=query)
+                )
+                .distinct()
             )
-        )
+        else:
+            products = Product.objects.none()
+
+    return render(request, 'whiteecom/shop/search_result.html', {
+        'products': products,
+        'query': query,       # useful for displaying "results for X" in template
+    })
 
 
-    queryset = Product.objects.all()
-    query = request.GET.get('q')
-    if query:
-        queryset = queryset.filter(
-            Q(name__icontains=query) |
-            Q(description__icontains=query)
 
-        ).distinct()
-    context = {
-        'queryset': queryset
-    }
-    return render(request, 'whiteecom/shop/search_result.html', context)
+
 
 @ratelimit(key='ip', rate='10/m', block=True)
 def paym(request):
