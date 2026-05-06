@@ -538,6 +538,9 @@ def checkout(request):
         cart_items = Cart.objects.filter(session_key=request.session.session_key, ordered=False)
         
     if not cart_items:
+
+        messages.error(request, f"No item in cart")
+        
         return redirect('cart_view')
 
    
