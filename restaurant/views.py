@@ -147,9 +147,9 @@ def book(request):
         {special_requests}
 
         """,
-            from_email=settings.EMAIL_HOST_USER,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[request.tenant.email],
-            fail_silently=False,
+            fail_silently=True,
         )
 
         messages.success(request, "Your reservation has been submitted!")

@@ -418,9 +418,9 @@ def upgrade_init(request):
 
         Name: {request.user.username}
         """,
-                from_email=settings.EMAIL_HOST_USER,
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=['info@baxting.com'],   # <-- your email here
-                fail_silently=False,
+                fail_silently=True,
             )
     
     plan_id = request.POST.get('plan_id')
@@ -893,9 +893,9 @@ def cancel_subscription(request):
 
         Name: {request.user.username}
         """,
-                from_email=settings.EMAIL_HOST_USER,
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=['info@baxting.com'],   # <-- your email here
-                fail_silently=False,
+                fail_silently=True,
             )
 
         return redirect('customers:dashboard')
@@ -1112,9 +1112,9 @@ def setts(request):
         Business Name: {client.business_name}
         Job Type: {client.job_type.name}
         """,
-                from_email=settings.EMAIL_HOST_USER,
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=['info@baxting.com'],   # <-- your email here
-                fail_silently=False,
+                fail_silently=True,
             )
 
             if not client.business_name:
@@ -1203,9 +1203,9 @@ def fom(request):
         Business Name: {client.business_name}
         Job Type: {client.job_type.name}
         """,
-                from_email=settings.EMAIL_HOST_USER,
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=['info@baxting.com'],   # <-- your email here
-                fail_silently=False,
+                fail_silently=True,
             )
             if not client.business_name:
                 messages.error(request, "Please enter a business name to create a domain or choose another business name.")

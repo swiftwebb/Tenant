@@ -222,9 +222,9 @@ def contact(request):
         Message:
         {message}
         """,
-            from_email=settings.EMAIL_HOST_USER,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[request.tenant.email],
-            fail_silently=False,
+            fail_silently=True,
         )
 
 

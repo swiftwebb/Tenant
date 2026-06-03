@@ -1386,9 +1386,9 @@ def verify_payment(request):
         Customer Phone Number: {customer_num}
        
         """,
-                from_email=settings.EMAIL_HOST_USER,
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[request.tenant.email ],   # <-- your email here
-                fail_silently=False,
+                fail_silently=True,
             )
         send_mail(
                 subject=f"New Order Paid {request.tenant}",
@@ -1404,9 +1404,9 @@ def verify_payment(request):
         Customer Phone Number: {customer_num}
        
         """,
-                from_email=settings.EMAIL_HOST_USER,
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[settings.EMAIL_HOST_USER ],   # <-- your email here
-                fail_silently=False,
+                fail_silently=True,
             )
 
 
@@ -1766,9 +1766,9 @@ Email: {customer_email}
 Phone: {customer_num}
 Ref: {order.ref_code}
         """,
-        from_email=settings.EMAIL_HOST_USER,
+        from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[request.tenant.email],
-        fail_silently=False,
+        fail_silently=True,
     )
 
     # ---------------- EMAIL ADMIN ----------------
@@ -1783,9 +1783,9 @@ Email: {customer_email}
 Phone: {customer_num}
 Ref: {order.ref_code}
         """,
-        from_email=settings.EMAIL_HOST_USER,
+        from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[settings.EMAIL_HOST_USER],
-        fail_silently=False,
+        fail_silently=True,
     )
 
     return redirect("paysuc")
