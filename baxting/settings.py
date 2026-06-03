@@ -249,7 +249,8 @@ FLW_SECRET_KEY=os.getenv('FLW_SECRET_KEY')
 
 
 # settings.py
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 AUTH_USER_MODEL = 'b_manager.User'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
